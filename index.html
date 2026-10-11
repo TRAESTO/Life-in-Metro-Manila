@@ -2,6 +2,9 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Metro Manila Life: Student Sim</title>
+<meta name="theme-color" content="#0e1525">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="A Metro Manila student life simulation.">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&display=swap">
 <style>
 :root{--bg:#e8edf5;--cd:#fff;--ink:#13203d;--mu:#5b6783;--ac:#2457d6;--gd:#a96f00;--ok:#1f9d6b;--wn:#e0a100;--bad:#d6403a;--ln:#d3dae8;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -30,7 +33,7 @@ button.on,#go{background:var(--ac);color:#fff;border-color:var(--ac)}
 #t{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#13203d;color:#fff;padding:8px 14px;border-radius:20px;font-size:13px;opacity:0;transition:.2s;pointer-events:none;z-index:10}#t.s{opacity:1}
 input,select{font:inherit;width:100%;padding:8px;border-radius:8px;border:1px solid var(--ln);background:var(--bg);color:var(--ink);margin:3px 0 8px}
 label.c{display:flex;gap:8px;align-items:flex-start;margin:4px 0;font-size:14px}label.c input{width:auto;margin:3px 0}
-.mdl{font:12px/1.1 ui-monospace,Menlo,Consolas,monospace;white-space:pre;background:var(--bg);padding:8px;border-radius:8px;margin:6px 0;overflow-x:auto;max-width:100%;width:max-content}.mdl.sm{font-size:8px;padding:4px}.fl{animation:fl .6s}@keyframes fl{from{background:var(--wn)}}
+.mdl{font:12px/1.1 ui-monospace,Menlo,Consolas,monospace;white-space:pre;background:var(--bg);padding:8px;border-radius:8px;margin:6px 0;overflow-x:auto;max-width:100%;width:max-content}.ccrow{margin:6px 0}.ccrow b{display:block;font-size:12px}.ccrow button{margin:2px;padding:4px 8px}button.sw{width:26px;height:26px;padding:0;border-radius:50%;border:2px solid #8886}button.sw.on{outline:3px solid var(--ac);outline-offset:1px}.ccp{display:flex;justify-content:center}.ccp svg{width:150px;height:255px;background:radial-gradient(ellipse at 50% 40%,#27304a,var(--bg));border-radius:12px}.mdl3d{width:240px;max-width:100%;display:block;margin:6px 0;border-radius:10px;background:radial-gradient(ellipse at 50% 35%,#27304a,var(--bg))}.mdl3d.sm{width:92px;margin:2px}.pfl{animation:pf .7s}@keyframes pf{from{filter:brightness(2.5)}}.trk{width:100%;max-width:420px;display:block;background:var(--bg);border-radius:10px}.rm3d{width:100%;max-width:440px;display:block;border-radius:10px;margin:6px 0}.mdl.sm{font-size:8px;padding:4px}.fl{animation:fl .6s}@keyframes fl{from{background:var(--wn)}}
 .lg div{font-size:13px;padding:3px 0;border-bottom:1px dashed var(--ln)}.big{font-size:20px;font-weight:700}
 button{transition:background .15s,transform .1s,opacity .2s,border-color .15s;min-height:44px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 button:active{transform:scale(.97)}@media(hover:hover){button:hover{border-color:var(--ac)}}
@@ -42,7 +45,12 @@ button:active{transform:scale(.97)}@media(hover:hover){button:hover{border-color
 #sv{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:10px;background:var(--cd);border:1px solid var(--ln);padding:3px 10px;border-radius:14px;font-size:12px;opacity:0;transform:translateY(-6px);transition:.25s;pointer-events:none;z-index:11}#sv.s{opacity:1;transform:none}#sv.bad{color:var(--bad)}
 input[type=color]{height:40px;padding:2px}input[type=file]{padding:6px}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-</style></head><body><div id="app"></div><div id="t"></div><div id="sv" role="status" aria-live="polite"></div>
+#hd{position:relative;max-width:640px;margin:0 auto}#scene{display:block;width:100%;height:auto;aspect-ratio:16/3;border-radius:0 0 18px 18px;box-shadow:0 6px 18px #0003}
+#snd{position:absolute;top:8px;right:10px;min-height:36px;min-width:36px;padding:4px 10px;border-radius:18px;background:#0008;color:#fff;border:0;font-size:16px}
+#fxc{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:14}
+.cd{box-shadow:0 1px 0 #fff2 inset,0 8px 18px -12px #0007}.ov{backdrop-filter:blur(3px)}
+@media(prefers-reduced-motion:reduce){#fxc{display:none}}
+</style></head><body><header id="hd"><canvas id="scene" aria-hidden="true"></canvas><button id="snd" type="button" aria-label="Sound">🔊</button></header><main id="app"></main><canvas id="fxc" aria-hidden="true"></canvas><noscript>This game needs JavaScript.</noscript><div id="t"></div><div id="sv" role="status" aria-live="polite"></div>
 <script>
 'use strict';
 /* =====================================================================
@@ -97,6 +105,9 @@ const DATA = {
   },
   weather: {
     table: [['ty', .04], ['rain', .28], ['cloud', .5], ['sun', 1]],
+    /* Pacing: no typhoon in the first tyGrace days (time to build a cushion), tyCooldown days between typhoons,
+       and never more than maxBadRun rainy/typhoon days in a row. Overall odds are otherwise unchanged. */
+    tyGrace: 14, tyCooldown: 7, maxBadRun: 3,
     label: { sun: '☀️ Sunny', cloud: '⛅ Cloudy', rain: '🌧️ Rainy', ty: '🌀 Typhoon' },
     travelMult: { ty: 3, rain: 2 }
   },
@@ -344,23 +355,30 @@ const DATA = {
       shield: [[1, 2, '/^\\'], [1, 3, '| |'], [1, 4, '\\v/']]
     },
     palettes: {
-      rx: { h: ['\\|/', '[o_o]'], c: ['#e7ecf5', '#3a6fd8', '#d9423a', '#8a93a6'] },
-      zk: { h: ['_^_', '(=o=)'], c: ['#5aa866', '#3d7a47', '#b8903a', '#6b7280'] },
-      bb: { h: ['\\ /', '[>o<]'], c: ['#d8dde8', '#9a3a3a', '#e2b23a', '#6b7280'] },
-      nu: { h: ['\\|/', '[ooo]'], c: ['#e7ecf5', '#e1e4ec', '#3a6fd8', '#c9a63a'] },
-      fr: { h: ['\\\\|//', '[o_o]'], c: ['#f2f4f8', '#2f4fc4', '#d6a43a', '#6b7280'] },
-      sz: { h: ['_|_', '[(o)]'], c: ['#d1363a', '#a82a2e', '#ffd24a', '#6b7280'] },
-      sd: { h: ['(^)', '[o_o]'], c: ['#f2f4f8', '#3a6fd8', '#d9423a', '#c9a63a'] },
-      gm: { h: ['_^_', '[o.o]'], c: ['#e8ecf2', '#6b8fd6', '#c9484a', '#8a93a6'] },
-      ae: { h: ['_^_', '[o_o]'], c: ['#f2f4f8', '#3a6fd8', '#d9423a', '#8a93a6'] },
-      gf: { h: ['_=_', '[=o=]'], c: ['#3a62c4', '#2c4a9a', '#e2b23a', '#6b7280'] },
-      ex: { h: ['_^_', '[o_o]'], c: ['#e7ecf5', '#2f6fd0', '#d8a43a', '#6b7280'] },
-      rz: { h: ['_^_', '(=o=)'], c: ['#5aa866', '#3d7a47', '#b8903a', '#6b7280'] },
-      uc: { h: ['_|_', '[o_o]'], c: ['#f2f4f8', '#e1e4ec', '#d9423a', '#c9a63a'] },
-      m3: { h: ['_^_', '[o_o]'], c: ['#e7ecf5', '#3a6fd8', '#d9423a', '#d6a43a'] },
-      pg: { h: ['_|_', '[o_o]'], c: ['#f2f4f8', '#2f4fc4', '#d9423a', '#ffd24a'] }
+      rx: { h: ['_^_', '[o_o]'], c: ['#eef1f6', '#2f5fc4', '#d63a34', '#8b95a8'] },
+      m3: { h: ['_^_', '[o_o]'], c: ['#eef1f6', '#2f5fc4', '#d63a34', '#8b95a8'] },
+      pg: { h: ['_^_', '[o_o]'], c: ['#f4f6fa', '#2a56bd', '#d63a34', '#a9b2c2'] },
+      sd: { h: ['_^_', '[o_o]'], c: ['#f2f4f8', '#2f5fc4', '#d63a34', '#8b95a8'] },
+      zk: { h: ['_^_', '[o_o]'], c: ['#79ad90', '#3a5a48', '#2d4636', '#1c2024'] },
+      rz: { h: ['_^_', '[o_o]'], c: ['#86b99a', '#3f6150', '#2d4636', '#1c2024'] },
+      gm: { h: ['_^_', '[o_o]'], c: ['#e6edf2', '#d9442c', '#8fa5b8', '#6b7d92'] },
+      bb: { h: ['_^_', '[o_o]'], c: ['#e9edf3', '#3a5fb5', '#c83a3a', '#6b7280'] },
+      nu: { h: ['_^_', '[o_o]'], c: ['#f0f2f7', '#2b4a9a', '#d9423a', '#9aa3b2'] },
+      fr: { h: ['_^_', '[o_o]'], c: ['#f1f3f8', '#2a47a8', '#c93a3a', '#464e5e'] },
+      sz: { h: ['_^_', '[o_o]'], c: ['#c9302c', '#a5252a', '#ffd24a', '#4b5260'] },
+      ae: { h: ['_^_', '[o_o]'], c: ['#f2f4f8', '#2d52b8', '#d83a3a', '#7b8494'] },
+      gf: { h: ['_^_', '[o_o]'], c: ['#3f62c4', '#2c4a9a', '#e2b23a', '#2f3a54'] },
+      ex: { h: ['_^_', '[o_o]'], c: ['#e9edf3', '#2c63b5', '#c8372f', '#5c667a'] },
+      uc: { h: ['_^_', '[o_o]'], c: ['#f4f6fa', '#3b5faf', '#d33a3a', '#caa43c'] }
     },
-    finishCss: { 'Straight build': 'opacity:.8;', 'Marker detailed': '', 'Hand-painted': 'filter:saturate(1.2);', Airbrushed: 'filter:saturate(1.35);text-shadow:0 0 6px currentColor;', Weathered: 'filter:grayscale(.45) brightness(.85);' }
+    finishCss: { 'Straight build': 'filter:saturate(.8) contrast(.95);', 'Marker detailed': '', 'Hand-painted': 'filter:saturate(1.2);', Airbrushed: 'filter:saturate(1.3) contrast(1.06);', Weathered: 'filter:grayscale(.35) brightness(.88);' },
+    /* silhouette per kit: h = head type, wing, sp = spiked shoulder, wide, sd = chibi proportions. Detail level comes from the grade. */
+    looks: { rx: { h: 'vfin', sc: 2, fc: 2 }, zk: { h: 'mono', sc: 0, fc: 0, bd: 'zaku' }, bb: { h: 'horn', sc: 0, fc: 0 }, nu: { h: 'vfin', tc: 0 }, fr: { h: 'vfin', wing: 1, sc: 0 }, sz: { h: 'horn', sp: 1, wide: 1 }, sd: { h: 'vfin', sd: 1, sc: 2, fc: 2 }, gm: { h: 'gm' }, ae: { h: 'vfin', sc: 0 }, gf: { h: 'mono', sc: 1, fc: 1, bd: 'zaku' }, ex: { h: 'vfin', sc: 0 }, rz: { h: 'mono', sc: 0, fc: 0, bd: 'zaku' }, uc: { h: 'uni', sc: 0 }, m3: { h: 'vfin', sc: 2, fc: 2 }, pg: { h: 'vfin', sc: 2, fc: 2 } },
+    detail: { SD: 0, HG: 1, RG: 2, MG: 3, PG: 4 },
+    /* accessories per kit: pk = backpack, wp = weapon, sh = shield or arm gear. Kitbashing swaps these (and the head) between kits. */
+    acc: { rx: ['saber', 'rifle', 'rx'], zk: ['zaku', 'mg', 'zshield'], bb: ['tail', 'mace', 'knife'], nu: ['fin', 'rifle', 'nu'], fr: ['wing', 'rifle2', 'beam'], sz: ['vern', 'shotgun', 'beam'], sd: ['saber', 'rifle', 'rx'], gm: ['hilt', 'spray', 'gm'], ae: ['bits', 'rifle', 'ae'], gf: ['zaku', 'whip', 'zshield'], ex: ['gnd', 'gnsword', 'gnshield'], rz: ['zaku', 'mg', 'zshield'], uc: ['saber', 'bazooka', 'beam'], m3: ['saber', 'rifle', 'rx'], pg: ['saber', 'rifle', 'rx'] },
+    poses: { stand: { n: 'Standing', wa: -58, aL: 4, aR: 4, lL: 0, lR: 0, t: 0, hd: 0 }, aim: { n: 'Aiming', wa: -42, aL: 12, aR: 55, lL: 6, lR: -4, t: 0, hd: -4 }, salute: { n: 'Salute', wa: 62, aL: 4, aR: 122, lL: 3, lR: -3, t: 0, hd: 0 }, charge: { n: 'Charge', wa: -40, aL: 38, aR: 52, lL: -14, lR: 20, t: -7, hd: 4 }, victory: { n: 'Victory', wa: 62, aL: 128, aR: 128, lL: 7, lR: -7, t: 0, hd: -3 } },
+    slots: { head: 'Head', pack: 'Backpack', wp: 'Weapon', sh: 'Shield or arm gear' }
   },
   /* ----- The "Do" menu. loc may be an array. c/d/name/h may be values or fn(g).
          ok(g) returns a reason string when blocked. fx = declarative effects; run(g) = custom logic. */
@@ -394,6 +412,34 @@ const DATA = {
   /* Self-hosting: paste your Cloudflare Worker URL here to enable AI chat and comments outside claude.ai */
   aiProxy: 'https://mml1-ai.ymanrique2002.workers.dev/',
   projectCap: 2,
+  /* Character creator: option lists and palettes. A look is { skin, hair, hairc, eyec, face, build, top, topc, bot, botc, shoe, acc[] } of indexes. */
+  chr: {
+    pal: { skin: ['#fbe3cf', '#f1c9a5', '#d9a679', '#b27a4f', '#8a5a3a', '#5e3b25'], hairc: ['#1b1b22', '#4a2f20', '#7b4a2a', '#d9b24a', '#a8321e', '#2f5ea8', '#e86aa0', '#aab0bb'], eyec: ['#2b1a12', '#3a5a8a', '#2f7a4f', '#7a4a8a'],
+      topc: ['#d6403a', '#2457d6', '#2f9e5b', '#f2c230', '#7a4aa8', '#222733', '#f4f4f8', '#ee7aa8'], botc: ['#2c4a7a', '#222733', '#6b7280', '#7a5a3a', '#f4f4f8', '#a8321e'], shoe: ['#f4f4f8', '#222733', '#d6403a', '#3a6fd8'] },
+    opt: { hair: ['Short', 'Spiky', 'Long', 'Bob', 'Ponytail', 'Curly', 'Bun', 'Buzz cut'], face: ['Smile', 'Grin', 'Calm', 'Wink'], build: ['Slim', 'Average', 'Broad'], top: ['T-shirt', 'Hoodie', 'Polo', 'Uniform', 'Jacket', 'Tank top'], bot: ['Jeans', 'Shorts', 'Skirt', 'Slacks', 'Joggers'], shoe: ['White sneakers', 'Black sneakers', 'Red sneakers', 'Tsinelas'], acc: ['Glasses', 'Cap', 'Headphones', 'Earrings', 'Headband', 'ID lanyard'] },
+    cats: [['skin', 'Skin tone', 'sw'], ['hair', 'Hairstyle', 'tx'], ['hairc', 'Hair color', 'sw'], ['eyec', 'Eye color', 'sw'], ['face', 'Expression', 'tx'], ['build', 'Build', 'tx'], ['top', 'Top', 'tx'], ['topc', 'Top color', 'sw'], ['bot', 'Bottom', 'tx'], ['botc', 'Bottom color', 'sw'], ['shoe', 'Shoes', 'tx'], ['acc', 'Accessories', 'multi']],
+    def: { skin: 1, hair: 0, hairc: 0, eyec: 0, face: 0, build: 1, top: 0, topc: 1, bot: 0, botc: 0, shoe: 0, acc: [] }
+  },
+  /* Rooms: rent is weekly (scaled by cost of living). Comfort from furniture gives a small daily fun boost. */
+  rooms: {
+    family: { name: 'Family home room', rent: 0, slots: 4, wall: '#d8c8a4', floor: '#a9835a', desc: 'Free, but cramped.' },
+    dorm: { name: 'Dorm bed space', rent: 500, slots: 6, wall: '#c9d3e6', floor: '#8c93a3', desc: 'Near campus, shared walls.' },
+    apt: { name: 'Studio apartment', rent: 1400, slots: 9, wall: '#e6dfd2', floor: '#7d6a58', desc: 'Your own place. Roomy.' }
+  },
+  walls: [['Cream', '#e6dfd2'], ['Sky', '#bcd6ee'], ['Sage', '#bcd3b8'], ['Rose', '#e8c3c8'], ['Midnight', '#34405e']],
+  decor: {
+    bed: { n: 'Foam bed', icon: '🛏️', p: 900, c: 3 }, desk: { n: 'Study desk', icon: '🪑', p: 700, c: 1 }, lamp: { n: 'Desk lamp', icon: '💡', p: 250, c: 1 },
+    poster: { n: 'Anime poster', icon: '🖼️', p: 150, c: 1 }, plant: { n: 'Potted plant', icon: '🪴', p: 200, c: 1 }, rug: { n: 'Floor rug', icon: '🟥', p: 350, c: 1 },
+    fan: { n: 'Ceiling fan', icon: '🌀', p: 1200, c: 2 }, tv: { n: 'TV and console', icon: '📺', p: 2500, c: 2 }, shelf: { n: 'Display shelf (shows your gunpla)', icon: '🤖', p: 800, c: 1 }
+  },
+  /* Consultations: a temporary per-milestone buff. When a milestone is graded, each skill still below its
+     threshold is treated as closer to it by the buff amount (it can only close a gap, never exceed it), and
+     the session adds a little effort. The buff is cleared once the milestone is graded. */
+  consult: {
+    cap: .25,
+    adviser: { h: 1, e: 3, buff: .08, profBonus: .07, ef: 6 },
+    tutor: { h: 2, e: 6, buff: .15, cost: 250, ef: 10, skill: .5 }
+  },
   /* Thesis thresholds are scaled per course (a Nursing thesis needs less coding than a CS one). */
   thesisScale: { 'BS Computer Science': { int: .9, code: 1.1, des: .8 }, 'BS Nursing': { int: 1.05, code: .55, des: .7 }, 'BS Accountancy': { int: 1.1, code: .65, des: .6 }, 'BS Education': { code: .55, des: .9 }, 'BS Criminology': { int: .95, code: .55, des: .6 }, 'BS Tourism': { int: .9, code: .5, des: 1 } },
   /* Projects: milestones are evaluated on the Monday that starts week (start + due). Each needs enough effort
@@ -470,6 +516,7 @@ const DATA = {
     { id: 'hobby-shop', loc: 'mall', name: 'Browse the hobby shop', h: 1, run: g => g.hobby.openShop() },
     { id: 'repair', loc: 'mall', name: '🔧 Repair shop', h: 1, run: g => g.maint.openRepair() },
     { id: 'kit-new', loc: 'home', name: '🤖 Start a new kit', h: 0, ok: g => g.state.kit ? 'Finish your current kit first' : !g.state.stash.length ? 'Buy a kit at the hobby shop (mall)' : 0, run: g => g.hobby.openKitMenu() },
+    { id: 'room', loc: 'home', name: '🛋️ My room (rent, furnish, decorate)', h: 0, run: g => g.rooms.open() },
     { id: 'kit-skip', loc: 'home', name: '🤖 Skip current step', h: 0, ok: g => g.state.kit ? 0 : 'No kit on the bench', run: g => g.hobby.skipStep() },
     { id: 'kit-sell', loc: 'home', name: '🤖 Sell a finished model', h: 0, ok: g => g.state.shelf.length ? 0 : 'No finished models', run: g => g.hobby.openSellMenu() },
     { id: 'photo', loc: ['court', 'mall'], name: '📷 Go on a photo walk', h: 2, d: { e: -6, f: 16 }, ok: g => g.need('camera', 'You need a camera (mall)'), fx: { skill: { des: .8, cha: .2 } } },
@@ -480,6 +527,7 @@ const DATA = {
     { id: 'boardgame', loc: 'home', name: '🎲 Board game night with friends', h: 3, c: 60, d: { f: 28, s: 24 }, ok: g => g.state.ppl.length ? 0 : 'You need a friend first', run: g => g.state.ppl.forEach(q => { q.r = clamp(q.r + 3); }) },
     { id: 'design', loc: 'home', name: 'Practice design (Canva/Figma)', h: 2, d: { e: -8, f: 4 }, fx: { skill: { des: 1.2 } } },
     { id: 'pj-work', loc: ['home', 'school'], name: '📂 Work on a project', h: 0, ok: g => !g.state.pj.length ? 'No active project' : g.state.N.e < 15 ? 'Too tired' : 0, run: g => g.projects.openWork() },
+    { id: 'pj-consult', loc: ['home', 'school'], name: '🧑‍🏫 Consult adviser / tutor', h: 0, ok: g => !g.state.pj.length ? 'No active project' : 0, run: g => g.projects.openConsult() },
     { id: 'pj-find', loc: 'school', name: '📂 Find a project', h: 0, run: g => g.projects.openOffers() }
   ]
 };
@@ -520,7 +568,7 @@ class GameState {
       t: DATA.start.hour, m: DATA.start.cash, sav: 0, debt: 0,
       N: { ...DATA.start.needs }, K, prep: 20, hw: 0, sc: [], abs: 0, att: 0, sh: 0, xp: 0, rk: 0, rj: DATA.shift.startReliability,
       R: { ...DATA.start.rel }, loc: 'home', stash: [...DATA.start.stash], shelf: [], kit: null, mj: {}, rep: 0, built: 0, wins: 0,
-      ppl: [], club: null, fund: 0, wx: 'sun', inv: f.job === 'rider' ? ['bike'] : [], buddy: 0, fails: 0, hist: [], log: [], sick: 0,
+      ppl: [], club: null, fund: 0, wx: 'sun', tyLast: -99, badRun: 0, rm: { t: 'family', items: [], wall: null }, look: f.look || { ...DATA.chr.def, acc: [] }, inv: f.job === 'rider' ? ['bike'] : [], buddy: 0, fails: 0, hist: [], log: [], sick: 0,
       cond: {}, pf: { k: 'fair', n: 'Ma’am Reyes' }, dn: { k: 'fair', n: 'Dean Mercado' }, pj: [], pdone: [], ph: [], me: null, chats: {}, warns: 0, thesis: null, mk: { ev: null, phase: null, left: 0, fake: false, hist: [] }
     };
   }
@@ -530,7 +578,7 @@ class GameState {
     if (!DATA.cities[S.city]) S.city = 'Caloocan';
     const C0 = DATA.cities[S.city];
     S.sch = S.sch || C0.sc[0][0]; S.tu = S.tu ?? C0.sc[0][1]; S.col = S.col ?? C0.c;
-    S.ppl = S.ppl || []; S.club = S.club || null; S.fund = S.fund || 0; S.wx = S.wx || 'sun';
+    S.ppl = S.ppl || []; S.club = S.club || null; S.fund = S.fund || 0; S.wx = S.wx || 'sun'; S.tyLast = S.tyLast ?? -99; S.rm = S.rm || { t: 'family', items: [], wall: null }; S.look = S.look || { ...DATA.chr.def, acc: [] }; S.badRun = S.badRun || 0;
     for (const k of ['cook', 'code', 'mus', 'gun', 'des']) S.K[k] = S.K[k] ?? 5;
     S.stash = S.stash || ['zk']; S.shelf = S.shelf || []; S.kit = S.kit || null; S.mj = S.mj || {};
     S.rep = S.rep || 0; S.built = S.built || 0; S.wins = S.wins || 0;
@@ -580,8 +628,13 @@ class WorldManager extends Manager {
     return out;
   }
   rollWeather() {
-    const r = Math.random(), s = this.s;
-    s.wx = DATA.weather.table.find(([, p]) => r < p)[0];
+    const s = this.s, W = DATA.weather, d = this.g.time.dayIndex, r = Math.random();
+    let wx = W.table.find(([, p]) => r < p)[0];
+    if (wx === 'ty' && (d < W.tyGrace || d - (s.tyLast ?? -99) < W.tyCooldown)) wx = 'rain';
+    if ((wx === 'rain' || wx === 'ty') && (s.badRun || 0) >= W.maxBadRun) wx = 'cloud';
+    s.badRun = wx === 'rain' || wx === 'ty' ? (s.badRun || 0) + 1 : 0;
+    if (wx === 'ty') s.tyLast = d;
+    s.wx = wx;
     if (s.wx === 'ty') this.g.log('🌀 Typhoon! Classes and work are suspended.');
   }
   travelCost() {
@@ -663,7 +716,7 @@ class EconomyManager extends Manager {
   weekly(wk) {
     const s = this.s, E = DATA.economy, st = this.g.stats;
     const al = Math.round((E.baseAllowance + (s.tu > E.tuitionBonusAt ? E.tuitionBonus : 0) + s.R.nanay * E.nanayAllowance) * st.trait('allowMult', 1));
-    const bill = this.weeklyBill(), tu = wk % E.tuitionEveryWeeks === 0 ? s.tu : 0;
+    const bill = this.weeklyBill() + this.g.rooms.rent(), tu = wk % E.tuitionEveryWeeks === 0 ? s.tu : 0;
     const it = Math.round(s.debt * E.debtInterest), iv = Math.round(s.sav * st.trait('saveRate', .005));
     s.m += al; s.debt += it; s.sav += iv;
     const r = this.g.market.weekly(), hadFund = s.fund > 0;
@@ -882,6 +935,70 @@ class AcademicsManager extends Manager {
   }
 }
 
+class RoomManager extends Manager {
+  constructor(g) { super(g); g.bus.on('day:begin', () => { const s = this.s; if (s && s.rm && !s.over) s.N.f = Math.min(100, s.N.f + Math.min(6, Math.round(this.comfort() * .6))); }); }
+  get R() { return DATA.rooms[this.s.rm.t]; }
+  rent() { return this.s && this.s.rm ? Math.round(this.R.rent * (this.s.col || 1)) : 0; }
+  comfort() { return this.s.rm.items.reduce((a, id) => a + DATA.decor[id].c, 0); }
+  open() {
+    const g = this.g, s = this.s, R = this.R;
+    g.ui.showModal({ text: `🛋️ <b>${R.name}</b><br><small>${s.rm.items.length} of ${R.slots} slots used. Comfort ${this.comfort()}, worth about +${Math.min(6, Math.round(this.comfort() * .6))} fun each morning. Rent: ${this.rent() ? fmt(this.rent()) + ' per week' : 'free'}.</small>`, view: { kind: 'room' },
+      options: [{ label: '🛒 Furnish', run: () => this.shop() }, { label: '♻️ Remove an item', run: () => this.remove() }, { label: '🎨 Repaint walls (' + fmt(g.economy.dc(300)) + ')', run: () => this.paint() }, { label: '🏠 Rent or move', run: () => this.move() }, { label: '🎭 Pose or kitbash a model', run: () => this.display() }, { label: '👕 Wardrobe and hair', run: () => this.wardrobe() }, { label: 'Close' }] });
+  }
+  shop() {
+    const g = this.g, s = this.s, R = this.R, free = R.slots - s.rm.items.length;
+    g.ui.showModal({ text: 'Furnish your room', options: [...Object.entries(DATA.decor).filter(([k]) => !s.rm.items.includes(k)).map(([k, d]) => { const c = g.economy.dc(d.p), why = !free ? 'No free slot' : s.m < c ? 'Not enough cash' : 0; return { label: `${d.icon} ${d.n}, ${fmt(c)}${why ? ' 🔒 ' + why : ''}`, run: () => { if (why) return g.ui.toast(why); s.m -= c; s.rm.items.push(k); g.log(`🛋️ Bought ${d.n}.`); this.open(); } }; }), { label: 'Back', run: () => this.open() }] });
+  }
+  remove() {
+    const g = this.g, s = this.s;
+    g.ui.showModal({ text: 'Remove an item (sells back for half)', options: [...s.rm.items.map((k, i) => ({ label: `${DATA.decor[k].icon} ${DATA.decor[k].n}, +${fmt(Math.round(DATA.decor[k].p / 2))}`, run: () => { s.rm.items.splice(i, 1); s.m += Math.round(DATA.decor[k].p / 2); this.open(); } })), { label: 'Back', run: () => this.open() }] });
+  }
+  paint() {
+    const g = this.g, s = this.s, c = g.economy.dc(300);
+    g.ui.showModal({ text: 'Pick a wall color', options: [...DATA.walls.map(([n, h]) => ({ label: n, run: () => { if (s.m < c) return g.ui.toast('Not enough cash'); s.m -= c; s.rm.wall = h; this.open(); } })), { label: 'Back', run: () => this.open() }] });
+  }
+  wardrobe() {
+    const g = this.g, C = DATA.chr;
+    g.ui.showModal({ text: 'Wardrobe and hair', view: { kind: 'char' }, options: [...C.cats.filter(c => c[2] !== 'sw' || true).map(([k, n]) => ({ label: n, run: () => this.wardrobePick(k, n) })), { label: 'Back', run: () => this.open() }] });
+  }
+  wardrobePick(k, n) {
+    const g = this.g, s = this.s, C = DATA.chr, L = s.look, list = C.opt[k] || C.pal[k].map((c, i) => 'Color ' + (i + 1));
+    g.ui.showModal({ text: n, view: { kind: 'char' }, options: [...list.map((o, i) => ({ label: (k === 'acc' ? (L.acc.includes(i) ? '✅ ' : '⬜ ') : L[k] === i ? '✅ ' : '') + o, run: () => { if (k === 'acc') L.acc = L.acc.includes(i) ? L.acc.filter(x => x !== i) : [...L.acc, i]; else L[k] = i; this.wardrobePick(k, n); } })), { label: 'Back', run: () => this.wardrobe() }] });
+  }
+  display() {
+    const g = this.g, s = this.s;
+    if (!s.shelf.length) return g.ui.toast('Finish a kit first.');
+    g.ui.showModal({ text: 'Pick a finished model', options: [...s.shelf.map((k, i) => ({ label: `${k.n}, ${DATA.gunpla.poses[k.po || 'stand'].n}${k.kb && Object.keys(k.kb).length ? ', kitbashed' : ''}`, run: () => this.kitMenu(i) })), { label: 'Back', run: () => this.open() }] });
+  }
+  kitMenu(i) {
+    const k = this.s.shelf[i], D = DATA.gunpla;
+    this.g.ui.showModal({ text: `<b>${k.n}</b>`, view: { kind: 'shelfkit', kit: k.k, np: k.np, style: k.st, po: k.po, kb: k.kb, caption: `${D.poses[k.po || 'stand'].n}. Quality ${k.q}, ${k.st}` },
+      options: [{ label: '🎭 Change pose', run: () => this.pose(i) }, { label: '🔧 Kitbash a part', run: () => this.bash(i) }, { label: '↩️ Restore original parts', run: () => { k.kb = {}; this.kitMenu(i); } }, { label: 'Back', run: () => this.display() }] });
+  }
+  pose(i) {
+    const k = this.s.shelf[i];
+    this.g.ui.showModal({ text: 'Choose a pose', options: [...Object.entries(DATA.gunpla.poses).map(([id, p]) => ({ label: p.n, run: () => { k.po = id; this.kitMenu(i); } })), { label: 'Back', run: () => this.kitMenu(i) }] });
+  }
+  bash(i) {
+    this.g.ui.showModal({ text: 'Which part do you want to swap? You can use parts from any kit you own or have built.', options: [...Object.entries(DATA.gunpla.slots).map(([sl, n]) => ({ label: n, run: () => this.donor(i, sl) })), { label: 'Back', run: () => this.kitMenu(i) }] });
+  }
+  donor(i, sl) {
+    const g = this.g, s = this.s, k = s.shelf[i], K = DATA.gunpla.kits, own = [...new Set([...s.shelf.map(x => x.k), ...s.stash, ...(s.kit ? [s.kit.k] : [])])].filter(x => x !== k.k);
+    if (!own.length) return g.ui.toast('You need parts from a second kit. Build or buy another.'), this.kitMenu(i);
+    g.ui.showModal({ text: `Use the ${DATA.gunpla.slots[sl].toLowerCase()} from:`, options: [...own.map(d => ({ label: K[d].name, run: () => {
+      k.kb = k.kb || {}; k.kb[sl] = d; k.ka = k.ka || {};
+      if (!k.ka[sl] && Object.keys(k.ka).length < 3) { k.ka[sl] = 1; k.q = Math.min(100, k.q + 2); s.K.gun += .4; g.log(`🔧 Kitbashed ${k.n}: the ${DATA.gunpla.slots[sl].toLowerCase()} from ${K[d].name}. +2 quality for creativity.`); }
+      this.kitMenu(i); } })), { label: 'Back', run: () => this.bash(i) }] });
+  }
+  move() {
+    const g = this.g, s = this.s;
+    g.ui.showModal({ text: 'Where do you want to live? Moving costs one week of rent as a deposit, and you keep your furniture.', options: [...Object.entries(DATA.rooms).filter(([k]) => k !== s.rm.t).map(([k, r]) => {
+      const dep = Math.round(r.rent * (s.col || 1)), why = s.rm.items.length > r.slots ? `Too small for ${s.rm.items.length} items` : s.m < dep ? 'Not enough cash' : 0;
+      return { label: `${r.name}: ${r.rent ? fmt(dep) + '/week' : 'free'}, ${r.slots} slots${why ? ' 🔒 ' + why : ''}`, run: () => { if (why) return g.ui.toast(why); s.m -= dep; s.rm.t = k; s.rm.wall = null; g.log(`🏠 You moved to the ${r.name}.`); this.open(); } };
+    }), { label: 'Back', run: () => this.open() }] });
+  }
+}
+
 class ProjectManager extends Manager {
   constructor(g) { super(g); g.bus.on('day:close', c => this.weekly(c)); g.bus.on('semester:start', () => this.ensureThesis()); }
   def(p) { return DATA.projects[p.id]; }
@@ -910,7 +1027,7 @@ class ProjectManager extends Manager {
     const g = this.g, d = DATA.projects[k], p = { id: k, sw: sw || g.time.week, i: 0, ef: 0, q: [], st: 0, ext: 0, dues: dues || this.dues(k) };
     this.s.pj.push(p);
     g.log(`📂 Started: ${d.name}`);
-    g.ui.showModal({ text: `${d.icon} <b>${d.name}</b> (${d.kind})<br><small>${d.desc}<br>${d.ms.map((m, i) => `${i + 1}. ${m.name}: week ${p.sw + p.dues[i]}`).join('<br>')}<br>Use "Work on a project" at home or school. Coding and design tasks need a working laptop at home; the school lab does not.</small>`, options: [{ label: 'Let’s go' }] });
+    g.ui.showModal({ text: `${d.icon} <b>${d.name}</b> (${d.kind})<br><small>${d.desc}<br>${d.ms.map((m, i) => `${i + 1}. ${m.name}: week ${p.sw + p.dues[i]}`).join('<br>')}<br>Use "Work on a project" at home or school. Coding and design tasks need a working laptop at home; the school lab does not. Stuck on a threshold? \"Consult adviser / tutor\" gives a temporary boost for the current milestone.</small>`, options: [{ label: 'Let’s go' }] });
   }
   ensureThesis() {
     const s = this.s, t = this.g.time, d = DATA.projects.thesis;
@@ -928,20 +1045,20 @@ class ProjectManager extends Manager {
   }
   resolve(p) {
     const g = this.g, s = this.s, d = this.def(p), m = d.ms[p.i], nd = this.need(p), P = g.academics.P;
-    const rs = Object.keys(nd).map(k => ({ k, v: s.K[k] / nd[k] })), cap = x => Math.min(1.1, x) / 1.1;
+    const cb = p.cb || 0, rs = Object.keys(nd).map(k => { const raw = s.K[k] / nd[k]; return { k, raw, v: raw < 1 ? Math.min(1, raw + cb) : raw }; }), cap = x => Math.min(1.1, x) / 1.1;
     const sk = .6 * cap(Math.min(...rs.map(r => r.v))) + .4 * cap(avg(rs.map(r => r.v)));
     let q = 100 * cap(p.ef / m.effort) * (.45 + .55 * sk) + rnd(-3, 3) + P.proj;
     if (rs.some(r => r.v < .6)) q = Math.min(q, 54);
     q = Math.round(clamp(q));
     if (q < 55 && p.ext < P.ext) { p.ext++; p.dues[p.i]++; return g.log(`🕐 ${s.pf.n} granted an extension on "${m.name}".`); }
     const tag = q >= 85 ? 'Excellent' : q >= 70 ? 'Good' : q >= 55 ? 'Passable' : 'Failed';
-    const gaps = rs.filter(r => r.v < 1).map(r => `${DATA.skills[r.k][0]} ${Math.floor(s.K[r.k])}/${nd[r.k]}`).join(', ');
+    const gaps = rs.filter(r => r.raw < 1).map(r => `${DATA.skills[r.k][0]} ${Math.floor(s.K[r.k])}/${nd[r.k]}`).join(', '), helped = cb && rs.some(r => r.raw < 1);
     p.q.push(q); if (d.graded) s.sc.push(q);
     if (q < 55) p.st++;
     g.log(`📂 ${d.name}, ${m.name}: ${q}% (${tag})`);
-    g.ui.showModal({ text: `${d.icon} <b>${d.name}</b>: ${m.name}<br>Result: <b>${q}% (${tag})</b>, effort ${Math.round(100 * p.ef / m.effort)}%${gaps ? `<br><small>Skills short: ${gaps}</small>` : ''}`, options: [{ label: 'OK' }] });
+    g.ui.showModal({ text: `${d.icon} <b>${d.name}</b>: ${m.name}<br>Result: <b>${q}% (${tag})</b>, effort ${Math.round(100 * p.ef / m.effort)}%${gaps ? `<br><small>Skills short: ${gaps}${helped ? '. Your adviser/tutor guidance helped cover some of the gap.' : ''}</small>` : ''}`, options: [{ label: 'OK' }] });
     if (p.st >= d.lives) return this.fail(p, 'Too many failed milestones.');
-    p.ef = Math.min(15, Math.max(0, p.ef - m.effort)); p.i++;
+    p.ef = Math.min(15, Math.max(0, p.ef - m.effort)); p.i++; p.cb = 0; p.cu = {};
     if (p.i >= d.ms.length) this.finish(p);
   }
   finish(p) {
@@ -964,6 +1081,37 @@ class ProjectManager extends Manager {
     if (d.span) { s.thesis = { q: 0, fail: 1 }; s.fails++; g.academics.dismissCheck(); }
   }
   boost(n) { const p = this.s.pj[0]; if (p) p.ef = Math.min(p.ef + n, 1.3 * this.def(p).ms[p.i].effort); }
+  openConsult() {
+    const s = this.s;
+    if (s.pj.length === 1) return this.consultMenu(s.pj[0]);
+    this.g.ui.showModal({ text: 'Which project do you need help with?', options: [...s.pj.map(p => ({ label: `${this.def(p).icon} ${this.def(p).name}: ${this.def(p).ms[p.i].name}`, run: () => this.consultMenu(p) })), { label: 'Never mind' }] });
+  }
+  consultMenu(p) {
+    const g = this.g, s = this.s, t = g.time, d = this.def(p), C = DATA.consult, u = p.cu || {};
+    const adv = u.adviser ? 'Used this milestone' : s.loc !== 'school' ? 'Visit school' : s.wx === 'ty' ? 'Classes are suspended' : t.weekday > 4 ? 'Adviser is away on weekends' : t.hour < 8 || t.hour > 16 ? 'Office hours: 8 AM to 5 PM' : s.N.e < 10 ? 'Too tired' : 0;
+    const tut = u.tutor ? 'Used this milestone' : s.m < C.tutor.cost ? `Needs ${fmt(C.tutor.cost)}` : s.N.e < 10 ? 'Too tired' : 0;
+    const note = p.cb ? `<br><small>Current guidance: +${Math.round(p.cb * 100)}% toward weak skills (cleared when this milestone is graded).</small>` : '';
+    g.ui.showModal({ text: `${d.icon} <b>${d.name}</b>: ${d.ms[p.i].name}<br><small>Get help for this milestone. Guidance covers part of a skill gap when the milestone is graded and adds some effort. Each option works once per milestone.</small>${note}`,
+      options: [
+        { label: `🧑‍🏫 Adviser consult, free, 1h${adv ? ' 🔒 ' + adv : ''}`, run: () => adv ? g.ui.toast(adv) : this.consult(p, 'adviser') },
+        { label: `📚 Hire a tutor, ${fmt(C.tutor.cost)}, 2h${tut ? ' 🔒 ' + tut : ''}`, run: () => tut ? g.ui.toast(tut) : this.consult(p, 'tutor') },
+        { label: 'Never mind' }] });
+  }
+  consult(p, kind) {
+    const g = this.g, s = this.s, C = DATA.consult, c = C[kind], m = this.def(p).ms[p.i], nd = this.need(p);
+    const b = kind === 'adviser' ? c.buff + c.profBonus * Math.min(100, Math.max(0, s.R.prof)) / 100 : c.buff;
+    if (c.cost) g.economy.spend(c.cost);
+    p.cb = Math.min(C.cap, (p.cb || 0) + b); p.cu = { ...(p.cu || {}), [kind]: 1 };
+    p.ef = Math.min(p.ef + c.ef, 1.3 * m.effort);
+    let extra = '';
+    if (c.skill) {
+      const w = Object.keys(nd).reduce((a, k) => s.K[k] / nd[k] < s.K[a] / nd[a] ? k : a);
+      s.K[w] += c.skill; extra = `, and your ${DATA.skills[w][0]} improved a bit`;
+    }
+    s.N.e -= c.e;
+    g.log(`${kind === 'adviser' ? '🧑‍🏫 Your adviser reviewed your work' : '📚 A tutor coached you'}: +${Math.round(b * 100)}% guidance and +${c.ef} effort${extra}.`);
+    for (let i = 0; i < c.h; i++) g.time.tick();
+  }
   openWork() {
     const s = this.s;
     if (s.pj.length === 1) return this.openFocus(s.pj[0]);
@@ -1333,7 +1481,7 @@ class HobbySystem extends Manager {
       this.session = { type: 'timing', stage: st, n, w: c.w(kd, g), sp: c.sp(kd), i: 0, sc: 0, t0: now, c: this.gate(0, n), msg: '' };
       this.fsm.go('TIMING'); g.bus.emit('minigame:start');
     } else if (st.type === 'assembly') {
-      const steps = DATA.gunpla.partOrder.slice(0, Math.min(9, 5 + kd));
+      const steps = DATA.gunpla.partOrder.slice(0, 9);
       this.session = { type: 'asm', stage: st, steps, pos: 0, err: 0, last: '', tray: shuffle([...steps, ...DATA.gunpla.decoys]) };
       this.fsm.go('ASSEMBLY'); g.bus.emit('minigame:start');
     } else if (st.type === 'paint') {
@@ -1403,7 +1551,7 @@ class HobbySystem extends Manager {
     if (kit.st >= DATA.gunpla.stages.length) this.finishKit();
   }
   finishKit() {
-    const s = this.s, kit = s.kit, K = DATA.gunpla.kits[kit.k], q = clamp(Math.round(kit.q + rnd(-2, 3))), n = Math.min(9, 5 + K.diff);
+    const s = this.s, kit = s.kit, K = DATA.gunpla.kits[kit.k], q = clamp(Math.round(kit.q + rnd(-2, 3))), n = 9;
     s.shelf.push({ k: kit.k, n: K.name, q, st: kit.sty, np: n });
     s.kit = null; s.built++; s.N.f += 20;
     this.g.log(`🎉 Finished ${K.name}! Quality ${q} (${kit.sty}).`);
@@ -1535,7 +1683,7 @@ class GameEngine {
     this.economy = new EconomyManager(this);
     this.market = new MarketManager(this);
     this.maint = new MaintenanceManager(this);
-    this.projects = new ProjectManager(this);
+    this.projects = new ProjectManager(this); this.rooms = new RoomManager(this);
     this.academics = new AcademicsManager(this);
     this.career = new CareerManager(this);
     this.social = new SocialManager(this);
@@ -1630,6 +1778,7 @@ class GameEngine {
 }
 
 /* ---------------------------------------------------------------- 8. RENDERER (DOM only) */
+const hexMix = (h, to, t) => { const a = n => [1, 3, 5].map(i => parseInt(n.slice(i, i + 2), 16)), A = a(h), B = a(to); return '#' + A.map((v, i) => Math.round(v + (B[i] - v) * t).toString(16).padStart(2, '0')).join(''); };
 class Renderer {
   constructor(g, root) {
     this.g = g; this.root = root; this.raf = 0; this.toastTimer = 0;
@@ -1643,7 +1792,7 @@ class Renderer {
   toast(m) { const e = this.$('#t'); e.textContent = m; e.className = 's'; clearTimeout(this.toastTimer); this.toastTimer = setTimeout(() => { e.className = ''; }, 1800); }
   /* ---- input -> commands ---- */
   onClick(e) {
-    const t = e.target.closest('[data-x],[data-tab],[data-a],[data-m],[data-o],[data-p],[data-g],#go,#nw');
+    const t = e.target.closest('[data-x],[data-tab],[data-a],[data-m],[data-o],[data-p],[data-g],[data-cc],#go,#nw');
     if (!t) return;
     const D = t.dataset, g = this.g;
     if (D.x) g.dispatch({ type: 'ph', x: D.x, f: D.x === 'save' ? this.readMe() : D.x.startsWith('send') ? { t: (this.$('#cm') || {}).value } : D.x === 'ksend' ? { t: (this.$('#kc') || {}).value } : null });
@@ -1652,6 +1801,7 @@ class Renderer {
     else if (D.m) g.dispatch({ type: 'bank', op: D.m });
     else if (D.o != null) g.dispatch({ type: 'option', i: +D.o });
     else if (D.p != null) g.dispatch({ type: 'hang', i: +D.p });
+    else if (D.cc != null) this.ccTap(D.cc);
     else if (D.g === 'h') {
       const r = g.dispatch({ type: 'strike' });
       if (r && !r.done) { const el = this.$('#rr'); if (el) el.textContent = r.msg; }
@@ -1667,26 +1817,172 @@ class Renderer {
     return {
       name: this.$('#nm').value, course: this.$('#co').value, job: this.$('#jb').value, city: this.$('#ci').value,
       school: this.$('#sc').value, bg: this.$('#bg').value,
-      traits: [...document.querySelectorAll('.tr:checked')].map(x => x.value)
+      traits: [...document.querySelectorAll('.tr:checked')].map(x => x.value), look: this.cc
     };
   }
   /* ---- helpers ---- */
   bar(v, c) { return `<div class="br"><i style="width:${clamp(v)}%;background:${c || (v > 50 ? 'var(--ok)' : v > 25 ? 'var(--wn)' : 'var(--bad)')}"></i></div>`; }
   esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
-  model(k, ps, sty, fl, sm) {
-    const D = DATA.gunpla, G = Array.from({ length: 8 }, () => Array(24).fill(null)), P = D.palettes[k], W = sty === 'Weathered';
-    ps.forEach(id => {
-      const segs = id === 'head' ? [[11, 0, P.h[0]], [10, 1, P.h[1]]] : D.layout[id];
-      segs.forEach(([x, y, t]) => [...t].forEach((c, i) => { G[y][x + i] = { c: W && c === '#' && (x + i + y) % 3 === 0 ? '%' : c, k: id }; }));
-    });
-    const esc = { '>': '&gt;', '<': '&lt;', '&': '&amp;' };
-    return `<pre class="mdl${sm ? ' sm' : ''}" style="${D.finishCss[sty] || ''}">${G.map(r => r.map(c => c ? `<span class="${c.k === fl ? 'fl' : ''}" style="color:${P.c[D.colorIdx[c.k]]}">${esc[c.c] || c.c}</span>` : ' ').join('')).join('\n')}</pre>`;
+  model(k, ps, sty, fl, sm, o) {
+    return `<svg class="mdl3d${sm ? ' sm' : ''}" viewBox="-26 -26 172 180" style="${DATA.gunpla.finishCss[sty] || ''}">${this.mini(k, ps, sty, fl, 'm' + (this.mid = (this.mid || 0) + 1), o)}</svg>`;
   }
+  /* Vector gunpla: shaded plastic, panel lines, per-kit silhouette, backpack, weapon and shield, poses and kitbashed parts */
+  mini(k, ps, sty, fl, id, o = {}) {
+    const D = DATA.gunpla, kb = o.kb || {}, po = D.poses[o.po] || D.poses.stand, lv = D.detail[D.kits[k].grade] || 1, Y = '#e8b630', has = x => ps.includes(x);
+    const L = D.looks[k] || {}, kh = kb.head || k, LH = D.looks[kh] || {}, A = x => D.acc[x];
+    const ln = 'stroke="#0a0f1c" stroke-opacity="' + (sty === 'Straight build' ? .35 : .65) + '" stroke-width="' + (sty === 'Marker detailed' || sty === 'Hand-painted' ? .9 : .55) + '" stroke-linejoin="round"';
+    const used = [...new Set([k, kb.head, kb.pack, kb.wp, kb.sh].filter(Boolean))];
+    const defs = used.map(kx => D.palettes[kx].c.map((c, i) => `<linearGradient id="${id}${kx}${i}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${hexMix(c, '#fff', .38)}"/><stop offset=".5" stop-color="${c}"/><stop offset="1" stop-color="${hexMix(c, '#000', .42)}"/></linearGradient>`).join('')).join('');
+    const F = kx => i => `url(#${id}${kx}${i})`, f = F(k);
+    const W = (x, g) => `<g class="${fl === x ? 'pfl' : ''}">${g}</g>`, M = g => `<g transform="translate(120 0) scale(-1 1)">${g}</g>`, S = g => g + M(g), R = (a, x, y, g) => a ? `<g transform="rotate(${a} ${x} ${y})">${g}</g>` : g;
+    const x1 = lv >= 2 ? `<path d="M48 90 h10 M48 118 h12" ${ln} fill="none"/>` : '', x3 = lv >= 3 ? `<rect x="50" y="96" width="6" height="6" fill="${Y}" ${ln}/>` : '', x4 = lv >= 4 ? `<path d="M46 114 h14 M46 122 h14" ${ln} fill="none"/>` : '';
+    const leg = () => `<path d="M46 84 L60 84 L59 106 L47 106Z" fill="${f(0)}" ${ln}/><circle cx="53" cy="107" r="4.6" fill="${f(3)}" ${ln}/>${L.bd === 'zaku' ? `<path d="M43 110 L61 110 L65 131 L39 133Z" fill="${f(0)}" ${ln}/><path d="M46 118 L58 118 L60 130 L44 130Z" fill="${f(1)}" ${ln}/>` : `<path d="M44 110 L61 110 L62 129 L44 129Z" fill="${f(0)}" ${ln}/><path d="M43 129 L62 129 L63 136 L42 136Z" fill="${f(2)}" ${ln}/><path d="M49 112 v14" ${ln} fill="none"/>`}<path d="M40 136 L63 136 L67 146 L37 146Z" fill="${f(L.fc ?? 1)}" ${ln}/><path d="M38 144 L66 144 L67 146 L37 146Z" fill="${f(3)}"/>${x1}${x3}${x4}`;
+    const arm = () => `<path d="M${L.wide ? 22 : 26} 31 L43 31 L43 48 L${L.wide ? 20 : 24} 48Z" fill="${f(L.sc ?? 1)}" ${ln}/>${L.sp ? `<path d="M30 31 L25 17 L37 31Z" fill="${f(3)}" ${ln}/>` : ''}<path d="M26 40 h16" stroke="${D.palettes[k].c[2]}" stroke-width="2.2"/><path d="M29 49 L41 49 L40 64 L30 64Z" fill="${f(0)}" ${ln}/><circle cx="35" cy="66" r="4.2" fill="${f(3)}" ${ln}/><path d="M28 69 L42 69 L40 86 L30 86Z" fill="${f(0)}" ${ln}/><path d="M29 77 h12" stroke="${D.palettes[k].c[2]}" stroke-width="2.4"/><circle cx="35" cy="90" r="4.5" fill="#1c2024" ${ln}/>${lv >= 3 ? `<circle cx="35" cy="66" r="1.6" fill="${Y}"/>` : ''}`;
+    const head = () => {
+      const g = F(kh);
+      let h = '';
+      if (LH.h === 'vfin') h += `<path d="M60 17 L47 1 L52 1 L60 11 L68 1 L73 1Z" fill="${Y}" ${ln}/>`;
+      if (LH.h === 'horn') h += `<path d="M52 16 L46 3 L55 13Z M68 16 L74 3 L65 13Z" fill="${Y}" ${ln}/>`;
+      if (LH.h === 'uni') h += `<path d="M60 15 L57 -2 L63 -2Z" fill="${Y}" ${ln}/><path d="M50 15 L47 6 L55 13Z M70 15 L73 6 L65 13Z" fill="${g(0)}" ${ln}/>`;
+      h += `<path d="M49 29 L47 15 Q60 4 73 15 L71 29Z" fill="${g(0)}" ${ln}/><path d="M52 29 L52 21 L68 21 L68 29Z" fill="#dfe4ee" ${ln}/><path d="M55 25 h10 M55 27 h10" ${ln} fill="none"/>`;
+      h += LH.h === 'mono' ? `<rect x="50" y="15.5" width="20" height="6" rx="3" fill="#1c2024"/><ellipse cx="60" cy="18.5" rx="6" ry="2.2" fill="#ff5f95"/><ellipse cx="60" cy="18.5" rx="2.4" ry="1" fill="#fff" opacity=".8"/><path d="M46 27 h28 v5 h-28Z" fill="${g(1)}" ${ln}/><path d="M50 27 v5 M55 27 v5 M60 27 v5 M65 27 v5 M70 27 v5" ${ln} fill="none"/><path d="M71 12 L76 6" stroke="#1c2024" stroke-width="1.6"/>` : LH.h === 'gm' ? `<rect x="51" y="16" width="18" height="5.5" rx="1.5" fill="#33505e"/><rect x="53" y="17" width="6" height="1.5" fill="#9fe6ff" opacity=".85"/><path d="M60 5 v8" stroke="${g(2)}" stroke-width="2"/><path d="M49 13 h22" ${ln} fill="none"/>` : `<rect x="52.5" y="17.5" width="6" height="2.6" fill="#35e0ff"/><rect x="61.5" y="17.5" width="6" height="2.6" fill="#35e0ff"/><circle cx="50.5" cy="12.5" r="1.2" fill="${Y}"/><circle cx="69.5" cy="12.5" r="1.2" fill="${Y}"/>`;
+      return h;
+    };
+    /* backpacks, drawn behind the torso */
+    const pack = () => {
+      const kp = kb.pack || k, g = F(kp), a = A(kp)[0], PL = D.looks[kp] || {};
+      const T = { saber: () => S(`<path d="M44 30 L33 4 L38 3 L49 29Z" fill="${g(2)}" ${ln}/><path d="M36 10 l3 -1" stroke="#ff7ad9" stroke-width="2"/>`),
+        zaku: () => `<rect x="34" y="14" width="52" height="60" rx="3" fill="${g(0)}" ${ln}/><path d="M40 22 L80 22 M40 30 L80 30 M40 38 L80 38" ${ln} fill="none"/><circle cx="44" cy="77" r="4.5" fill="${g(3)}" ${ln}/><circle cx="76" cy="77" r="4.5" fill="${g(3)}" ${ln}/><path d="M76 80 Q96 100 86 124 M86 124 l0 8" stroke="${g(1)}" stroke-width="3" stroke-dasharray="4 1.5" fill="none"/>`,
+        hilt: () => `<path d="M76 28 L82 6 L87 8 L81 30Z" fill="${g(3)}" ${ln}/><rect x="79.5" y="3" width="9" height="4" rx="1" fill="${g(2)}" ${ln}/>`,
+        tail: () => S(`<path d="M42 38 L26 72 L33 74 L47 46Z" fill="${g(3)}" ${ln}/><path d="M44 80 L35 114 L42 116 L53 86Z" fill="${g(2)}" ${ln}/>`),
+        fin: () => S(`<path d="M43 30 L20 6 L27 4 L49 27Z" fill="${g(0)}" ${ln}/><path d="M41 40 L12 30 L16 38 L43 47Z" fill="${g(2)}" ${ln}/><path d="M42 50 L16 54 L22 60 L44 56Z" fill="${g(0)}" ${ln}/>`),
+        wing: () => S(`<path d="M46 34 L2 6 L8 42 L42 58Z" fill="${g(3)}" ${ln}/><path d="M44 40 L6 20 M44 46 L8 32 M44 52 L12 44" ${ln} fill="none"/><path d="M2 6 L8 42 L16 38Z" fill="${g(1)}"/>`),
+        vern: () => S(`<circle cx="33" cy="40" r="8" fill="${g(2)}" ${ln}/><circle cx="33" cy="40" r="3.5" fill="#222"/><path d="M26 48 L22 66 L40 56Z" fill="${g(3)}" ${ln}/>`) + `<rect x="48" y="18" width="24" height="20" rx="3" fill="${g(1)}" ${ln}/>`,
+        bits: () => S(`<path d="M16 28 L28 24 L30 40 L19 45Z" fill="${g(2)}" ${ln}/><path d="M20 52 L30 50 L31 64 L22 68Z" fill="${g(0)}" ${ln}/>`),
+        gnd: () => S(`<circle cx="32" cy="40" r="9" fill="${g(3)}" ${ln}/><circle cx="32" cy="40" r="5" fill="#ff9a2e"/><circle cx="32" cy="40" r="2" fill="#fff0c8"/><path d="M44 30 L38 8 L42 8 L48 29Z" fill="${g(2)}" ${ln}/>`) };
+      return (T[a] || T.saber)();
+    };
+    /* weapons are drawn in the left-hand frame and mirrored onto the right arm so they swing with the pose */
+    /* Weapons are drawn horizontally (muzzle toward -x) with the grip at (27,95). They are rotated about the fist, so they are always gripped. */
+    const weapon = () => {
+      const kw = kb.wp || k, g = F(kw), a = A(kw)[1], G = (x, y) => `<rect x="${x}" y="${y}" width="5" height="9" rx="1.5" fill="#1c2024" ${ln}/>`;
+      const T = { rifle: `<path d="M40 90 L6 91 L6 98 L40 99Z" fill="${g(3)}" ${ln}/><rect x="16" y="85" width="12" height="6" rx="1" fill="${g(2)}" ${ln}/><rect x="0" y="93" width="7" height="3" fill="${Y}"/><rect x="30" y="97" width="9" height="6" fill="${g(2)}" ${ln}/>${G(24, 98)}<path d="M8 94 h28" ${ln} fill="none"/>`,
+        mg: `<path d="M40 90 L8 91 L8 99 L40 100Z" fill="${g(3)}" stroke="#9aa5b4" stroke-width=".8"/><rect x="-12" y="91" width="21" height="2.8" fill="#2a3038" stroke="#9aa5b4" stroke-width=".5"/><rect x="-12" y="95.6" width="21" height="2.8" fill="#2a3038" stroke="#9aa5b4" stroke-width=".5"/><circle cx="19" cy="109" r="10" fill="${g(3)}" stroke="#9aa5b4" stroke-width=".8"/><path d="M19 100 v18 M10 109 h18" stroke="#9aa5b4" stroke-width="1.4"/><path d="M31 100 q7 7 0 14" stroke="#9aa5b4" stroke-width="2" fill="none"/>${G(25, 98)}`,
+        mace: `<rect x="-2" y="93" width="42" height="4.5" rx="1.5" fill="#444" ${ln}/><rect x="-20" y="85" width="20" height="20" rx="4" fill="${g(3)}" ${ln}/><path d="M-14 85 v20 M-8 85 v20 M-2 85 v20" ${ln} fill="none"/><path d="M-20 90 l-4 -3 M-20 100 l-4 3" ${ln}/>`,
+        rifle2: `<path d="M40 91 L-14 92 L-14 98 L40 99Z" fill="${g(3)}" ${ln}/><rect x="10" y="85" width="14" height="6.5" rx="1" fill="${g(2)}" ${ln}/><rect x="-20" y="93.5" width="7" height="3" fill="${Y}"/>${G(24, 98)}<path d="M-10 95 h46" ${ln} fill="none"/>`,
+        shotgun: `<path d="M40 88 L2 90 L2 102 L40 101Z" fill="${g(1)}" ${ln}/><path d="M12 89 v13 M22 88.5 v13" ${ln} fill="none"/><rect x="-8" y="93" width="11" height="6" fill="${g(3)}" ${ln}/><circle cx="-8" cy="96" r="4" fill="${g(2)}"/>${G(25, 100)}`,
+        whip: `<rect x="20" y="91" width="20" height="8" rx="2" fill="${g(3)}" ${ln}/><path d="M20 95 q-8 -10 -16 0 t-16 0 t-16 0 t-14 0" stroke="${g(2)}" stroke-width="3" fill="none"/><circle cx="-62" cy="95" r="4" fill="${g(3)}" ${ln}/>`,
+        gnsword: `<rect x="19" y="85" width="4" height="20" rx="1" fill="${Y}" ${ln}/><rect x="22" y="93" width="18" height="4.5" rx="1.5" fill="#333" ${ln}/><path d="M19 88 L-30 89 L-38 95 L-30 101 L19 102Z" fill="${g(3)}" ${ln}/><path d="M-30 95 h46" ${ln} fill="none"/>`,
+        bazooka: `<rect x="-6" y="87" width="46" height="16" rx="4" fill="${g(3)}" ${ln}/><rect x="6" y="80" width="14" height="7" rx="1" fill="${g(2)}" ${ln}/><rect x="-10" y="89" width="6" height="12" fill="${Y}"/><path d="M14 87 v16 M30 87 v16" ${ln} fill="none"/>${G(24, 102)}`,
+        spray: `<path d="M40 90 L18 90 L15 99 L40 101Z" fill="${g(3)}" ${ln}/><rect x="6" y="92" width="11" height="4" fill="${g(2)}" ${ln}/><rect x="26" y="85" width="8" height="5" fill="${g(0)}" ${ln}/>${G(24, 99)}` };
+      const wt = (po.wa ?? -58) - po.aR;
+      return `<g transform="translate(35 90) rotate(${wt}) translate(-27 -95)">${T[a] || T.rifle}</g><circle cx="35" cy="90" r="5" fill="#1c2024" ${ln}/><path d="M31.5 87 q3.5 -3.5 7 0" stroke="#4a525c" fill="none"/>`;
+    };
+    const shield = () => {
+      const ks = kb.sh || k, g = F(ks), a = A(ks)[2];
+      const T = { rx: `<path d="M3 44 L27 44 L27 82 L15 100 L3 82Z" fill="${g(2)}" ${ln}/><path d="M3 44 L27 44 L27 52 L3 52Z" fill="${g(0)}" ${ln}/><path d="M13 56 h4 v24 h-4Z M7 64 h16 v4 h-16Z" fill="${Y}"/>`,
+        gm: `<path d="M3 42 L27 42 L27 86 L15 100 L3 86Z" fill="${g(0)}" ${ln}/><path d="M3 42 L27 42 L27 52 L3 52Z" fill="${g(1)}" ${ln}/><path d="M7 60 L23 60 M7 67 L23 67" stroke="${Y}" stroke-width="2"/><path d="M15 52 v46" ${ln} fill="none"/>`,
+        nu: `<path d="M8 42 L27 44 L27 80 L17 98 L8 80Z" fill="${g(0)}" ${ln}/><path d="M8 58 L27 58 L27 66 L8 66Z" fill="${g(2)}"/><path d="M17 44 v54" ${ln} fill="none"/>`,
+        ae: `<path d="M3 44 L27 44 L27 84 L15 98 L3 84Z" fill="${g(0)}" ${ln}/><path d="M3 56 L27 56 M3 70 L27 70" stroke="${D.palettes[ks].c[2]}" stroke-width="3"/><circle cx="15" cy="80" r="3.5" fill="${Y}"/>`,
+        gnshield: `<path d="M4 54 L26 54 L26 82 L15 94 L4 82Z" fill="${g(3)}" ${ln}/><path d="M9 62 h12" stroke="${Y}" stroke-width="3"/>`,
+        zshield: `<path d="M8 30 Q26 16 46 28 L46 50 L10 48Z" fill="${g(0)}" ${ln}/><path d="M20 22 L28 0 L36 22Z" fill="${g(0)}" ${ln}/><circle cx="27" cy="38" r="3.6" fill="${g(1)}" ${ln}/><path d="M10 48 L46 50" ${ln}/>`,
+        beam: `<circle cx="14" cy="72" r="13" fill="${g(3)}" ${ln}/><circle cx="14" cy="72" r="7" fill="#7be8ff" opacity=".85"/><circle cx="14" cy="72" r="3" fill="#fff"/>`,
+        knife: `<path d="M8 56 L18 56 L16 94 L10 94Z" fill="${g(3)}" ${ln}/><rect x="6" y="52" width="14" height="5" fill="${g(2)}" ${ln}/>`,
+        disc: `<circle cx="14" cy="72" r="14" fill="${g(2)}" ${ln}/><circle cx="14" cy="72" r="8" fill="${g(3)}"/><path d="M14 58 v28 M0 72 h28" ${ln} fill="none"/>` };
+      return a === 'zshield' ? T.zshield : `<g transform="translate(11 0)">${T[a] || ''}</g><rect x="29" y="66" width="13" height="7" rx="2" fill="${g(3)}" ${ln}/><circle cx="35" cy="90" r="5" fill="#1c2024" ${ln}/>`;
+    };
+    const parts = {
+      pack, legL: () => R(po.lL, 53, 84, leg()), legR: () => M(R(po.lR, 53, 84, leg())),
+      torso: () => L.bd === 'zaku' ? `<path d="M42 32 L78 32 L82 48 L72 62 L48 62 L38 48Z" fill="${f(1)}" ${ln}/><path d="M42 32 L55 32 L53 58 L39 48Z M78 32 L65 32 L67 58 L81 48Z" fill="${f(0)}" ${ln}/><rect x="54" y="35" width="12" height="16" rx="2" fill="#1c2024" opacity=".6"/><path d="M46 62 L74 62 L74 68 L46 68Z" fill="${f(3)}" ${ln}/><path d="M50 62 v6 M55 62 v6 M60 62 v6 M65 62 v6 M70 62 v6" stroke="#555" fill="none"/><path d="M45 68 L75 68 L80 92 L60 95 L40 92Z" fill="${f(1)}" ${ln}/><path d="M40 72 L46 68 L49 92 L40 92Z M80 72 L74 68 L71 92 L80 92Z" fill="${f(0)}" ${ln}/>` : `<path d="M${L.wide ? 40 : 43} 32 L${L.wide ? 80 : 77} 32 L82 46 L72 62 L48 62 L38 46Z" fill="${f(L.tc ?? 1)}" ${ln}/><path d="M46 36 h11 v7 h-11Z M63 36 h11 v7 h-11Z" fill="${Y}" ${ln}/><path d="M48 39 h7 M65 39 h7" ${ln} fill="none"/><rect x="56" y="45" width="8" height="10" rx="1.5" fill="${f(0)}" ${ln}/><path d="M50 32 L70 32 L66 27 L54 27Z" fill="${f(3)}" ${ln}/><path d="M49 62 L71 62 L73 72 L47 72Z" fill="${f(0)}" ${ln}/><path d="M45 72 L75 72 L79 89 L60 91 L41 89Z" fill="${f(0)}" ${ln}/><path d="M56 72 L64 72 L64 84 L56 84Z" fill="${f(2)}" ${ln}/><circle cx="60" cy="67" r="2.2" fill="${Y}"/>${lv >= 3 ? '<path d="M47 50 h7 M66 50 h7" ' + ln + ' fill="none"/>' : ''}${lv >= 4 ? '<path d="M44 46 L50 58 M76 46 L70 58" ' + ln + ' fill="none"/>' : ''}`,
+      armL: () => R(po.aL, 35, 38, arm()), armR: () => M(R(po.aR, 35, 38, arm())),
+      head: () => R(po.hd, 60, 28, head()), rifle: () => M(R(po.aR, 35, 38, weapon())), shield: () => R(po.aL, 35, 38, shield())
+    };
+    const order = ['pack', 'legL', 'legR', 'torso', 'armL', 'armR', 'head', 'rifle', 'shield'], body = order.filter(x => has(x) && x !== 'head').map(x => W(x, parts[x]())).join('');
+    let g = L.sd ? `<g transform="translate(12 38) scale(.8 .6)">${body}</g>` + (has('head') ? `<g transform="translate(60 58) scale(1.6) translate(-60 -28)">${W('head', parts.head())}</g>` : '') : body + (has('head') ? W('head', parts.head()) : '');
+    if (ps.length > 3 && sty === 'Weathered') g += `<g fill="#14110e" opacity=".26"><path d="M46 100 l8 4 l-2 10 l-8 -3Z M62 44 l8 2 l-3 8 l-6 -3Z M30 70 l6 2 l-2 7Z M52 128 l9 1 l-1 6 l-9 -2Z"/></g><path d="M48 90 l8 14 M62 38 l6 8 M33 52 l4 9 M58 112 l3 12" stroke="#eee" stroke-opacity=".55" stroke-width=".6" fill="none"/>`;
+    if (ps.length > 3 && sty === 'Airbrushed') g += `<path d="M46 34 L58 34 L53 60 L48 56Z M47 110 L52 110 L52 128 L47 128Z" fill="#fff" opacity=".3"/>`;
+    return `<defs>${defs}</defs><ellipse cx="60" cy="147" rx="${ps.length > 3 ? 44 : 24}" ry="3" fill="#000" opacity=".3"/>` + R(po.t, 60, 146, g);
+  }
+  /* ---- character creator ---- */
+  ccInner() {
+    const C = DATA.chr, cc = this.cc;
+    const row = ([k, n, t]) => `<div class="ccrow"><b>${n}</b>` + (t === 'sw' ? C.pal[k].map((c, i) => `<button class="sw${cc[k] === i ? ' on' : ''}" data-cc="${k}:${i}" style="background:${c}" aria-label="${n} ${i + 1}"></button>`).join('')
+      : t === 'multi' ? C.opt.acc.map((o, i) => `<button class="${cc.acc.includes(i) ? 'on' : ''}" data-cc="acc:${i}">${o}</button>`).join('')
+      : C.opt[k].map((o, i) => `<button class="${cc[k] === i ? 'on' : ''}" data-cc="${k}:${i}">${o}</button>`).join('')) + '</div>';
+    return `<h3>Create your character</h3><div class="ccp">${this.charSvg(cc)}</div><button data-cc="rand:1" style="width:100%">🎲 Randomize</button>${C.cats.map(row).join('')}`;
+  }
+  ccTap(v) {
+    const C = DATA.chr, [k, a] = v.split(':'), cc = this.cc;
+    if (k === 'rand') { C.cats.forEach(([c, , t]) => { if (t === 'multi') cc.acc = C.opt.acc.map((_, i) => i).filter(() => Math.random() < .25); else cc[c] = Math.floor(Math.random() * (C.pal[c] || C.opt[c]).length); }); }
+    else if (k === 'acc') { const i = +a; cc.acc = cc.acc.includes(i) ? cc.acc.filter(x => x !== i) : [...cc.acc, i]; }
+    else cc[k] = +a;
+    this.$('#ccw').innerHTML = this.ccInner();
+  }
+  charSvg(l, head) { return `<svg viewBox="${head ? '20 2 60 62' : '0 0 100 170'}" xmlns="http://www.w3.org/2000/svg">${this.charInner(l)}</svg>`; }
+  charInner(l) {
+    const C = DATA.chr, P = C.pal, sk = P.skin[l.skin], sd = hexMix(sk, '#000', .16), hc = P.hairc[l.hairc], ec = P.eyec[l.eyec], tc = P.topc[l.topc], bc = P.botc[l.botc], shc = P.shoe[l.shoe];
+    const top = C.opt.top[l.top], bot = C.opt.bot[l.bot], hs = C.opt.hair[l.hair], fc = C.opt.face[l.face], ac = l.acc || [], has = n => ac.includes(C.opt.acc.indexOf(n));
+    const st = 'stroke="#1a1420" stroke-opacity=".55" stroke-width="1" stroke-linejoin="round"', Mr = g => `<g transform="translate(100 0) scale(-1 1)">${g}</g>`, S = g => g + Mr(g), bw = [.9, 1, 1.12][l.build ?? 1];
+    const sl = { 'T-shirt': .45, Hoodie: 1, Polo: .45, Uniform: .45, Jacket: 1, 'Tank top': 0 }[top], tcol = top === 'Uniform' ? '#f4f4f8' : tc, sleeve = t => t > 0 ? `<path d="M31 70 L${31 - 9 * t} ${70 + 36 * t} L${38 - 8 * t} ${74 + 34 * t} L38 74Z" fill="${tcol}" ${st}/>` : '';
+    let back = '', front = '';
+    if (hs === 'Long') { back = `<path d="M25 40 Q21 86 29 110 L71 110 Q79 86 75 40Z" fill="${hc}" ${st}/>`; front = `M28 40 Q27 14 50 14 Q73 14 72 40 Q62 26 50 30 Q38 26 28 40Z`; }
+    else if (hs === 'Bob') { back = `<path d="M25 40 Q22 66 30 70 L70 70 Q78 66 75 40Z" fill="${hc}" ${st}/>`; front = `M28 40 Q27 14 50 14 Q73 14 72 40 Q62 26 50 30 Q38 26 28 40Z`; }
+    else if (hs === 'Ponytail') { back = `<path d="M68 24 Q94 30 88 74 Q80 56 66 38Z" fill="${hc}" ${st}/>`; front = `M28 40 Q27 14 50 14 Q73 14 72 40 Q66 28 50 28 Q42 28 38 34 Q32 32 28 40Z`; }
+    else if (hs === 'Curly') { back = `<circle cx="50" cy="31" r="28" fill="${hc}" ${st}/>`; front = `M28 38 Q30 16 50 16 Q70 16 72 38 Q62 27 50 29 Q38 27 28 38Z`; }
+    else if (hs === 'Bun') { back = `<circle cx="50" cy="9" r="9" fill="${hc}" ${st}/>`; front = `M28 40 Q27 14 50 14 Q73 14 72 40 Q66 28 50 28 Q42 28 38 34 Q32 32 28 40Z`; }
+    else if (hs === 'Spiky') front = `M27 40 L30 18 L38 26 L44 8 L52 24 L60 8 L64 26 L72 18 L73 40 Q64 28 50 28 Q36 28 27 40Z`;
+    else if (hs === 'Buzz cut') front = `M29 38 Q29 18 50 18 Q71 18 71 38 Q62 30 50 30 Q38 30 29 38Z`;
+    else front = `M28 40 Q27 14 50 14 Q73 14 72 40 Q66 28 50 28 Q42 28 38 34 Q32 32 28 40Z`;
+    const legs = S(`<path d="M31 112 L48 112 L47 152 L33 152Z" fill="${sk}" ${st}/>`) + (bot === 'Shorts' ? S(`<path d="M30 110 L48 110 L48 130 L29 130Z" fill="${bc}" ${st}/>`) : bot === 'Skirt' ? `<path d="M29 108 L71 108 L78 134 L22 134Z" fill="${bc}" ${st}/><path d="M24 130 h52" stroke="#0003"/>` : S(`<path d="M30 110 L48 110 L47 152 L32 152Z" fill="${bc}" ${st}/>` + (bot === 'Joggers' ? `<path d="M32 145 L47 145 L47 152 L32 152Z" fill="${hexMix(bc, '#000', .3)}"/>` : bot === 'Jeans' ? '<path d="M39 112 v38" stroke="#fff3" stroke-dasharray="2 2"/>' : '<path d="M39 112 v38" stroke="#0004"/>')));
+    const shoes = S(l.shoe === 3 ? `<path d="M26 158 L50 158 L50 162 L25 162Z" fill="${shc}"/><path d="M34 152 L40 158 M46 152 L40 158" stroke="${shc}" stroke-width="2"/>` : `<path d="M30 152 L48 152 L50 162 L26 162 Q26 156 30 152Z" fill="${shc}" ${st}/><path d="M26 160 h24" stroke="#0004"/>`);
+    let t = `<path d="M33 68 Q50 62 67 68 L70 112 L30 112Z" fill="${tcol}" ${st}/>`;
+    if (top === 'Jacket') t += `<path d="M42 64 L58 64 L57 112 L43 112Z" fill="#f4f4f8" ${st}/><path d="M50 64 v48" stroke="#0005"/>`;
+    if (top === 'Hoodie') t += `<path d="M36 62 Q50 80 64 62 L68 70 Q50 88 32 70Z" fill="${hexMix(tc, '#000', .2)}" ${st}/><path d="M37 98 L63 98 L65 110 L35 110Z" fill="none" ${st}/><path d="M45 76 v10 M55 76 v10" stroke="#fff8" stroke-width="1.4"/>`;
+    if (top === 'Polo') t += `<path d="M40 63 L50 74 L44 76Z M60 63 L50 74 L56 76Z" fill="${hexMix(tc, '#fff', .55)}" ${st}/><path d="M50 74 v14" stroke="#0005"/>`;
+    if (top === 'Uniform') t += `<path d="M40 63 L50 74 L44 76Z M60 63 L50 74 L56 76Z" fill="#fff" ${st}/><path d="M48 72 L52 72 L53 92 L50 96 L47 92Z" fill="${tc}" ${st}/>`;
+    if (top === 'Tank top') t += `<path d="M40 64 Q50 80 60 64Z" fill="${sk}"/>`;
+    const body = S(`<path d="M31 70 L22 106 L30 108 L38 74Z" fill="${sk}" ${st}/>`) + legs + shoes + t + S(sleeve(sl)) + S(`<circle cx="26" cy="111" r="4.6" fill="${sk}" ${st}/>`) + (has('ID lanyard') ? `<path d="M42 64 L50 98 L58 64" stroke="#d6403a" stroke-width="2" fill="none"/><rect x="45" y="96" width="10" height="13" rx="1.5" fill="#fff" ${st}/><rect x="47" y="98" width="6" height="5" fill="#2457d6"/>` : '');
+    const eyes = `<ellipse cx="42" cy="44" rx="3.2" ry="4.2" fill="${ec}"/><circle cx="43" cy="42.6" r="1.2" fill="#fff"/>` + (fc === 'Wink' ? `<path d="M54 44 Q58 40.5 62 44" stroke="#2a1a14" stroke-width="1.7" fill="none"/>` : `<ellipse cx="58" cy="44" rx="3.2" ry="4.2" fill="${ec}"/><circle cx="59" cy="42.6" r="1.2" fill="#fff"/>`);
+    const mouth = fc === 'Grin' ? `<path d="M43 52 Q50 63 57 52Z" fill="#fff" stroke="#7a2a2a" stroke-width="1.2"/>` : fc === 'Calm' ? `<path d="M46 55 H54" stroke="#7a2a2a" stroke-width="1.6"/>` : `<path d="M44 54 Q50 60 56 54" stroke="#7a2a2a" stroke-width="1.7" fill="none"/>`;
+    let hd = `<rect x="44" y="60" width="12" height="10" fill="${sd}"/>` + S(`<circle cx="29" cy="45" r="4.2" fill="${sk}" ${st}/>`) + `<ellipse cx="50" cy="42" rx="21" ry="22" fill="${sk}" ${st}/><circle cx="37" cy="50" r="4" fill="#ff7a8a" opacity=".3"/><circle cx="63" cy="50" r="4" fill="#ff7a8a" opacity=".3"/>${eyes}<path d="M37 37 Q42 ${fc === 'Calm' ? 37 : 34} 47 37 M53 37 Q58 ${fc === 'Calm' ? 37 : 34} 63 37" stroke="${hc}" stroke-width="1.8" fill="none"/><path d="M50 47 q2.4 3 0 4.4" stroke="${sd}" stroke-width="1.3" fill="none"/>${mouth}<path d="${front}" fill="${hc}" ${st}/>`;
+    if (has('Headband')) hd += `<path d="M29 29 Q50 19 71 29" stroke="${tc}" stroke-width="4.5" fill="none"/>`;
+    if (has('Cap')) hd += `<path d="M28 34 Q50 2 72 34Z" fill="${tc}" ${st}/><path d="M28 33 Q50 40 74 33 L72 29 Q50 34 30 29Z" fill="${hexMix(tc, '#000', .25)}" ${st}/>`;
+    if (has('Headphones')) hd += `<path d="M26 46 Q26 10 50 10 Q74 10 74 46" stroke="#222733" stroke-width="4" fill="none"/><rect x="21" y="38" width="8" height="16" rx="3" fill="#2f3a54" ${st}/><rect x="71" y="38" width="8" height="16" rx="3" fill="#2f3a54" ${st}/>`;
+    if (has('Glasses')) hd += `<circle cx="42" cy="44" r="6.5" fill="#bfe8ff" fill-opacity=".25" stroke="#222733" stroke-width="1.6"/><circle cx="58" cy="44" r="6.5" fill="#bfe8ff" fill-opacity=".25" stroke="#222733" stroke-width="1.6"/><path d="M48.5 44 h3 M35.5 43 L30 41 M64.5 43 L70 41" stroke="#222733" stroke-width="1.5"/>`;
+    if (has('Earrings')) hd += S(`<circle cx="28.5" cy="52" r="2.2" fill="#e8b630" ${st}/>`);
+    return `<ellipse cx="50" cy="164" rx="30" ry="4" fill="#000" opacity=".25"/>${back}<g transform="translate(50 0) scale(${bw} 1) translate(-50 0)">${body}</g>${hd}`;
+  }
+  /* The real Gunpla cut-and-line stage: a runner with gates and a hit zone */
   track(m, p) {
-    const W = 40, a = Array(W).fill('='), b = Array(W).fill(' '), y = m.stage.timing.glyph;
-    for (let i = 0; i < m.n; i++) { const gt = Math.round((i + 1) * W / (m.n + 1)); [...y[i < m.i ? 0 : i === m.i ? 1 : 2]].forEach((c, j) => { a[gt - 1 + j] = c; }); }
-    b[Math.round(p * (W - 1))] = '^';
-    return `+${a.join('')}+\n ${b.join('')}\n ${m.stage.timing.prog[0]}${m.stage.timing.prog[1].repeat(m.i)}`;
+    const c = DATA.gunpla.palettes[this.g.state.kit.k].c, cut = m.stage.id === 'cut', X = x => 12 + x * 296, T = m.stage.timing.prog[0];
+    let o = `<svg class="trk" viewBox="0 0 320 84">`;
+    o += cut ? `<rect x="4" y="22" width="312" height="26" rx="5" fill="#8d96a6"/><rect x="4" y="33" width="312" height="4" fill="#6f7888"/>` : `<rect x="4" y="18" width="312" height="34" rx="8" fill="${c[0]}"/><rect x="8" y="33" width="304" height="4" rx="2" fill="#1b2233"/>`;
+    for (let i = 0; i < m.n; i++) {
+      const x = X(Math.round((i + 1) * 40 / (m.n + 1)) / 39), done = i < m.i, cur = i === m.i;
+      if (cur) o += `<rect x="${x - m.w * 148}" y="8" width="${m.w * 296}" height="52" rx="4" fill="#3ddc84" opacity=".28" stroke="#3ddc84"/>`;
+      if (cut) o += done ? `<rect x="${x - 6}" y="4" width="12" height="9" rx="2" fill="${c[1]}"/><rect x="${x - 3}" y="26" width="6" height="18" fill="#6f7888" opacity=".5"/>` : `<rect x="${x - 3}" y="20" width="6" height="30" fill="#6f7888"/><rect x="${x - 12}" y="24" width="24" height="22" rx="3" fill="${c[1]}" stroke="#0a0f1c" stroke-opacity=".5"/>`;
+      else o += done ? `<circle cx="${x}" cy="35" r="6" fill="#0a0f1c"/><circle cx="${x}" cy="35" r="2.4" fill="#5ce0ff"/>` : `<circle cx="${x}" cy="35" r="6" fill="none" stroke="#1b2233" stroke-width="2"/>`;
+    }
+    const cx = X(p);
+    return o + `<line x1="${cx}" y1="6" x2="${cx}" y2="62" stroke="#ffd24a" stroke-width="1.6"/><path d="M${cx} 64 l-7 14 h14Z" fill="#ffd24a"/><text x="6" y="80" font-size="9" fill="#9aa3b2">${T}${m.i}/${m.n}</text></svg>`;
+  }
+  /* Your room: a cutaway scene that reflects your furniture, wall color, time of day and finished kits */
+  room() {
+    const g = this.g, s = g.state, R = DATA.rooms[s.rm.t], it = s.rm.items, h = g.time.hour, wall = s.rm.wall || R.wall, has = k => it.includes(k), ln = 'stroke="#0a0f1c" stroke-opacity=".5"';
+    const sky = h >= 6 && h < 17 ? '#8ec9ff' : h >= 17 && h < 19 ? '#ff9e6b' : '#1b2447', wet = s.wx === 'rain' || s.wx === 'ty';
+    let o = `<svg class="rm3d" viewBox="0 0 240 140"><rect width="240" height="140" fill="${wall}"/><rect y="100" width="240" height="40" fill="${R.floor}"/><rect y="98" width="240" height="3" fill="#000" opacity=".25"/>`;
+    o += `<rect x="96" y="18" width="48" height="40" fill="${sky}" ${ln} stroke-width="2"/>${sky === '#1b2447' ? '<circle cx="106" cy="28" r="1.2" fill="#fff"/><circle cx="130" cy="36" r="1" fill="#fff"/><circle cx="120" cy="24" r="4" fill="#f4f1c8"/>' : ''}${wet ? '<path d="M102 22 l-3 8 M114 30 l-3 8 M126 22 l-3 8 M134 36 l-3 8" stroke="#dbe9ff" stroke-width="1"/>' : ''}<path d="M96 38 h48 M120 18 v40" ${ln}/><path d="M90 16 h12 v46 h-12Z M138 16 h12 v46 h-12Z" fill="#b24a5a" opacity=".85"/>`;
+    if (has('rug')) o += `<ellipse cx="120" cy="121" rx="52" ry="9" fill="#c04b5a" opacity=".85"/><ellipse cx="120" cy="121" rx="40" ry="6" fill="none" stroke="#f3d9a4" stroke-dasharray="3 3"/>`;
+    if (has('poster')) o += `<rect x="16" y="16" width="26" height="36" fill="#2a2f55" ${ln}/><circle cx="29" cy="30" r="8" fill="#ff6b8a"/><path d="M16 52 L29 38 L42 52Z" fill="#35e0ff" opacity=".8"/>`;
+    if (has('fan')) o += `<g transform="translate(60 8)"><circle r="3" fill="#555"/><ellipse cx="-14" rx="12" ry="2.2" fill="#8b6b42"/><ellipse cx="14" rx="12" ry="2.2" fill="#8b6b42"/></g>`;
+    if (has('bed')) o += `<rect x="6" y="72" width="6" height="34" fill="#6b4a2f"/><rect x="6" y="88" width="64" height="16" rx="3" fill="#e9eef7" ${ln}/><rect x="14" y="84" width="54" height="10" rx="4" fill="#3a62c4" ${ln}/><rect x="10" y="80" width="18" height="9" rx="4" fill="#fff" ${ln}/><rect x="8" y="104" width="4" height="8" fill="#6b4a2f"/><rect x="62" y="104" width="4" height="8" fill="#6b4a2f"/>`;
+    if (has('tv')) o += `<rect x="74" y="66" width="40" height="26" rx="2" fill="#10131c" ${ln} stroke-width="1.5"/><rect x="77" y="69" width="34" height="20" fill="${h >= 18 || h < 6 ? '#4aa8ff' : '#2a3a5a'}" opacity=".9"/><rect x="88" y="92" width="12" height="6" fill="#333"/><rect x="96" y="98" width="20" height="3" fill="#222"/>`;
+    if (has('shelf')) { o += `<rect x="168" y="22" width="64" height="4" fill="#7a5a38" ${ln}/><rect x="168" y="62" width="64" height="4" fill="#7a5a38" ${ln}/>`; s.shelf.slice(-3).forEach((b, i) => { o += `<g transform="translate(${170 + i * 21} ${i % 2 ? 29 : 29}) scale(.26)">${this.mini(b.k, DATA.gunpla.partOrder.slice(0, 9), b.st, '', 'r' + i, { po: b.po, kb: b.kb })}</g>`; }); s.shelf.slice(-3).length < 1 && (o += '<text x="176" y="46" font-size="8" fill="#555">build a kit!</text>'); }
+    if (has('desk')) o += `<rect x="150" y="84" width="70" height="6" fill="#8b6b42" ${ln}/><rect x="154" y="90" width="4" height="22" fill="#6b4a2f"/><rect x="212" y="90" width="4" height="22" fill="#6b4a2f"/><rect x="168" y="102" width="16" height="10" rx="2" fill="#3a3f55"/>${g.has('laptop') ? `<path d="M170 84 L174 70 L202 70 L206 84Z" fill="#10131c" ${ln}/><rect x="176" y="72" width="24" height="11" fill="#5ce0ff" opacity=".55"/>` : ''}`;
+    if (has('lamp')) o += `<path d="M156 84 L160 70 L168 66" ${ln} fill="none" stroke-width="2"/><path d="M164 66 L174 66 L170 74Z" fill="#e8b630"/>${h >= 17 || h < 6 ? '<ellipse cx="170" cy="86" rx="22" ry="6" fill="#ffe9a0" opacity=".35"/>' : ''}`;
+    if (has('plant')) o += `<path d="M130 100 L146 100 L143 114 L133 114Z" fill="#b5653a" ${ln}/><path d="M138 100 q-14 -14 -8 -28 q8 10 8 28 q10 -16 18 -22 q0 16 -18 22 q-2 -18 4 -30" fill="#4aa866" ${ln}/>`;
+    o += `<g transform="translate(114 52) scale(.43)">${this.charInner(s.look)}</g>`;
+    return o + `</svg>`;
   }
   refreshAssembly() {
     const e = this.$('#am'), h = this.g.hobby, m = h.session;
@@ -1702,7 +1998,7 @@ class Renderer {
       if (!m || !g.ui.fsm.is('MINIGAME')) return;
       if (m.type !== 'timing') return;
       const e = this.$('#rn');
-      if (e) e.textContent = this.track(m, g.hobby.cursor(performance.now()));
+      if (e) e.innerHTML = this.track(m, g.hobby.cursor(performance.now()));
       this.raf = requestAnimationFrame(step);
     };
     this.raf = requestAnimationFrame(step);
@@ -1721,6 +2017,7 @@ class Renderer {
   }
   renderCreate() {
     this.root.innerHTML = `<div class="cd"><h1>Metro Manila Life</h1><p>Student by day, worker by night. Pick your city, your school and your hustle. Can you graduate without drowning in debt?</p>
+ <div id="ccw">${(this.cc = { ...DATA.chr.def, acc: [] }, this.ccInner())}</div>
  <label>Name<input id="nm" value="Juan" maxlength="16"></label>
  <label>Course<select id="co">${Object.keys(DATA.courses).map(c => `<option>${c}</option>`).join('')}</select></label>
  <label>City<select id="ci">${Object.keys(DATA.cities).map(c => `<option>${c}</option>`).join('')}</select></label>
@@ -1746,7 +2043,7 @@ class Renderer {
  <div class="rw" style="margin-top:6px"><b>${h >= 6 && h < 17 ? '☀️' : h < 19 && h >= 17 ? '🌇' : '🌙'} ${DATA.days[w].slice(0, 3)}, ${g.time.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}, ${clock(h)}</b><small>Week ${wk}, semester ${sn} of ${DATA.totalSemesters}</small></div>
  <div class="nd">${Object.entries(DATA.needs).map(([k, [e, n]]) => `<div title="${n}">${e} <b>${Math.round(s.N[k])}</b>${this.bar(s.N[k])}</div>`).join('')}</div>
  <div class="ch">${this.objectives().map(o => `<span>${o}</span>`).join('')}<span>📍 ${locs[s.loc][1]}</span><span>${DATA.weather.label[s.wx || 'sun']}</span><span>📌 Homework: ${s.hw}</span><span>${DATA.profs[s.pf.k].icon} ${s.pf.n}</span>${s.pj.length ? `<span>📂 Projects: ${s.pj.length}</span>` : ''}<span>⚙️ Efficiency ${Math.round(g.stats.efficiency() * 100)}%</span>${s.sick ? '<span>🤒 Sick</span>' : ''}${g.maint.needsAttention() ? '<span>🔧 Gear needs service</span>' : ''}${g.market.status().phase !== 'steady' ? `<span>${g.market.status().text}</span>` : ''}</div></div>
- <div class="tb">${[['do', '🎮 Do'], ['me', '🧍 Life'], ['mo', '💰 Money'], ['ph', '📱 Phone' + (s.ph.some(x => !x.r) ? ` <span class="bd">${s.ph.filter(x => !x.r).length}</span>` : '')]].map(([k, n]) => `<button data-tab="${k}" class="${tab === k ? 'on' : ''}">${n}</button>`).join('')}</div>`;
+ <div class="tb" role="navigation" aria-label="Game sections">${[['do', '🎮 Do'], ['me', '🧍 Life'], ['mo', '💰 Money'], ['ph', '📱 Phone' + (s.ph.some(x => !x.r) ? ` <span class="bd">${s.ph.filter(x => !x.r).length}</span>` : '')]].map(([k, n]) => `<button data-tab="${k}" class="${tab === k ? 'on' : ''}">${n}</button>`).join('')}</div>`;
     if (tab === 'do') x += this.doTab(locs);
     if (tab === 'me') x += this.lifeTab(T);
     if (tab === 'mo') x += this.moneyTab(tw);
@@ -1758,7 +2055,7 @@ class Renderer {
     if (ui.fsm.is('MINIGAME') && m && s.kit) {
       x += `<div class="ov"><div class="cd">${m.type === 'asm'
         ? `<h3>Assemble: ${DATA.gunpla.kits[s.kit.k].name}</h3><small>No rush. Pick the part named in each step.</small><div id="am"></div>`
-        : `<h3>${m.stage.name}</h3><small>${m.stage.timing.text}</small><pre id="rn" class="mdl"></pre><button data-g="h" style="width:100%">${m.stage.timing.btn}</button><br><small id="rr">${m.msg || 'Part 1 of ' + m.n}</small>`}</div></div>`;
+        : `<h3>${m.stage.name}</h3><small>${m.stage.timing.text}</small><div id="rn"></div><button data-g="h" style="width:100%">${m.stage.timing.btn}</button><br><small id="rr">${m.msg || 'Part 1 of ' + m.n}</small>`}</div></div>`;
     }
     this.root.innerHTML = x;
     if (m && ui.fsm.is('MINIGAME')) { if (m.type === 'asm') this.refreshAssembly(); else this.loop(); }
@@ -1782,6 +2079,7 @@ class Renderer {
   <div class="cd"><h3>Skills</h3>${sk}</div>
   <div class="cd"><h3>Relationships</h3>${rl}<small>${s.buddy ? 'Study buddy: Mika (+10% studying)' : ''}</small></div>
   ${this.profCard()}${this.projCard()}<div class="cd"><h3>Academics</h3><div>${s.sc.length ? `Average: <b>${Math.round(a)}%</b> (GPA ${g.academics.gpa(a).toFixed(2)}, 1.00 is best)` : 'No quizzes yet this semester'}</div><small>Absences: ${s.abs}. Review progress: ${Math.round(s.prep)}%. Quiz every Friday, midterm in week 8, finals in week 16. Fail twice and you are dismissed.</small>${s.hist.map(z => `<div>Semester ${z.n}: ${z.a}%, GPA ${z.g.toFixed(2)}</div>`).join('')}</div>
+  <div class="cd"><h3>My room</h3>${this.room()}<small>${DATA.rooms[s.rm.t].name}. Furnish it from the Do tab at home (My room).</small></div>
   <div class="cd"><h3>Gunpla bench</h3>${s.kit ? `<div>Building ${DATA.gunpla.kits[s.kit.k].name}: step ${s.kit.st + 1} of ${DATA.gunpla.stages.length} (${DATA.gunpla.stages[s.kit.st].name}), quality so far ${Math.round(s.kit.q)}</div>` : '<small>No kit on the bench.</small>'}<br><small>Unbuilt kits: ${s.stash.length ? s.stash.map(k => DATA.gunpla.kits[k].name).join(', ') : 'none'}. Reputation: ${s.rep}. Meets are held at the mall, school and park on set days.</small>${s.shelf.map(k => `<div>${k.pl === 1 ? '🏆' : '🤖'} ${k.n}, quality ${k.q}, ${k.st}${this.model(k.k, DATA.gunpla.partOrder.slice(0, k.np || 6), k.st, '', 1)}</div>`).join('')}</div>
   <div class="cd"><h3>People you know</h3>${s.club ? `<small>Club: ${DATA.clubs[s.club].name}</small>` : ''}${s.ppl.length ? s.ppl.map((p, i) => `<div class="row" style="grid-template-columns:1fr 70px auto"><span>${DATA.personTypes[p.t].icon} ${p.n}</span>${this.bar(p.r)}<button data-p="${i}">Hang out</button></div>`).join('') : '<small>Nobody yet. Try "Meet new people" at school, the mall or the park.</small>'}</div>
   <div class="cd"><h3>Goals</h3>${DATA.goals.map(q => `<div>${q.test(s) ? '✅' : '⬜'} ${q.label}</div>`).join('')}</div>`;
@@ -1794,7 +2092,7 @@ class Renderer {
     const g = this.g, s = g.state, wk = g.time.week;
     const act = s.pj.map(p => {
       const d = DATA.projects[p.id], m = d.ms[p.i], nd = g.projects.need(p), pct = Math.round(100 * p.ef / m.effort), left = p.sw + p.dues[p.i] - wk;
-      return `<div style="margin:6px 0"><b>${d.icon} ${d.name}</b> <small>${d.kind}, milestone ${p.i + 1} of ${d.ms.length}</small><div>${m.name}</div><div class="row" style="grid-template-columns:60px 1fr 40px"><span>Effort</span>${this.bar(pct, 'var(--ac)')}<b>${pct}%</b></div><div class="ch">${Object.entries(nd).map(([k, v]) => `<span style="${s.K[k] >= v ? '' : 'color:var(--bad)'}">${DATA.skills[k][0]} ${Math.floor(s.K[k])}/${v}</span>`).join('')}</div><small>Due in ${left} week${left === 1 ? '' : 's'}${p.st ? ', strikes ' + p.st + ' of ' + d.lives : ''}</small></div>`;
+      return `<div style="margin:6px 0"><b>${d.icon} ${d.name}</b> <small>${d.kind}, milestone ${p.i + 1} of ${d.ms.length}</small><div>${m.name}</div><div class="row" style="grid-template-columns:60px 1fr 40px"><span>Effort</span>${this.bar(pct, 'var(--ac)')}<b>${pct}%</b></div><div class="ch">${Object.entries(nd).map(([k, v]) => `<span style="${s.K[k] >= v ? '' : 'color:var(--bad)'}">${DATA.skills[k][0]} ${Math.floor(s.K[k])}/${v}</span>`).join('')}</div>${p.cb ? `<div><small>🧑‍🏫 Guidance +${Math.round(p.cb * 100)}% toward weak skills</small></div>` : ''}<small>Due in ${left} week${left === 1 ? '' : 's'}${p.st ? ', strikes ' + p.st + ' of ' + d.lives : ''}</small></div>`;
     }).join('');
     const done = s.pdone.map(x => `<div><small>${x.fail ? '❌' : '✅'} ${DATA.projects[x.id].name}${x.fail ? '' : ': ' + x.q + '%'}</small></div>`).join('');
     return `<div class="cd"><h3>Projects</h3>${act || '<small>No active projects. Find one at school (Do tab).</small>'}${done}</div>`;
@@ -1802,6 +2100,8 @@ class Renderer {
 
   saveFlash(ok) { const e = this.$('#sv'); if (!e) return; e.textContent = ok ? '💾 Saved' : '⚠️ Not saved'; e.className = 's' + (ok ? '' : ' bad'); clearTimeout(this.svT); this.svT = setTimeout(() => { e.className = ''; }, 1400); }
   av(d, nm, c, z) {
+    const L = this.g.state && this.g.state.look, me = this.g.phone && this.g.phone.me;
+    if (!d && L && me && nm === this.g.state.name && c === me.col) return `<span style="width:${z}px;height:${z}px;border-radius:50%;border:3px solid var(--cd);display:inline-block;overflow:hidden;vertical-align:middle;flex:none;background:#cfe0f5">${this.charSvg(L, 1)}</span>`;
     const st = `width:${z}px;height:${z}px;border-radius:50%;border:3px solid var(--cd);vertical-align:middle;flex:none`;
     return d ? `<img src="${d}" alt="" style="${st};object-fit:cover">` : `<span style="${st};display:inline-flex;background:${c};color:#fff;align-items:center;justify-content:center;font-weight:800">${this.esc(String(nm || '?')[0].toUpperCase())}</span>`;
   }
@@ -1859,17 +2159,293 @@ class Renderer {
   modalHtml(m) {
     let view = '';
     if (m.view) {
-      const v = m.view, parts = DATA.gunpla.partOrder.slice(0, v.np);
-      if (v.kind === 'model') view = `<small>${v.caption}</small>${this.model(v.kit, parts, v.style, '')}`;
+      const v = m.view, parts = DATA.gunpla.partOrder.slice(0, 9);
+      if (v.kind === 'room') view = this.room();
+      else if (v.kind === 'char') view = `<div class="ccp">${this.charSvg(this.g.state.look)}</div>`;
+      else if (v.kind === 'shelfkit') view = `<small>${v.caption}</small>${this.model(v.kit, parts, v.style, '', false, { po: v.po, kb: v.kb })}`;
+      else if (v.kind === 'model') view = `<small>${v.caption}</small>${this.model(v.kit, parts, v.style, '')}`;
       else view = `${this.model(v.kit, parts, v.style, '')}<pre class="mdl">${this.esc(v.rows)}</pre>${v.footer}`;
     }
-    return `<div class="ov"><div class="cd"><p>${m.text}</p>${view}${m.options.map((o, i) => `<button data-o="${i}">${o.label}</button>`).join('')}</div></div>`;
+    return `<div class="ov" role="dialog" aria-modal="true"><div class="cd"><p>${m.text}</p>${view}${m.options.map((o, i) => `<button data-o="${i}">${o.label}</button>`).join('')}</div></div>`;
+  }
+}
+
+/* ---------------------------------------------------------------- AUDIO AND GRAPHICS
+   Everything is synthesized: WebAudio for sound and music, canvas for the skyline scene and particles. */
+/* Music changes with the time of day: bright and groovy by day, slower in the evening, sparse and soft at night */
+const PROG = [
+  { q: .38, r: 2, h: 1, w: 'triangle', ch: [[60, 64, 67, 71], [57, 60, 64, 67], [53, 57, 60, 64], [55, 59, 62, 65]] },
+  { q: .46, r: 2, h: 0, w: 'triangle', ch: [[53, 57, 60, 64], [52, 55, 59, 62], [50, 53, 57, 60], [48, 52, 55, 59]] },
+  { q: .58, r: 4, h: 0, w: 'sine', ch: [[57, 60, 64, 67], [53, 57, 60, 64], [60, 64, 67, 71], [55, 59, 62, 65]] }];
+class AudioFX {
+  constructor() { this.mode = 1; try { const v = localStorage.getItem('mml-snd'); if (v !== null) this.mode = +v; } catch (e) {} this.ctx = null; this.wx = 'sun'; this.mt = 0; this.g = null; }
+  unlock() {
+    if (!this.ctx) {
+      const C = window.AudioContext || window.webkitAudioContext; if (!C) return;
+      const c = this.ctx = new C(), comp = c.createDynamicsCompressor();
+      this.out = c.createGain(); this.out.gain.value = .55; this.out.connect(comp); comp.connect(c.destination);
+      const b = c.createBuffer(1, c.sampleRate * 2, c.sampleRate), d = b.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      const src = c.createBufferSource(), f = c.createBiquadFilter();
+      src.buffer = b; src.loop = true; f.type = 'bandpass'; f.frequency.value = 1400; f.Q.value = .5;
+      this.rg = c.createGain(); this.rg.gain.value = 0; src.connect(f); f.connect(this.rg); this.rg.connect(this.out); src.start(); this.nb = b;
+      [['lowpass', 260, .7, 'hum'], ['bandpass', 650, 1.2, 'cg']].forEach(([t, fr, q, k]) => { const s2 = c.createBufferSource(), f2 = c.createBiquadFilter(), g2 = this[k] = c.createGain(); s2.buffer = b; s2.loop = true; f2.type = t; f2.frequency.value = fr; f2.Q.value = q; g2.gain.value = 0; s2.connect(f2); f2.connect(g2); g2.connect(this.out); s2.start(); });
+      this.at = setInterval(() => this.ambTick(), 1200);
+    }
+    if (this.ctx.state === 'suspended') this.ctx.resume();
+    this.apply();
+  }
+  setMode(m) { this.mode = m; try { localStorage.setItem('mml-snd', m); } catch (e) {} this.unlock(); }
+  apply() {
+    if (!this.ctx) return;
+    if (!this.mode) { this.hum.gain.setTargetAtTime(0, this.ctx.currentTime, .3); this.cg.gain.setTargetAtTime(0, this.ctx.currentTime, .3); }
+    this.rg.gain.setTargetAtTime(this.mode ? (this.wx === 'ty' ? .12 : this.wx === 'rain' ? .06 : 0) : 0, this.ctx.currentTime, .5);
+    if (this.mode > 1 && !this.mt) this.play(); else if (this.mode < 2 && this.mt) { clearInterval(this.mt); this.mt = 0; }
+  }
+  weather(w) { if (w !== this.wx) { this.wx = w; this.apply(); } }
+  tone(f, d = .12, type = 'sine', v = .15, at = 0, slide = 0) {
+    if (!this.mode || !this.ctx) return;
+    const c = this.ctx, t = c.currentTime + Math.max(0, at), o = c.createOscillator(), g = c.createGain();
+    o.type = type; o.frequency.setValueAtTime(f, t); if (slide) o.frequency.exponentialRampToValueAtTime(Math.max(40, f + slide), t + d);
+    g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(v, t + .015); g.gain.exponentialRampToValueAtTime(.0001, t + d);
+    o.connect(g); g.connect(this.out); o.start(t); o.stop(t + d + .05);
+  }
+  seq(n, st, type, v) { n.forEach((f, i) => this.tone(f, st * 2, type, v, i * st)); }
+  click() { this.tone(660, .04, 'square', .04); }
+  coin() { this.seq([988, 1319], .07, 'square', .07); }
+  spend() { this.tone(330, .12, 'triangle', .1, 0, -90); }
+  ding() { this.seq([880, 1175], .12, 'sine', .14); }
+  alert() { this.seq([440, 330], .12, 'sawtooth', .06); }
+  err() { this.tone(150, .18, 'sawtooth', .1, 0, -60); }
+  perfect() { this.seq([784, 1047], .05, 'triangle', .12); }
+  miss() { this.tone(190, .1, 'square', .07, 0, -70); }
+  pop() { this.tone(520, .07, 'sine', .07, 0, 220); }
+  fanfare() { this.seq([523, 659, 784, 1047], .1, 'triangle', .14); }
+  sad() { this.seq([392, 330, 262], .22, 'sine', .14); }
+  morning() { this.seq([523, 659], .18, 'sine', .05); }
+  /* Generative loop scheduled ahead of the audio clock: pad, bass, arpeggio and (by day) a soft hi-hat */
+  play() {
+    const c = this.ctx, hz = n => 440 * 2 ** ((n - 69) / 12);
+    let nt = c.currentTime + .1, i = 0, P = PROG[0];
+    this.mt = setInterval(() => {
+      for (; nt < c.currentTime + .5; nt += P.q, i++) {
+        if (i % 32 === 0) { const hr = this.g && this.g.state ? this.g.time.hour : 9; P = PROG[hr >= 6 && hr < 17 ? 0 : hr < 20 ? 1 : 2]; }
+        const k = P.ch[(i >> 3) & 3], at = nt - c.currentTime;
+        if (i % 8 === 0) { this.tone(hz(k[0] - 12), P.q * 7.5, 'sine', .07, at); k.slice(1, 3).forEach(n => this.tone(hz(n), P.q * 8, 'sine', .016, at)); }
+        if (i % P.r === 0 || i % 8 === 5) this.tone(hz(k[(i * 3 + (i >> 3)) % 4] + 12), P.q * 2.2, P.w, .035, at);
+        if (P.h && i % 2) this.hat(at);
+      }
+    }, 120);
+  }
+  hat(at) {
+    if (!this.mode || !this.ctx || !this.nb) return;
+    const c = this.ctx, t = c.currentTime + Math.max(0, at), s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
+    s.buffer = this.nb; f.type = 'highpass'; f.frequency.value = 7000; g.gain.setValueAtTime(.02, t); g.gain.exponentialRampToValueAtTime(.0001, t + .05);
+    s.connect(f); f.connect(g); g.connect(this.out); s.start(t); s.stop(t + .06);
+  }
+  /* City ambience: traffic hum and crowd murmur follow the crowd size; birds by day, crickets at night, the odd jeepney horn */
+  ambTick() {
+    if (!this.mode || !this.ctx || !this.g || !this.g.state) return;
+    const s = this.g.state, h = this.g.time.hour, w = s.wx || 'sun', day = h >= 6 && h < 18, wet = w === 'rain' || w === 'ty', t = this.ctx.currentTime, lv = crowdN(h, w, s.loc === 'court' && s.city === 'Caloocan' ? 'monu' : s.loc) / 28;
+    this.hum.gain.setTargetAtTime(.02 + .02 * lv, t, 1); this.cg.gain.setTargetAtTime(.035 * lv, t, 1);
+    if (day && !wet && Math.random() < (s.loc === 'court' ? .7 : .35)) { const f = 2200 + Math.random() * 1500; for (let k = 0; k < 3; k++) this.tone(f + k * 150, .07, 'sine', .035, k * .09, 500); }
+    if (!day && !wet && Math.random() < .5) for (let k = 0; k < 5; k++) this.tone(4300, .03, 'sine', .015, k * .06);
+    if (day && lv > .3 && Math.random() < .05) { this.tone(420, .12, 'sawtooth', .03); this.tone(420, .12, 'sawtooth', .03, .18); }
+  }
+}
+const hex = s => [1, 3, 5].map(i => parseInt(s.slice(i, i + 2), 16));
+const mixc = (a, b, t) => a.map((v, i) => v + (b[i] - v) * t);
+const rgba = (c, a = 1) => `rgba(${c.map(Math.round).join(',')},${a})`;
+const PAL = ['#e04a3a', '#2457d6', '#1f9d6b', '#e0a100', '#8e4ec6', '#d6407a', '#f2f2f2', '#3a3f55'].map(hex);
+/* How many pedestrians are out: rush hours around 8:00 and 17:30, few at night, fewer in the rain */
+const crowdN = (h, w, l) => { const pk = Math.max(0, 1 - Math.min(Math.abs(h - 8), Math.abs(h - 17.5)) / 2.5); return Math.min(28, Math.round((h < 5 || h >= 22 ? 2 : h >= 20 ? 6 : 8 + 18 * pk) * (w === 'ty' ? .15 : w === 'rain' ? .7 : 1) * ({ mall: 1.4, school: 1.2, work: .6, court: .5, home: .7, monu: 1.3 }[l] || 1))); };
+const HC = ['#f2d9b8', '#bcd8c1', '#c9d4f2', '#f2c4c4', '#e8e1a8', '#d3c1e8'];
+const JOBSIGN = { fast: 'FAST FOOD', call: 'CALL CENTER', store: 'MINI-MART', cafe: 'CAFE', tutor: 'TUTORING', rider: 'DISPATCH', dev: 'CO-WORKING', sell: 'WAREHOUSE' };
+const SKY = [[0, '#0b1030', '#1c2750'], [5, '#1a1f4a', '#e8896b'], [7, '#5aa6e8', '#bfe3ff'], [12, '#3f8fe0', '#a9d8ff'], [17, '#4a86d0', '#ffd08a'], [19, '#2b2a63', '#ff7f5e'], [21, '#0d1233', '#27305e'], [24, '#0b1030', '#1c2750']].map(([h, a, b]) => [h, hex(a), hex(b)]);
+/* Skyline banner: sky colours follow the game hour, clouds and rain follow the weather, a jeepney drives by */
+class Scene {
+  constructor(cv, g) {
+    this.g = g; this.x = cv.getContext('2d'); const d = Math.min(2, window.devicePixelRatio || 1), R = Math.random;
+    cv.width = 640 * d; cv.height = 120 * d; this.x.scale(d, d);
+    this.st = Array.from({ length: 40 }, () => [R() * 640, R() * 55, R()]);
+    this.rn = Array.from({ length: 60 }, () => [R() * 640, R() * 120]);
+    this.cl = [[70, 20, 1], [280, 12, .8], [470, 28, 1.2]];
+    this.bl = [0, 1].map(l => { const a = []; for (let x = -10; x < 660;) { const w = 20 + R() * 30; a.push([x, w, 22 + R() * (l ? 36 : 52), R()]); x += w + (l ? 3 : 1); } return a; });
+    this.car = 100; this.last = 0; this.fl = 0; this.tr = -300; this.tc = 500;
+    this.pp = Array.from({ length: 28 }, (_, i) => ({ x: R() * 640, v: (R() < .5 ? -1 : 1) * (6 + R() * 9), c: PAL[i % PAL.length], ph: R() * 6 }));
+    this.bd = Array.from({ length: 5 }, () => [R() * 640, 8 + R() * 26, 12 + R() * 10, R() * 6]);
+    this.hs = Array.from({ length: 10 }, (_, i) => [i * 66 - 8, 54 + R() * 8, 28 + R() * 18, Math.floor(R() * HC.length), R() < .6 ? 1 : 0]); this.loc = null; this.fd = 0;
+    this.still = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+    this.draw(0);
+    if (!this.still) { const f = ts => { if (!document.hidden && ts - this.last > 33) this.draw(ts); requestAnimationFrame(f); }; requestAnimationFrame(f); }
+  }
+  /* Location backdrops: home, school and park replace the skyline; mall and work add a landmark in front of it */
+  scenery(x, loc, e) {
+    const { T, win, lit, ts } = e;
+    if (loc === 'home') {
+      x.fillStyle = rgba(mixc(e.bot, [8, 12, 28], .45)); this.bl[0].forEach(([bx, bw, bh]) => x.fillRect(bx, 108 - bh * .6, bw, bh * .6));
+      this.hs.forEach(([hx, hw, hh, ci, rf]) => {
+        x.fillStyle = T(HC[ci]); x.fillRect(hx, 108 - hh, hw, hh); x.fillStyle = T(rf ? '#b5503c' : '#6b7280');
+        if (rf) { x.beginPath(); x.moveTo(hx - 3, 108 - hh); x.lineTo(hx + hw / 2, 96 - hh); x.lineTo(hx + hw + 3, 108 - hh); x.fill(); } else x.fillRect(hx - 2, 105 - hh, hw + 4, 3);
+        x.fillStyle = win; x.fillRect(hx + 6, 116 - hh, 9, 8); x.fillRect(hx + hw - 15, 116 - hh, 9, 8); x.fillStyle = T('#5b3a29'); x.fillRect(hx + hw / 2 - 4, 98, 8, 10);
+      });
+      x.fillStyle = T('#e8c34a'); x.fillRect(266, 78, 78, 30); for (let k = 0; k < 6; k++) { x.fillStyle = k % 2 ? '#fff' : T('#d6403a'); x.fillRect(262 + k * 14, 78, 14, 7); }
+      x.fillStyle = T('#7a2e22'); x.fillRect(286, 62, 40, 11); x.fillStyle = '#fff'; x.font = '700 6px system-ui,sans-serif'; x.fillText('SARI-SARI', 289, 70); x.fillStyle = win; x.fillRect(274, 90, 24, 12);
+      x.strokeStyle = 'rgba(255,255,255,.5)'; x.beginPath(); x.moveTo(70, 80); x.quadraticCurveTo(105, 90, 140, 80); x.stroke();
+      ['#e04a3a', '#2457d6', '#f2b632'].forEach((c, i) => { x.fillStyle = T(c); x.fillRect(82 + i * 14, 83 + (i === 1 ? 3 : 0), 7, 8); });
+      x.fillStyle = T('#3a3f55'); [200, 480].forEach(px => x.fillRect(px, 62, 2, 46)); x.strokeStyle = 'rgba(20,25,40,.7)'; x.beginPath(); x.moveTo(201, 64); x.quadraticCurveTo(340, 80, 481, 64); x.stroke();
+    } else if (loc === 'school') {
+      x.fillStyle = T('#d9c9a3'); x.fillRect(130, 48, 380, 60); x.fillStyle = T('#a3402f'); x.fillRect(128, 44, 384, 5);
+      for (let r = 0; r < 3; r++) for (let c = 0; c < 14; c++) if (c !== 6 && c !== 7) { x.fillStyle = win; x.fillRect(138 + c * 26, 54 + r * 16, 14, 9); }
+      x.fillStyle = T('#c2b184'); x.fillRect(300, 26, 40, 22); x.fillStyle = T('#a3402f'); x.beginPath(); x.moveTo(296, 26); x.lineTo(320, 12); x.lineTo(344, 26); x.fill();
+      x.fillStyle = '#fff'; x.beginPath(); x.arc(320, 35, 6, 0, 7); x.fill(); x.strokeStyle = '#222'; x.beginPath(); const a = e.h / 12 * Math.PI * 2 - Math.PI / 2; x.moveTo(320, 35); x.lineTo(320 + Math.cos(a) * 4, 35 + Math.sin(a) * 4); x.moveTo(320, 35); x.lineTo(320, 30); x.stroke();
+      x.fillStyle = T('#6b5a3a'); x.fillRect(306, 88, 28, 20); x.fillStyle = win; x.fillRect(309, 91, 10, 17); x.fillRect(321, 91, 10, 17); x.fillStyle = T('#8a7a5a'); x.fillRect(300, 105, 40, 3);
+      x.fillStyle = '#ccc'; x.fillRect(94, 48, 1.5, 60);
+      for (let k = 0; k < 12; k++) { const wy = Math.sin(ts / 200 + k * .5) * 1.2; x.fillStyle = '#2457d6'; x.fillRect(96 + k * 1.6, 49 + wy, 1.8, 5); x.fillStyle = '#d6403a'; x.fillRect(96 + k * 1.6, 54 + wy, 1.8, 5); }
+      [50, 575, 610].forEach(tx => { x.fillStyle = T('#6b4a2e'); x.fillRect(tx - 1.5, 90, 3, 18); x.fillStyle = T('#2f8f4e'); x.beginPath(); x.arc(tx, 86, 12, 0, 7); x.arc(tx + 7, 91, 9, 0, 7); x.fill(); });
+    } else if (loc === 'court') {
+      if (e.city === 'Caloocan') return this.monumento(x, e);
+      x.fillStyle = T('#79b86a'); x.beginPath(); x.moveTo(0, 108); x.quadraticCurveTo(160, 62, 330, 90); x.quadraticCurveTo(500, 66, 640, 100); x.lineTo(640, 108); x.fill();
+      [40, 120, 220, 410, 500, 600].forEach((tx, i) => { const ty = 84 + (i % 3) * 4; x.fillStyle = T('#6b4a2e'); x.fillRect(tx - 1.5, ty, 3, 108 - ty); x.fillStyle = T('#2f8f4e'); x.beginPath(); x.arc(tx, ty - 2, 11 + (i % 2) * 3, 0, 7); x.arc(tx + 6, ty + 3, 8, 0, 7); x.fill(); });
+      x.fillStyle = T('#8a6a4a'); x.fillRect(303, 74, 3, 22); x.fillRect(354, 74, 3, 22); x.fillRect(298, 96, 64, 3); x.fillStyle = T('#b5503c'); x.beginPath(); x.moveTo(296, 74); x.lineTo(330, 58); x.lineTo(364, 74); x.fill();
+      x.globalAlpha = .7; x.fillStyle = T('#5aa6e8'); x.beginPath(); x.ellipse(480, 106, 50, 4, 0, 0, 7); x.fill(); x.globalAlpha = 1;
+      if (!e.night && !e.wet) { const kx = 200 + Math.sin(ts / 1500) * 30, ky = 24 + Math.sin(ts / 700) * 4; x.fillStyle = '#e04a3a'; x.beginPath(); x.moveTo(kx, ky - 6); x.lineTo(kx + 5, ky); x.lineTo(kx, ky + 6); x.lineTo(kx - 5, ky); x.fill(); x.strokeStyle = 'rgba(255,255,255,.5)'; x.beginPath(); x.moveTo(kx, ky + 6); x.quadraticCurveTo(kx - 20, 70, 150, 98); x.stroke(); }
+    } else if (loc === 'mall') {
+      x.fillStyle = T('#e7e2f2'); x.fillRect(150, 50, 340, 58); x.fillStyle = T('#3a2f6b'); x.fillRect(150, 46, 340, 6);
+      for (let r = 0; r < 2; r++) for (let c = 0; c < 12; c++) { x.fillStyle = lit ? '#ffd479' : '#9ec5f0'; x.fillRect(158 + c * 27, 58 + r * 16, 18, 10); }
+      x.fillStyle = T('#2a2f45'); x.fillRect(298, 84, 44, 24); x.fillStyle = lit ? '#ffe9a8' : '#bcd8f2'; x.fillRect(301, 87, 18, 21); x.fillRect(322, 87, 17, 21);
+      x.save(); x.font = '800 15px system-ui,sans-serif'; if (lit) { x.shadowColor = '#ff5a8c'; x.shadowBlur = 8; } x.fillStyle = lit ? `rgba(255,120,160,${.85 + .15 * Math.sin(ts / 300)})` : '#d6407a'; x.fillText('MALL', 298, 44); x.restore();
+      [[170, '#2457d6'], [440, '#e0a100'], [468, '#d6403a']].forEach(([cx, c]) => { x.fillStyle = T(c); x.fillRect(cx, 99, 22, 8); x.fillRect(cx + 4, 94, 13, 6); x.fillStyle = '#111'; x.fillRect(cx + 3, 106, 4, 3); x.fillRect(cx + 15, 106, 4, 3); });
+    } else if (loc === 'work') {
+      [[30, 34, 92], [80, 28, 78], [500, 32, 88], [548, 38, 100]].forEach(([tx, tw, th]) => { x.fillStyle = T('#6b7a99'); x.fillRect(tx, 108 - th, tw, th); for (let wy = 112 - th; wy < 102; wy += 8) for (let wx = tx + 4; wx < tx + tw - 4; wx += 7) { x.fillStyle = lit && (Math.sin(wx * 12.9 + wy * 7.1) * 43758) % 1 > .35 ? '#ffd479' : '#8fb4e3'; x.fillRect(wx, wy, 4, 4); } });
+      x.fillStyle = T('#fff3d6'); x.fillRect(200, 72, 240, 36); for (let k = 0; k < 12; k++) { x.fillStyle = k % 2 ? '#fff' : T('#d6403a'); x.fillRect(196 + k * 20, 72, 20, 8); }
+      x.fillStyle = T('#7a2e22'); x.fillRect(250, 56, 140, 14); x.fillStyle = '#fff'; x.font = '800 9px system-ui,sans-serif'; x.fillText(e.sign, 320 - e.sign.length * 2.6, 66); x.fillStyle = win; x.fillRect(214, 86, 212, 14);
+    }
+  }
+  /* Bonifacio Monument (Monumento, Caloocan; Guillermo Tolentino, 1933): five-part obelisk topped by a winged figure,
+     octagonal base ringed by 23 dark bronze figures (Bonifacio in front), pools of water around it, LRT-1 Monumento station behind */
+  monumento(x, e) {
+    const { lit, night, wet, ts } = e, cx = 320, B = '#3d3226', Tm = c => rgba(mixc(hex(c), [8, 12, 28], night ? .25 : lit ? .15 : wet ? .1 : 0));
+    x.fillStyle = rgba(mixc(e.bot, [8, 12, 28], .45)); this.bl[0].forEach(([bx, bw, bh]) => x.fillRect(bx, 108 - bh * .6, bw, bh * .6));
+    x.fillStyle = Tm('#c9ccd6'); x.fillRect(60, 28, 110, 12); x.fillStyle = Tm('#2457d6'); x.fillRect(60, 28, 110, 3); x.fillStyle = '#fff'; x.font = '700 7px system-ui,sans-serif'; x.fillText('MONUMENTO', 82, 37);
+    this.lrt(x, e.bot, lit, e.dt);
+    [[30, 82], [600, 84], [570, 88]].forEach(([tx, ty]) => { x.fillStyle = Tm('#6b4a2e'); x.fillRect(tx - 1.5, ty, 3, 108 - ty); x.fillStyle = Tm('#2f8f4e'); x.beginPath(); x.arc(tx, ty - 2, 12, 0, 7); x.arc(tx + 7, ty + 3, 9, 0, 7); x.fill(); });
+    if (lit) { const g = x.createRadialGradient(cx, 50, 4, cx, 50, 75); g.addColorStop(0, 'rgba(255,225,140,.3)'); g.addColorStop(1, 'rgba(255,225,140,0)'); x.fillStyle = g; x.fillRect(cx - 80, 0, 160, 110); }
+    x.fillStyle = Tm('#4f8fb8'); x.beginPath(); x.ellipse(cx, 103, 92, 4, 0, 0, 7); x.fill();
+    x.fillStyle = 'rgba(255,255,255,.28)'; for (let k = 0; k < 8; k++) x.fillRect(cx - 80 + k * 22 + Math.sin(ts / 600 + k) * 3, 102 + (k % 2), 8, 1);
+    x.fillStyle = Tm('#a9a395'); x.fillRect(cx - 52, 94, 104, 6); x.fillStyle = Tm('#b9b3a4'); x.fillRect(cx - 44, 88, 88, 6);
+    x.fillStyle = Tm('#a39d8f'); x.fillRect(cx - 32, 65, 16, 23); x.fillRect(cx + 16, 65, 16, 23); x.fillStyle = Tm('#c7c1b1'); x.fillRect(cx - 16, 65, 32, 23); x.fillStyle = Tm('#d2ccbc'); x.fillRect(cx - 35, 60, 70, 5);
+    for (let k = 0; k < 5; k++) { const y0 = 60 - k * 7, y1 = y0 - 7, w0 = 9 + 11 * (y0 - 25) / 35, w1 = 9 + 11 * (y1 - 25) / 35; x.fillStyle = Tm(k % 2 ? '#d9d3c3' : '#cfc9b9'); x.beginPath(); x.moveTo(cx - w0 / 2, y0); x.lineTo(cx + w0 / 2, y0); x.lineTo(cx + w1 / 2, y1); x.lineTo(cx - w1 / 2, y1); x.fill(); x.fillStyle = Tm('#a39d8f'); x.fillRect(cx - w1 / 2 - .5, y1 - .5, w1 + 1, 1.2); }
+    x.fillStyle = Tm('#d9d3c3'); x.beginPath(); x.moveTo(cx - 4.5, 25); x.lineTo(cx + 4.5, 25); x.lineTo(cx, 19); x.fill();
+    x.fillStyle = B; [-1, 1].forEach(d => { x.beginPath(); x.moveTo(cx + d, 12); x.quadraticCurveTo(cx + d * 9, 4, cx + d * 12, 6); x.quadraticCurveTo(cx + d * 8, 12, cx + d * 2, 18); x.fill(); });
+    x.fillRect(cx - 1.2, 10, 2.4, 9); x.beginPath(); x.arc(cx, 8.4, 1.5, 0, 7); x.fill(); x.strokeStyle = B; x.beginPath(); x.moveTo(cx - 1, 11); x.lineTo(cx - 4, 6); x.moveTo(cx + 1, 11); x.lineTo(cx + 4, 6); x.stroke();
+    const fig = (px, by, s) => { x.fillStyle = B; x.fillRect(px - 1.5 * s, by - 6 * s, 3 * s, 5.5 * s); x.beginPath(); x.arc(px, by - 7.4 * s, 1.4 * s, 0, 7); x.fill(); };
+    for (let k = 0; k < 13; k++) if (k !== 6) fig(cx - 48 + k * 8, 94, .9 + (k * 7 % 3) * .1);
+    for (let k = 0; k < 11; k++) if (k !== 5) fig(cx - 40 + k * 8, 88, .9 + (k * 5 % 3) * .1);
+    fig(cx, 88, 2.1); x.strokeStyle = B; x.lineWidth = 1.4; x.beginPath(); x.moveTo(cx + 2, 80); x.lineTo(cx + 6, 73); x.stroke(); x.lineWidth = 1;
+    if (lit) [-45, 45].forEach(d => { const g = x.createRadialGradient(cx + d, 100, 1, cx + d, 100, 22); g.addColorStop(0, 'rgba(255,230,160,.45)'); g.addColorStop(1, 'rgba(255,230,160,0)'); x.fillStyle = g; x.fillRect(cx + d - 22, 78, 44, 30); });
+  }
+  /* Elevated LRT line behind the near buildings */
+  lrt(x, bot, lit, dt) {
+    x.fillStyle = rgba(mixc(bot, [8, 12, 28], .7)); x.fillRect(0, 50, 640, 3); for (let p = 20; p < 640; p += 80) x.fillRect(p, 53, 4, 55);
+    this.tr += dt * 70; if (this.tr > 1000) this.tr = -300;
+    for (let i = 0; i < 4; i++) { const cx = this.tr - i * 38; if (cx < -40 || cx > 680) continue; x.fillStyle = '#cfd6e3'; x.fillRect(cx, 41, 36, 9); x.fillStyle = '#2457d6'; x.fillRect(cx, 47, 36, 2); x.fillStyle = lit ? '#ffd479' : '#7aa7d9'; for (let k = 0; k < 4; k++) x.fillRect(cx + 3 + k * 8, 43, 5, 3); }
+  }
+  /* Street life: lamps, a walking crowd (umbrellas in the rain), a tricycle, birds */
+  street(x, h, w, night, wet, lit, dt, ts, loc) {
+    if (lit) [60, 200, 340, 480, 620].forEach(lx => { const g = x.createRadialGradient(lx, 96, 1, lx, 96, 20); g.addColorStop(0, 'rgba(255,225,140,.55)'); g.addColorStop(1, 'rgba(255,225,140,0)'); x.fillStyle = g; x.fillRect(lx - 20, 76, 40, 40); x.fillStyle = '#222'; x.fillRect(lx, 96, 1.5, 12); });
+    const fy = 107.5, k = lit ? .35 : 0;
+    this.pp.slice(0, crowdN(h, w, loc)).forEach(p => {
+      p.x += p.v * dt * (wet ? 1.4 : 1); if (p.x > 650) p.x = -10; if (p.x < -10) p.x = 650;
+      const c = rgba(mixc(p.c, [10, 14, 30], k)), sw = Math.sin(ts / 110 * Math.abs(p.v) / 8 + p.ph) * 1.3, px = p.x;
+      x.fillStyle = c; x.fillRect(px - 1.6, fy - 7, 3.2, 4.2); x.fillRect(px - 1.2 + sw, fy - 3, 1, 3); x.fillRect(px + .2 - sw, fy - 3, 1, 3);
+      x.fillStyle = rgba(mixc([224, 180, 138], [10, 14, 30], k)); x.beginPath(); x.arc(px, fy - 8.6, 1.7, 0, 7); x.fill();
+      if (wet) { x.fillStyle = c; x.beginPath(); x.arc(px, fy - 9.5, 4.5, Math.PI, 0); x.fill(); }
+    });
+    this.tc -= dt * 24; if (this.tc < -60) this.tc = 720;
+    x.fillStyle = '#2a6fdb'; x.fillRect(this.tc, 108, 15, 8); x.fillStyle = '#e04a3a'; x.fillRect(this.tc - 12, 111, 12, 5); x.fillStyle = '#111';
+    [this.tc + 3, this.tc + 12, this.tc - 6].forEach(wx => { x.beginPath(); x.arc(wx, 117, 2.2, 0, 7); x.fill(); });
+    if (!night && !wet) this.bd.forEach(b => { b[0] = (b[0] + dt * b[2]) % 680; x.strokeStyle = 'rgba(20,30,50,.6)'; x.beginPath(); const f = Math.sin(ts / 90 + b[3]) * 2; x.moveTo(b[0] - 3, b[1] + f); x.lineTo(b[0], b[1]); x.lineTo(b[0] + 3, b[1] + f); x.stroke(); });
+  }
+  draw(ts) {
+    const g = this.g, s = g.state, x = this.x, h = s ? g.time.hour : 9, w = (s && s.wx) || 'sun', dt = Math.min(.1, (ts - this.last) / 1000) || 0;
+    this.last = ts;
+    let i = 0; while (SKY[i + 1][0] <= h) i++;
+    const f = (h - SKY[i][0]) / (SKY[i + 1][0] - SKY[i][0]), top = mixc(SKY[i][1], SKY[i + 1][1], f), bot = mixc(SKY[i][2], SKY[i + 1][2], f), night = h < 5 || h >= 20, wet = w === 'rain' || w === 'ty';
+    const gr = x.createLinearGradient(0, 0, 0, 120); gr.addColorStop(0, rgba(top)); gr.addColorStop(1, rgba(bot)); x.fillStyle = gr; x.fillRect(0, 0, 640, 120);
+    if (night) this.st.forEach(([a, b, c]) => { x.globalAlpha = (.3 + .7 * Math.abs(Math.sin(ts / 700 + c * 9))) * (w === 'sun' ? 1 : .3); x.fillStyle = '#fff'; x.fillRect(a, b, 1.5, 1.5); });
+    x.globalAlpha = 1;
+    const p = ((h + 6) % 12) / 12, sx = 40 + 560 * p, sy = 95 - 80 * Math.sin(Math.PI * p);
+    if (w !== 'ty') { x.globalAlpha = w === 'sun' ? 1 : .45; x.fillStyle = h >= 6 && h < 18 ? '#fff3b0' : '#f4f1de'; x.beginPath(); x.arc(sx, sy, h >= 6 && h < 18 ? 13 : 9, 0, 7); x.fill(); x.globalAlpha = 1; }
+    this.cl.forEach(c => { c[0] = (c[0] + dt * 8 * c[2]) % 760; x.fillStyle = wet ? 'rgba(120,130,150,.9)' : w === 'cloud' ? 'rgba(200,205,215,.85)' : night ? 'rgba(150,160,190,.3)' : 'rgba(255,255,255,.4)'; [[0, 0, 26, 9], [18, 4, 22, 8], [-18, 4, 20, 7]].forEach(([a, b, rx, ry]) => { x.beginPath(); x.ellipse(c[0] - 60 + a, c[1] + b, rx * c[2], ry * c[2], 0, 0, 7); x.fill(); }); });
+    if (wet) { x.fillStyle = `rgba(25,35,55,${w === 'ty' ? .45 : .25})`; x.fillRect(0, 0, 640, 120); }
+    const lit = night || h >= 18 || wet;
+    const loc = (s && s.loc) || 'home', alt = loc === 'home' || loc === 'school' || loc === 'court', T = c => rgba(mixc(hex(c), [8, 12, 28], night ? .55 : lit ? .35 : wet ? .15 : 0)), win = lit ? '#ffd479' : '#8fb4e3';
+    if (loc !== this.loc) { this.loc = loc; this.fd = this.still ? 0 : 1; }
+    if (!alt) this.bl.forEach((a, l) => { if (l) this.lrt(x, bot, lit, dt); x.fillStyle = rgba(mixc(bot, [8, 12, 28], l ? .8 : .55)); a.forEach(([bx, bw, bh, r]) => { x.fillRect(bx, 108 - bh, bw, bh); if (l && lit) { x.fillStyle = '#ffd479'; for (let wy = 108 - bh + 5; wy < 102; wy += 7) for (let wx = bx + 3; wx < bx + bw - 3; wx += 6) if ((Math.sin(wx * 12.9 + wy * 7.1 + r * 99) * 43758) % 1 > .45) x.fillRect(wx, wy, 3, 3); x.fillStyle = rgba(mixc(bot, [8, 12, 28], .8)); } }); });
+    this.scenery(x, loc, { T, win, lit, night, wet, ts, bot, h, dt, city: s && s.city, sign: JOBSIGN[s && s.job] || 'WORKPLACE' });
+    x.fillStyle = loc === 'court' ? (s && s.city === 'Caloocan' ? '#222a38' : '#6a8f55') : loc === 'school' ? '#2d3b33' : '#1b2232'; x.fillRect(0, 108, 640, 12); x.fillStyle = '#e8d56b'; for (let d = 0; d < 640; d += 40) x.fillRect(d, 114, 18, 1.5);
+    this.street(x, h, w, night, wet, lit, dt, ts, loc === 'court' && s && s.city === 'Caloocan' ? 'monu' : loc);
+    this.car = (this.car + dt * 16) % 760; const cx = this.car - 60;
+    x.fillStyle = '#e04a3a'; x.fillRect(cx, 91, 40, 4); x.fillStyle = '#ffd24a'; x.fillRect(cx - 2, 95, 46, 13); x.fillStyle = '#bfe3ff'; for (let k = 0; k < 3; k++) x.fillRect(cx + 4 + k * 12, 97, 8, 5);
+    x.fillStyle = '#111'; x.beginPath(); x.arc(cx + 8, 109, 4, 0, 7); x.arc(cx + 34, 109, 4, 0, 7); x.fill();
+    if (night) { x.fillStyle = 'rgba(255,240,170,.35)'; x.beginPath(); x.moveTo(cx + 44, 100); x.lineTo(cx + 74, 94); x.lineTo(cx + 74, 110); x.fill(); }
+    if (wet) { x.strokeStyle = 'rgba(200,220,255,.5)'; x.beginPath(); this.rn.slice(0, w === 'ty' ? 60 : 35).forEach(r => { r[1] += dt * 260; r[0] -= dt * (w === 'ty' ? 90 : 30); if (r[1] > 120) { r[1] = -6; r[0] = Math.random() * 700; } x.moveTo(r[0], r[1]); x.lineTo(r[0] - 2, r[1] + 6); }); x.stroke(); }
+    if (s) { x.font = '600 11px system-ui,sans-serif'; x.fillStyle = 'rgba(0,0,0,.45)'; x.fillRect(8, 8, 104, 18); x.fillStyle = '#fff'; x.fillText(`${DATA.days[g.time.weekday].slice(0, 3)} ${clock(h)} ${DATA.weather.label[w].split(' ')[0]}`, 14, 21); }
+    if (s) { const t2 = g.world.locations()[loc]; if (t2) { const tx = `${t2[0]} ${t2[1]}`; x.fillStyle = 'rgba(0,0,0,.45)'; x.fillRect(8, 29, 14 + tx.length * 5.6, 17); x.fillStyle = '#fff'; x.fillText(tx, 14, 41); } }
+    if (this.fd > 0) { x.fillStyle = `rgba(10,14,30,${this.fd})`; x.fillRect(0, 0, 640, 120); this.fd -= dt * 3; }
+    if (w === 'ty') { if (Math.random() < .01) this.fl = 1; if (this.fl > 0) { x.fillStyle = `rgba(255,255,255,${this.fl * .5})`; x.fillRect(0, 0, 640, 120); this.fl -= dt * 3.5; } }
+  }
+}
+/* Confetti and coin bursts on a full-screen overlay canvas */
+class Particles {
+  constructor(cv) { this.cv = cv; this.x = cv.getContext('2d'); this.p = []; this.on = 0; }
+  burst(kind) {
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const W = this.cv.width = innerWidth, H = this.cv.height = innerHeight, n = kind === '$' ? 18 : 60;
+    for (let i = 0; i < n; i++) this.p.push({ x: W / 2 + (Math.random() - .5) * 120, y: H * .3, vx: (Math.random() - .5) * 360, vy: -200 - Math.random() * 260, a: 0, k: kind, r: kind === '$' ? 5 : 3 + Math.random() * 3, c: kind === '$' ? '#f2b632' : ['#ff5d73', '#ffd24a', '#4cc9a4', '#6c93ff', '#fff'][i % 5] });
+    if (!this.on) { this.on = 1; this.t0 = performance.now(); requestAnimationFrame(t => this.step(t)); }
+  }
+  step(t) {
+    const x = this.x, W = this.cv.width, H = this.cv.height, dt = Math.min(.05, (t - this.t0) / 1000) || 0;
+    this.t0 = t; x.clearRect(0, 0, W, H);
+    this.p = this.p.filter(q => {
+      q.vy += 600 * dt; q.x += q.vx * dt; q.y += q.vy * dt; q.a += dt;
+      if (q.a > 2.2 || q.y > H) return false;
+      x.globalAlpha = 1 - q.a / 2.2; x.fillStyle = q.c;
+      if (q.k === '$') { x.beginPath(); x.arc(q.x, q.y, q.r, 0, 7); x.fill(); } else x.fillRect(q.x, q.y, q.r, q.r * 1.6);
+      return true;
+    });
+    x.globalAlpha = 1;
+    if (this.p.length) requestAnimationFrame(t2 => this.step(t2)); else { this.on = 0; x.clearRect(0, 0, W, H); }
   }
 }
 
 /* ---------------------------------------------------------------- BOOTSTRAP */
 const game = new GameEngine();
 const view = new Renderer(game, document.querySelector('#app'));
+/* Sound and graphics are wired in from outside the game classes: bus events, a render hook and thin method wrappers */
+const fx = new AudioFX(), scene = new Scene(document.querySelector('#scene'), game), parts = new Particles(document.querySelector('#fxc')), snd = document.querySelector('#snd');
+game.fx = fx; fx.g = game;
+const icons = ['🔇', '🔊', '🎵'], wrap = (o, k, f) => { const orig = o[k].bind(o); o[k] = (...a) => { const r = orig(...a); f(r, a); return r; }; };
+snd.textContent = icons[fx.mode]; snd.setAttribute('aria-label', 'Sound: ' + ['off', 'effects and ambience', 'effects, ambience and music'][fx.mode]);
+snd.addEventListener('click', () => { fx.setMode((fx.mode + 1) % 3); snd.textContent = icons[fx.mode]; snd.setAttribute('aria-label', 'Sound: ' + ['off', 'effects and ambience', 'effects, ambience and music'][fx.mode]); });
+document.addEventListener('pointerdown', e => { fx.unlock(); if (e.target.closest && e.target.closest('button') && e.target !== snd) fx.click(); }, { passive: true });
+game.bus.on('render', () => {
+  const s = game.state; if (!s) return;
+  if (fx.pm !== undefined) { if (s.m > fx.pm) { fx.coin(); if (s.m - fx.pm >= 500) parts.burst('$'); } else if (s.m < fx.pm) fx.spend(); }
+  fx.pm = s.m; fx.weather(s.wx || 'sun');
+  if (game.ui.modal && game.ui.modal !== fx.pmod) fx.pop(); fx.pmod = game.ui.modal;
+  if (s.over && !fx.over) { fx.over = 1; fx.sad(); } else if (!s.over) fx.over = 0;
+  if (scene.still) scene.draw(0);
+});
+game.bus.on('toast', m => { if (/not enough|can.?t|cannot|need/i.test(String(m))) fx.err(); });
+game.bus.on('day:begin', () => fx.morning());
+wrap(game, 'push', (r, [k]) => { if (k === 'msg') fx.ding(); else if (k === 'alert') fx.alert(); });
+wrap(game.hobby, 'strike', r => { if (r) { if (/Perfect/.test(r.msg || '')) fx.perfect(); else if (r.done) fx.fanfare(); else fx.miss(); } });
+wrap(game.hobby, 'tap', r => { if (r.ok) fx.perfect(); else fx.err(); });
+wrap(game.hobby, 'finishKit', () => { fx.fanfare(); parts.burst('c'); });
+{ const oj = game.hobby.judge.bind(game.hobby); game.hobby.judge = (...a) => { const w = game.state.wins; oj(...a); if (game.state.wins > w) { fx.fanfare(); parts.burst('c'); } else fx.ding(); }; }
 game.boot();
 if (typeof window !== 'undefined') window.game = game;
 </script></body></html>
