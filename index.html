@@ -1071,7 +1071,7 @@ class PhoneManager extends Manager {
   constructor(g) { super(g); g.bus.on('day:begin', () => this.daily()); }
   get me() {
     const s = this.s;
-    return s.me || (s.me = { av: null, bn: null, nm: s.name, bio: 'Student in Metro Manila ✨', col: '#2457d6', fol: 5, posts: [], ch: { nm: s.name + ' Vlogs', col: '#d6403a', subs: 0, earn: 0, vids: [] } });
+    const m0 = s.me || (s.me = { av: null, bn: null, nm: s.name, bio: 'Student in Metro Manila ✨', col: '#2457d6', fol: 5, posts: [], ch: { nm: s.name + ' Vlogs', col: '#d6403a', subs: 0, earn: 0, vids: [] } }); m0.feed = m0.feed || []; m0.sc = m0.sc || 0; return m0;
   }
   cmd(c) {
     const g = this.g, s = this.s, m = this.me, [k, a] = c.x.split(':'), hx = v => /^#[0-9a-f]{6}$/i.test(v), D = DATA.social;
@@ -1088,8 +1088,28 @@ class PhoneManager extends Manager {
     }
     else if (k === 'post') g.ui.showModal({ text: 'What are you posting on Kuwento?', options: [...Object.entries(D.posts).map(([id, v]) => ({ label: v[0], run: () => this.post(id) })), { label: 'Never mind' }] });
     else if (k === 'video') g.ui.showModal({ text: 'What video will you make? (3 hours, needs a laptop)', options: [...Object.entries(D.vids).map(([id, v]) => ({ label: v[0], run: () => this.video(id) })), { label: 'Never mind' }] });
-    else if (k === 'chat') { g.ui.ps = 'in'; g.ui.chat = a || null; if (a && !s.chats[a]) { const x = s.ph.find(q => q.who === a); s.chats[a] = [{ f: 'them', t: x ? x.tx : 'Uy, kumusta?' }]; } if (a) s.ph.forEach(q => { if (q.who === a) q.r = 1; }); }
+    else if (k === 'chat') { g.ui.ps = 'in'; g.ui.chat = a || null; if (a && !s.chats[a]) { const x = s.ph.find(q => q.who === a); s.chats[a] = x ? [{ f: 'them', t: x.tx }] : []; } if (a) s.ph.forEach(q => { if (q.who === a) q.r = 1; }); }
     else if (k === 'send') { const t = Util.clean((c.f || {}).t || '').slice(0, 160); if (t && !this.busy && s.chats[a]) { s.chats[a].push({ f: 'me', t }); this.busy = a; this.talk(a, t); } }
+    else if (k === 'scroll') {
+      g.time.tick(); this.genFeed(); m.sc++;
+      if (m.sc > 3) { s.N.f -= 4; s.N.e -= 8; g.ui.toast('😵 Doomscrolling is draining you'); } else { s.N.f += 6; s.N.e -= 3; }
+      g.log('📜 Scrolled Kuwento for an hour.');
+    }
+    else if (k === 'flk') { const x = m.feed[+a]; if (x && !x.lk) { x.lk = 1; s.N.f += 1; if (x.f) this.bump(x.u, .5); } }
+    else if (k === 'rcm' || k === 'fcm') g.ui.rt = { k: k === 'rcm' ? 'c' : 'f', a };
+    else if (k === 'kno') g.ui.rt = null;
+    else if (k === 'ksend') {
+      const t = Util.clean((c.f || {}).t || '').slice(0, 140), rt = g.ui.rt; if (!t || !rt) return;
+      let tg; if (rt.k === 'c') { const [pi, ci] = rt.a.split('-'); tg = ((m.posts[+pi] || {}).cm || [])[+ci]; } else tg = m.feed[+rt.a];
+      g.ui.rt = null; if (!tg) return;
+      tg.th = tg.th || []; tg.th.push({ u: 'You', t }); s.N.s += 3; this.bump(tg.u, .6); this.kreply(tg, tg.u, t);
+    }
+    else if (k === 'find') { const free = DATA.names.filter(n => !s.ppl.some(p => p.n === n)); m.sg = free.sort(() => Math.random() - .5).slice(0, 3).map(n => ({ n, t: pick(Object.keys(DATA.personTypes)) })); }
+    else if (k === 'addf') {
+      const x = (m.sg || []).find(q => q.n === a); if (!x) return;
+      if (s.ppl.length >= DATA.maxPeople) return g.ui.toast('Your circle is full for now');
+      s.ppl.push({ n: x.n, t: x.t, r: 12 }); m.sg = m.sg.filter(q => q !== x); s.N.s += 5; g.log(`🤝 You added ${x.n} on Kuwento.`);
+    }
     else if (k === 'reply') this.reply(+a);
     else if (k === 'like') { const x = s.ph[+a]; if (x && !x.lk) { x.lk = 1; s.N.f += 2; } }
   }
@@ -1112,7 +1132,7 @@ class PhoneManager extends Manager {
     g.log(`▶️ Uploaded "${l}" (quality ${q})`);
   }
   daily() {
-    const g = this.g, s = this.s, m = this.me, ch = m.ch; let tot = 0;
+    const g = this.g, s = this.s, m = this.me, ch = m.ch; let tot = 0; m.sc = 0;
     m.posts.forEach(p => { p.likes += Math.round(rnd(0, .1) * m.fol); });
     ch.vids.forEach(v => {
       v.age++; const gn = Math.round(v.q * (1 + ch.subs / 15) * rnd(.4, 1.2) / (1 + v.age * .3)); v.v += gn; tot += gn;
@@ -1120,6 +1140,18 @@ class PhoneManager extends Manager {
     });
     ch.subs += Math.round(tot / 40);
     if (ch.subs >= 50 && tot) { const inc = Math.round(tot * .03); if (inc) { ch.earn += inc; s.m += inc; g.push('alert', `💵 ManilaTube ad revenue: +${fmt(inc)}`); } }
+  }
+  genFeed() {
+    const m = this.me, s = this.s, P = DATA.personTypes, H = ['@jeepney_jay', '@mikay.eats', '@kuya.vlogs', '@ate_carla', '@jc.codes', '@mnl.cats', '@lrt.commuter', '@tropa.laro'],
+      C = ['Traffic sa EDSA na naman 😩', 'Milk tea run kasama ang tropa 🧋', 'Natapos ko na ang thesis draft!', 'Sino may extra charger? 🔌', 'Ulan na naman, sino may payong? ☔', 'Hot take: pancit canton > ramen', 'LRT sa rush hour is a sport 🚆', 'Pusa ko ang bida ng araw 🐈'];
+    for (let i = 0; i < 4; i++) { const p = s.ppl.length && Math.random() < .5 ? pick(s.ppl) : null; m.feed.unshift(p ? { u: p.n, f: 1, tx: `Another day, more ${P[p.t].desc} ${P[p.t].icon}`, lk: 0, th: [] } : { u: pick(H), f: 0, tx: pick(C), lk: 0, th: [] }); }
+    m.feed.length = Math.min(m.feed.length, 12);
+  }
+  async kreply(tg, who, t) {
+    let r = null;
+    try { const sm = await this.sample(); if (sm) r = await sm.json(`Social media sim in Metro Manila. The player ${this.me.nm} replied "${t}" to a post or comment by ${who}. Reply as ${who} in short Taglish, max 14 words. JSON only: {"t":"reply"}`, { cache: false, modelTier: 'quick' }); } catch { r = null; }
+    tg.th.push({ u: who, t: Util.clean(String((r && r.t) || '')).slice(0, 100) || pick(['Haha salamat!', 'Uy thanks!', 'Truee 😂', 'Sige sige!']) });
+    if (tg.th.length > 6) tg.th.splice(0, tg.th.length - 6); this.g.commit();
   }
   async sample() {
     if (this.sm === undefined) { try { this.sm = window.claude ? await window.claude.use('sample') : null; } catch { this.sm = null; }
@@ -1551,7 +1583,7 @@ class Renderer {
     const t = e.target.closest('[data-x],[data-tab],[data-a],[data-m],[data-o],[data-p],[data-g],#go,#nw');
     if (!t) return;
     const D = t.dataset, g = this.g;
-    if (D.x) g.dispatch({ type: 'ph', x: D.x, f: D.x === 'save' ? this.readMe() : D.x.startsWith('send') ? { t: (this.$('#cm') || {}).value } : null });
+    if (D.x) g.dispatch({ type: 'ph', x: D.x, f: D.x === 'save' ? this.readMe() : D.x.startsWith('send') ? { t: (this.$('#cm') || {}).value } : D.x === 'ksend' ? { t: (this.$('#kc') || {}).value } : null });
     else if (D.tab) g.dispatch({ type: 'tab', tab: D.tab });
     else if (D.a) g.dispatch({ type: 'action', key: D.a });
     else if (D.m) g.dispatch({ type: 'bank', op: D.m });
@@ -1724,17 +1756,29 @@ class Renderer {
   }
   thread(who) {
     const g = this.g, c = g.state.chats[who] || [], busy = g.phone.busy === who, w = this.esc(who);
-    return `<div class="cd"><div class="rw"><b>${w}</b><button data-x="chat:" style="min-height:36px">← Back</button></div><small>Closeness ${Math.round(g.phone.relOf(who))}. Replies are written live by Claude and depend on your relationship.</small>${c.map(x => `<div style="display:flex;justify-content:${x.f === 'me' ? 'flex-end' : 'flex-start'};margin:6px 0"><span style="max-width:80%;padding:6px 10px;border-radius:14px;background:${x.f === 'me' ? 'var(--ac)' : 'var(--bg)'};color:${x.f === 'me' ? '#fff' : 'var(--ink)'}">${this.esc(x.t)}</span></div>`).join('')}${busy ? '<small>typing…</small>' : ''}<div class="gr" style="grid-template-columns:1fr auto"><input id="cm" maxlength="160" placeholder="Type a message" ${busy ? 'disabled' : ''}><button data-x="send:${w}" ${busy ? 'disabled' : ''}>Send</button></div></div>`;
+    return `<div class="cd"><div class="rw"><b>${w}</b><button data-x="chat:" style="min-height:36px">← Back</button></div><small>Closeness ${Math.round(g.phone.relOf(who))}. Replies are written live by Claude and depend on your relationship.</small>${c.length ? '' : '<br><small>No messages yet. Send the first one!</small>'}${c.map(x => `<div style="display:flex;justify-content:${x.f === 'me' ? 'flex-end' : 'flex-start'};margin:6px 0"><span style="max-width:80%;padding:6px 10px;border-radius:14px;background:${x.f === 'me' ? 'var(--ac)' : 'var(--bg)'};color:${x.f === 'me' ? '#fff' : 'var(--ink)'}">${this.esc(x.t)}</span></div>`).join('')}${busy ? '<small>typing…</small>' : ''}<div class="gr" style="grid-template-columns:1fr auto"><input id="cm" maxlength="160" placeholder="Type a message" ${busy ? 'disabled' : ''}><button data-x="send:${w}" ${busy ? 'disabled' : ''}>Send</button></div></div>`;
   }
   phoneTab() {
     const g = this.g, s = g.state, m = g.phone.me, ps = g.ui.ps || 'in', ch = m.ch, e = t => this.esc(t);
-    const sm = 'style="margin-top:4px;min-height:36px;padding:4px 12px"';
+    const sm = 'style="margin-top:4px;min-height:36px;padding:4px 12px"', mini = 'style="min-height:28px;padding:0 8px;font-size:12px"';
+    const cmH = (c, k) => `<br><small>💬 <b>${e(c.u)}</b> ${e(c.t)}</small> <button data-x="rcm:${k}" ${mini}>↩️ Reply</button>${(c.th || []).map(x => `<br><small>&nbsp;&nbsp;↪ <b>${e(x.u)}</b> ${e(x.t)}</small>`).join('')}`;
     const hd = (c2, nm, sub) => `<div style="height:70px;border-radius:10px;background:${m.bn ? `url('${m.bn}') center/cover` : `linear-gradient(135deg,${m.col},${c2})`}"></div><div class="rw" style="margin-top:-22px;padding:0 8px;justify-content:flex-start;gap:10px">${this.av(m.av, nm, m.col, 52)}<div style="margin-top:22px"><b class="t">${e(nm)}</b><br><small>${sub}</small></div></div>`;
     const tabs = [['in', '💬 Inbox'], ['soc', '📱 Kuwento'], ['yt', '▶️ ManilaTube'], ['me', '🎨 Customize']].map(([k, n]) => `<button data-x="sub:${k}" class="${ps === k ? 'on' : ''}">${n}</button>`).join('');
     let b = '';
     if (ps === 'in' && g.ui.chat) b = this.thread(g.ui.chat);
     else if (ps === 'in') b = `<div class="cd"><h3>Inbox, messages and feed</h3>${s.ph.length ? s.ph.slice(0, 15).map((x, i) => `<div class="pi${x.r ? '' : ' nw'}"><b>${x.who}</b> ${x.tx}<br><small>${x.d}${x.rp ? ' · replied' : ''}</small>${x.k === 'msg' ? `<br>${x.rp ? '' : `<button data-x="reply:${i}" ${sm}>↩️ Quick reply</button> `}<button data-x="chat:${x.who}" ${sm}>💬 Chat</button>` : ''}${x.k === 'feed' && !x.lk ? `<br><button data-x="like:${i}" ${sm}>❤️ Like</button>` : ''}</div>`).join('') : '<small>Nothing yet.</small>'}</div>`;
-    if (ps === 'soc') b = `<div class="cd">${hd(ch.col, m.nm, `${m.fol} followers`)}<p><small>${e(m.bio)}</small></p><button data-x="post" style="width:100%">✍️ New post (1h)</button></div><div class="cd"><h3>Your posts</h3>${m.posts.length ? m.posts.map(p => `<div class="pi">${p.l}<br><small>❤️ ${p.likes} · ${p.d}</small>${(p.cm || []).map(c => `<br><small>💬 <b>${e(c.u)}</b> ${e(c.t)}</small>`).join('')}</div>`).join('') : '<small>No posts yet. Higher Design, Charisma and a profile photo get more likes.</small>'}</div>`;
+    if (ps === 'soc') b = `<div class="cd">${hd(ch.col, m.nm, `${m.fol} followers`)}<p><small>${e(m.bio)}</small></p><div class="gr"><button data-x="post">✍️ New post (1h)</button><button data-x="scroll">📜 Scroll feed (1h)</button></div><button data-x="find" style="width:100%;margin-top:8px">👥 Find friends</button></div><div class="cd"><h3>Your posts</h3>${m.posts.length ? m.posts.map((p, pi) => `<div class="pi">${p.l}<br><small>❤️ ${p.likes} · ${p.d}</small>${(p.cm || []).map((c, ci) => cmH(c, pi + '-' + ci)).join('')}</div>`).join('') : '<small>No posts yet. Higher Design, Charisma and a profile photo get more likes.</small>'}</div>`;
+    if (ps === 'in' && !g.ui.chat) {
+      const ct = ['👩 Mom', '🧑‍🤝‍🧑 Barkada GC', ...s.ppl.map(p => DATA.personTypes[p.t].icon + ' ' + p.n), ...(s.R.crush >= 20 ? ['💘 Crush'] : [])];
+      b = `<div class="cd"><h3>Start a chat</h3><small>Message anyone first. Replies depend on your closeness.</small><div>${ct.map(w => `<button data-x="chat:${e(w)}" ${sm}>${e(w)}</button>`).join(' ')}</div></div>` + b;
+    }
+    if (ps === 'soc') {
+      const rt = g.ui.rt, tg = rt && (rt.k === 'c' ? ((m.posts[+rt.a.split('-')[0]] || {}).cm || [])[+rt.a.split('-')[1]] : m.feed[+rt.a]);
+      const cp = tg ? `<div class="cd"><b>Replying to ${e(tg.u)}</b><br><small>${e(tg.t || tg.tx)}</small><div class="gr" style="grid-template-columns:1fr auto auto"><input id="kc" maxlength="140" placeholder="Write a reply"><button data-x="ksend">Send</button><button data-x="kno">Cancel</button></div></div>` : '';
+      const fd = `<div class="cd"><h3>Feed</h3>${m.feed.length ? m.feed.slice(0, 8).map((p, i) => `<div class="pi"><b>${e(p.u)}</b>${p.f ? ' 🤝' : ''} ${e(p.tx)}<br>${p.lk ? '<small>❤️ Liked</small>' : `<button data-x="flk:${i}" ${mini}>❤️ Like</button>`} <button data-x="fcm:${i}" ${mini}>💬 Reply</button>${(p.th || []).map(x => `<br><small>↪ <b>${e(x.u)}</b> ${e(x.t)}</small>`).join('')}</div>`).join('') : '<small>Your feed is empty. Tap Scroll feed to load posts.</small>'}</div>`;
+      const fr = `<div class="cd"><h3>People you may know</h3><small>Your circle: ${s.ppl.length}/${DATA.maxPeople}</small>${(m.sg || []).map(x => `<div class="pi"><b>${e(x.n)}</b> loves ${DATA.personTypes[x.t].desc} ${DATA.personTypes[x.t].icon} <button data-x="addf:${e(x.n)}" ${mini}>➕ Add friend</button></div>`).join('') || '<br><small>Tap Find friends to see suggestions.</small>'}</div>`;
+      b = cp + b + fd + fr;
+    }
     if (ps === 'yt') b = `<div class="cd">${hd(m.col, ch.nm, `${ch.subs} subscribers · ${ch.subs >= 50 ? 'monetized, earned ' + fmt(ch.earn) : (50 - ch.subs) + ' more to monetize'}`)}<button data-x="video" style="width:100%;margin-top:8px">🎬 Make a video (3h)</button></div><div class="cd"><h3>Your videos</h3>${ch.vids.length ? ch.vids.map(v => `<div class="pi">${e(v.n)}<br><small>👁 ${v.v} views · quality ${v.q}</small>${(v.cm || []).map(c => `<br><small>💬 <b>${e(c.u)}</b> ${e(c.t)}</small>`).join('')}</div>`).join('') : '<small>No videos yet. Views build over several days.</small>'}</div>`;
     if (ps === 'me') b = `<div class="cd"><h3>Customize</h3>Display name<input id="f-nm" maxlength="24" value="${e(m.nm)}">Bio<input id="f-bio" maxlength="80" value="${e(m.bio)}">Theme color<input id="f-col" type="color" value="${m.col}">Channel name<input id="f-chn" maxlength="24" value="${e(ch.nm)}">Channel color<input id="f-chc" type="color" value="${ch.col}"><button data-x="save" style="width:100%">💾 Save profile</button></div>
       <div class="cd"><h3>Photos</h3><small>Photos are resized and stored only in this browser.</small><br>Profile picture<input type="file" accept="image/*" id="up-av">Banner photo<input type="file" accept="image/*" id="up-bn"><div class="gr"><button data-x="rm:av">Remove profile picture</button><button data-x="rm:bn">Remove banner</button></div></div>`;
