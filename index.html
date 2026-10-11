@@ -371,6 +371,8 @@ const DATA = {
     posts: { ootd: ['👗 OOTD selfie', 'cha'], food: ['🍜 Food pic', 'cook'], meme: ['😂 Meme', 'int'], take: ['🔥 Hot take', 'int'], gun: ['🤖 Gunpla showcase', 'gun'] },
     vids: { vlog: ['🎥 Daily vlog', 'cha'], tut: ['💻 Coding tutorial', 'code'], build: ['🤖 Gunpla build video', 'gun'], cover: ['🎸 Guitar cover', 'mus'] }
   },
+  /* Self-hosting: paste your Cloudflare Worker URL here to enable AI chat and comments outside claude.ai */
+  aiProxy: 'https://mml1-ai.ymanrique2002.workers.dev/',
   projectCap: 2,
   /* Thesis thresholds are scaled per course (a Nursing thesis needs less coding than a CS one). */
   thesisScale: { 'BS Computer Science': { int: .9, code: 1.1, des: .8 }, 'BS Nursing': { int: 1.05, code: .55, des: .7 }, 'BS Accountancy': { int: 1.1, code: .65, des: .6 }, 'BS Education': { code: .55, des: .9 }, 'BS Criminology': { int: .95, code: .55, des: .6 }, 'BS Tourism': { int: .9, code: .5, des: 1 } },
@@ -1120,7 +1122,9 @@ class PhoneManager extends Manager {
     if (ch.subs >= 50 && tot) { const inc = Math.round(tot * .03); if (inc) { ch.earn += inc; s.m += inc; g.push('alert', `💵 ManilaTube ad revenue: +${fmt(inc)}`); } }
   }
   async sample() {
-    if (this.sm === undefined) { try { this.sm = window.claude ? await window.claude.use('sample') : null; } catch { this.sm = null; } }
+    if (this.sm === undefined) { try { this.sm = window.claude ? await window.claude.use('sample') : null; } catch { this.sm = null; }
+      if (!this.sm && DATA.aiProxy) this.sm = { json: async p => { const r = await fetch(DATA.aiProxy, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt: p }) }); if (!r.ok) throw new Error('ai'); const m = String((await r.json()).text).match(/[\[{][\s\S]*[\]}]/); return JSON.parse(m[0]); } };
+    }
     return this.sm;
   }
   relOf(w) { const s = this.s, p = s.ppl.find(q => w.includes(q.n)); return w.includes('Crush') ? s.R.crush : w.includes('Mom') ? s.R.nanay : w.includes('Barkada') ? s.R.bar : p ? p.r : 20; }
