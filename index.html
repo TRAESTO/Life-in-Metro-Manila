@@ -1071,7 +1071,10 @@ class PhoneManager extends Manager {
   constructor(g) { super(g); g.bus.on('day:begin', () => this.daily()); }
   get me() {
     const s = this.s;
-    const m0 = s.me || (s.me = { av: null, bn: null, nm: s.name, bio: 'Student in Metro Manila ✨', col: '#2457d6', fol: 5, posts: [], ch: { nm: s.name + ' Vlogs', col: '#d6403a', subs: 0, earn: 0, vids: [] } }); m0.feed = m0.feed || []; m0.sc = m0.sc || 0; return m0;
+    const m0 = s.me || (s.me = { av: null, bn: null, nm: s.name, bio: 'Student in Metro Manila ✨', col: '#2457d6', fol: 5, posts: [], ch: { nm: s.name + ' Vlogs', col: '#d6403a', subs: 0, earn: 0, vids: [] } }); m0.feed = m0.feed || []; m0.sc = m0.sc || 0;
+    const bad = x => { if (/^(reply|text|comment)$/i.test(String(x.t).trim())) x.t = 'Haha salamat!'; };
+    m0.posts.forEach(p => (p.cm || []).forEach(c => (c.th || []).forEach(bad))); m0.feed.forEach(f => (f.th || []).forEach(bad));
+    return m0;
   }
   cmd(c) {
     const g = this.g, s = this.s, m = this.me, [k, a] = c.x.split(':'), hx = v => /^#[0-9a-f]{6}$/i.test(v), D = DATA.social;
