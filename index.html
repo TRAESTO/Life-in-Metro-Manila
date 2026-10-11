@@ -92,7 +92,7 @@ const DATA = {
     cash: 1500, hour: 6,
     needs: { e: 85, h: 70, y: 80, f: 70, s: 60 },
     skills: { int: 15, cha: 12, fit: 10, cook: 5, code: 5, mus: 5, gun: 5, des: 5 },
-    rel: { nanay: 50, bar: 30, crush: 10, prof: 20 },
+    rel: { nanay: 50, bar: 0, crush: 0, prof: 0 },
     stash: ['zk']
   },
   weather: {
@@ -110,7 +110,7 @@ const DATA = {
     dev: { n: 'Freelance Developer', p: 140, e: 3, f: 1, req: { skill: 'code', min: 20 }, x: 'high pay, needs coding skill', wear: { laptop: 2 } },
     sell: { n: 'Online Seller', p: 0, e: 5, f: 1, x: 'income swings a lot' }
   },
-  shift: { startHour: 12, lastStartHour: 19, hours: 5, missedPenalty: 12, startReliability: 70 },
+  shift: { startHour: 12, lastStartHour: 19, hours: 5, missedPenalty: 4, startReliability: 70 },
   courses: {
     'BS Computer Science': { int: 8, code: 15, des: 3 }, 'BS Nursing': { int: 8, fit: 4 }, 'BS Accountancy': { int: 10 },
     'BS Education': { cha: 10, des: 5 }, 'BS Criminology': { fit: 10 }, 'BS Tourism': { cha: 10, des: 6 }
@@ -158,6 +158,8 @@ const DATA = {
       maint: { uses: { sleep: 3 }, weekly: .5, fix: 250, warn: 'Your electric fan is rattling.', broken: 'Your electric fan burned out. Sleep is hot and restless again.', fail: 'Your fan motor burned out.' } },
     guitar: { name: '🎸 Guitar', price: 2500, desc: 'practice, busk, impress', store: 'mall',
       maint: { uses: { guitar: 4 }, weekly: 1.5, fix: 250, warn: 'Your guitar strings sound dull.', broken: 'Your guitar needs new strings before you can play or busk.', fail: 'Snap! A guitar string broke.' } },
+    camera: { name: '📷 Camera', price: 3200, desc: 'photo walks, better Kuwento posts', store: 'mall' },
+    skate: { name: '🛹 Skateboard', price: 1500, desc: 'skate at the park', store: 'mall' },
     gym: { name: '🏋️ Gym pass', price: 900, desc: 'stronger workouts', store: 'mall' },
     pet: { name: '🐕 Adopt a dog', price: 300, desc: 'cheers you up, ₱100 weekly food', store: 'mall' },
     outfit: { name: '👕 New outfit', price: 1200, desc: '+5 charisma', store: 'mall', onBuy: { skill: { cha: 5 } } },
@@ -277,9 +279,9 @@ const DATA = {
     15: { when: s => s.R.prof >= 40, text: '📖 Your professor offers you a research assistant role.', options: [{ label: 'Accept (+₱500)', fx: { cash: 500, prep: 15, skill: { int: 3 }, need: { e: -15 } } }, { label: 'Decline' }] },
     18: { text: '📖 A campus job fair is happening this week.', options: [{ label: 'Go and apply', fx: { menu: 'jobs' } }, { label: 'Skip it' }] },
     20: { when: s => s.R.crush >= 50, text: '📖 Your crush confesses their feelings!', options: [{ label: 'Say yes!', fx: { relSet: { crush: 90 }, needSet: { f: 100 } } }, { label: 'Stay friends', fx: { relSet: { crush: 60 } } }] },
-    26: { text: '📖 Your barkada plans a beach trip to Batangas. It costs ₱2,000.', options: [{ label: 'Go!', fx: { spend: 2000, needSet: { f: 100 }, rel: { bar: 15 }, need: { e: -20 } } }, { label: 'Stay home and save', fx: { rel: { bar: -4 } } }] },
+    26: { when: s => s.ubar, text: '📖 Your barkada plans a beach trip to Batangas. It costs ₱2,000.', options: [{ label: 'Go!', fx: { spend: 2000, needSet: { f: 100 }, rel: { bar: 15 }, need: { e: -20 } } }, { label: 'Stay home and save', fx: { rel: { bar: -4 } } }] },
     34: { when: s => s.K.int >= 40, text: '📖 A company offers you a summer internship with a ₱1,200 stipend.', options: [{ label: 'Accept', fx: { cash: 1200, skill: { int: 3 }, need: { e: -20 }, log: '💼 You finished a summer internship.' } }, { label: 'Decline' }] },
-    44: { text: '📖 Your barkada throws a surprise dinner for your birthday.', options: [{ label: 'Treat everyone (₱500)', fx: { spend: 500, rel: { bar: 15 }, need: { f: 40, s: 20 } } }, { label: 'Just enjoy the night', fx: { rel: { bar: 6 }, need: { f: 30 } } }] },
+    44: { when: s => s.ubar, text: '📖 Your barkada throws a surprise dinner for your birthday.', options: [{ label: 'Treat everyone (₱500)', fx: { spend: 500, rel: { bar: 15 }, need: { f: 40, s: 20 } } }, { label: 'Just enjoy the night', fx: { rel: { bar: 6 }, need: { f: 30 } } }] },
     60: { text: '📖 Typhoon season: your school becomes an evacuation center.', options: [{ label: 'Volunteer', fx: { need: { e: -25 }, rel: { bar: 6, nanay: 4 }, skill: { cha: 1 } } }, { label: 'Stay home' }] },
     76: { text: '📖 Your thesis defense is coming up. A tutor offers review sessions.', options: [{ label: 'Pay for sessions (₱600)', fx: { spend: 600, prep: 20, skill: { int: 2 } } }, { label: 'Study on your own', fx: { prep: 8, need: { e: -10 } } }] },
     96: { text: '📖 Graduation photos cost ₱800.', options: [{ label: 'Book the package', fx: { spend: 800, need: { f: 25 }, rel: { nanay: 6 } } }, { label: 'Skip it', fx: { rel: { nanay: -2 } } }] },
@@ -293,7 +295,16 @@ const DATA = {
       bb: { name: 'HG Gundam Barbatos', grade: 'HG', price: 950, diff: 2 },
       nu: { name: 'RG Nu Gundam', grade: 'RG', price: 2400, diff: 3 },
       fr: { name: 'MG Freedom Gundam', grade: 'MG', price: 4200, diff: 4 },
-      sz: { name: 'MG Sazabi Ver.Ka', grade: 'MG', price: 5500, diff: 5 }
+      sz: { name: 'MG Sazabi Ver.Ka', grade: 'MG', price: 5500, diff: 5 },
+      sd: { name: 'SD EX-Standard RX-78-2', grade: 'SD', price: 450, diff: 1 },
+      gm: { name: 'HG GM', grade: 'HG', price: 550, diff: 1 },
+      ae: { name: 'HG Gundam Aerial', grade: 'HG', price: 800, diff: 1 },
+      gf: { name: 'HG Gouf', grade: 'HG', price: 700, diff: 1 },
+      ex: { name: 'HG Gundam Exia', grade: 'HG', price: 900, diff: 2 },
+      rz: { name: 'RG Zaku II', grade: 'RG', price: 2200, diff: 3 },
+      uc: { name: 'RG Unicorn Gundam', grade: 'RG', price: 2600, diff: 3 },
+      m3: { name: 'MG RX-78-2 Ver.3.0', grade: 'MG', price: 3800, diff: 4 },
+      pg: { name: 'PG Unleashed RX-78-2', grade: 'PG', price: 12000, diff: 5 }
     },
     stages: [
       { id: 'cut', name: 'Cut and clean parts', max: 25, h: 2, type: 'timing', wear: { nippers: 12 },
@@ -338,7 +349,16 @@ const DATA = {
       bb: { h: ['\\ /', '[>o<]'], c: ['#d8dde8', '#9a3a3a', '#e2b23a', '#6b7280'] },
       nu: { h: ['\\|/', '[ooo]'], c: ['#e7ecf5', '#e1e4ec', '#3a6fd8', '#c9a63a'] },
       fr: { h: ['\\\\|//', '[o_o]'], c: ['#f2f4f8', '#2f4fc4', '#d6a43a', '#6b7280'] },
-      sz: { h: ['_|_', '[(o)]'], c: ['#d1363a', '#a82a2e', '#ffd24a', '#6b7280'] }
+      sz: { h: ['_|_', '[(o)]'], c: ['#d1363a', '#a82a2e', '#ffd24a', '#6b7280'] },
+      sd: { h: ['(^)', '[o_o]'], c: ['#f2f4f8', '#3a6fd8', '#d9423a', '#c9a63a'] },
+      gm: { h: ['_^_', '[o.o]'], c: ['#e8ecf2', '#6b8fd6', '#c9484a', '#8a93a6'] },
+      ae: { h: ['_^_', '[o_o]'], c: ['#f2f4f8', '#3a6fd8', '#d9423a', '#8a93a6'] },
+      gf: { h: ['_=_', '[=o=]'], c: ['#3a62c4', '#2c4a9a', '#e2b23a', '#6b7280'] },
+      ex: { h: ['_^_', '[o_o]'], c: ['#e7ecf5', '#2f6fd0', '#d8a43a', '#6b7280'] },
+      rz: { h: ['_^_', '(=o=)'], c: ['#5aa866', '#3d7a47', '#b8903a', '#6b7280'] },
+      uc: { h: ['_|_', '[o_o]'], c: ['#f2f4f8', '#e1e4ec', '#d9423a', '#c9a63a'] },
+      m3: { h: ['_^_', '[o_o]'], c: ['#e7ecf5', '#3a6fd8', '#d9423a', '#d6a43a'] },
+      pg: { h: ['_|_', '[o_o]'], c: ['#f2f4f8', '#2f4fc4', '#d9423a', '#ffd24a'] }
     },
     finishCss: { 'Straight build': 'opacity:.8;', 'Marker detailed': '', 'Hand-painted': 'filter:saturate(1.2);', Airbrushed: 'filter:saturate(1.35);text-shadow:0 0 6px currentColor;', Weathered: 'filter:grayscale(.45) brightness(.85);' }
   },
@@ -403,11 +423,11 @@ const DATA = {
     { id: 'study', loc: 'home', name: 'Study', h: 2, d: { e: -8, f: -6 }, run: g => g.academics.study(11) },
     { id: 'homework', loc: 'home', name: 'Do homework', h: 1, d: { e: -4, f: -3 }, ok: g => g.state.hw ? 0 : 'No pending homework', run: g => { g.state.hw--; g.state.K.int += .15; } },
     { id: 'social', loc: 'home', name: 'Social media and mobile games', h: 1, c: 5, d: { f: 22, s: 5 } },
-    { id: 'crush-chat', loc: 'home', name: 'Chat with your crush', h: 1, c: 5, d: { s: 8, f: 8 }, fx: { rel: { crush: 3 } } },
+    { id: 'crush-chat', loc: 'home', name: 'Chat with your crush', h: 1, c: 5, d: { s: 8, f: 8 }, ok: g => g.state.ucr ? 0 : 'Get close to someone first', fx: { rel: { crush: 3 } } },
     { id: 'help-mom', loc: 'home', name: 'Help Mom at home', h: 1, d: { f: -3 }, fx: { rel: { nanay: 4 } } },
     { id: 'medicine', loc: 'home', name: 'Take medicine', h: 1, c: 90, ok: g => g.state.sick ? 0 : 'You are not sick', fx: { sick: 0, log: '💊 You recovered.' } },
     { id: 'class', loc: 'school', name: 'Go to class', h: 6, d: { s: 8, f: -8 },
-      ok: g => { const s = g.state, h = g.time.hour, w = g.time.weekday; return s.wx === 'ty' ? 'Classes are suspended' : w > 4 ? 'Weekend, no class' : s.att ? 'Already attended' : h > g.academics.late() ? `Past ${clock(g.academics.late())}, you are marked absent` : 0; },
+      ok: g => { const s = g.state, h = g.time.hour, w = g.time.weekday; return s.wx === 'ty' ? 'Classes are suspended' : w > 4 ? 'Weekend, no class' : s.att ? 'Already attended' : h > g.academics.late() + 3 ? `Past ${clock(g.academics.late() + 3)}, you are marked absent` : 0; },
       run: g => g.academics.attendClass() },
     { id: 'library', loc: 'school', name: 'Study in the library', h: 2, d: { e: -8, f: -4 }, ok: g => g.time.hour > 17 ? 'Library is closed' : 0, run: g => g.academics.study(12) },
     { id: 'ask-prof', loc: 'school', name: g => 'Ask ' + g.state.pf.n + ' for help', h: 1, d: { e: -3 }, ok: g => { const w = g.time.weekday, h = g.time.hour; return w > 4 || h < 8 || h > 16 ? 'Ma’am is not around' : 0; }, run: g => g.academics.askProf() },
@@ -419,11 +439,11 @@ const DATA = {
     { id: 'coworkers', loc: 'work', name: 'Chat with coworkers', h: 1, d: { s: 12, f: 6 } },
     { id: 'shops', loc: 'mall', name: 'Browse the shops', h: 1, run: g => g.shop.openMall() },
     { id: 'arcade', loc: 'mall', name: 'Arcade and window shopping', h: 3, c: 150, d: { f: 45, s: 10, y: -6 } },
-    { id: 'jollibee', loc: 'mall', name: 'Jollibee with the barkada', h: 1, c: 190, d: g => ({ h: 70, f: 15 + g.stats.trait('foodFun', 0), s: 18 }), fx: { rel: { bar: 4 } } },
-    { id: 'date', loc: 'mall', name: 'Date your crush', h: 3, c: 350, d: { s: 25, f: 40 }, ok: g => g.state.R.crush < 30 ? 'Needs 30+ closeness' : 0, run: g => { g.state.R.crush += 8 + g.state.K.cha / 10; } },
+    { id: 'jollibee', loc: 'mall', name: g => g.state.ubar ? 'Jollibee with the barkada' : 'Jollibee (solo)', h: 1, c: 190, d: g => ({ h: 70, f: 15 + g.stats.trait('foodFun', 0), s: 18 }), fx: { rel: { bar: 4 } } },
+    { id: 'date', loc: 'mall', name: 'Date your crush', h: 3, c: 350, d: { s: 25, f: 40 }, ok: g => !g.state.ucr ? 'Get close to someone first' : g.state.R.crush < 30 ? 'Needs 30+ closeness' : 0, run: g => { g.state.R.crush += 8 + g.state.K.cha / 10; } },
     { id: 'apply', loc: 'mall', name: 'Apply for another job', h: 2, c: 50, run: g => g.career.openJobMenu() },
     { id: 'stroll', loc: 'court', name: g => 'Stroll around ' + g.world.locations().court[1], h: 1, d: { f: 16, s: 4, y: -3 } },
-    { id: 'court-barkada', loc: 'court', name: 'Hang out with the barkada', h: 2, d: { s: 30, f: 16 }, fx: { rel: { bar: 4 } } },
+    { id: 'court-barkada', loc: 'court', name: 'Hang out with the barkada', h: 2, d: { s: 30, f: 16 }, ok: g => g.state.ubar ? 0 : 'Make more friends first', fx: { rel: { bar: 4 } } },
     { id: 'basketball', loc: 'court', name: 'Play pickup basketball', h: 1, d: { e: -10, f: 12, h: -8 }, fx: { skill: { fit: .6 } } },
     { id: 'karinderya', loc: 'court', name: 'Karinderya (viand and rice)', h: 1, c: 70, d: g => ({ h: 58, f: 3 + g.stats.trait('foodFun', 0) }) },
     { id: 'street-food', loc: 'court', name: 'Street food (fishball, isaw)', h: 1, c: 30, d: g => ({ h: 22, f: 6 + g.stats.trait('foodFun', 0) }) },
@@ -441,7 +461,7 @@ const DATA = {
     { id: 'meet-people', loc: ['school', 'mall', 'court'], name: 'Meet new people', h: 1, ok: g => g.state.ppl.length >= DATA.maxPeople ? 'Your circle is full for now' : 0, run: g => g.social.meet() },
     { id: 'wander', loc: ['mall', 'court'], name: 'Wander around the city', h: 2, d: { f: 6 }, run: g => g.events.random() },
     { id: 'movie', loc: 'mall', name: 'Watch a movie', h: 3, c: 350, d: { f: 50, s: 8 } },
-    { id: 'karaoke', loc: 'mall', name: 'Karaoke with the barkada', h: 2, c: 250, d: { f: 40, s: 30 }, fx: { rel: { bar: 4 }, skill: { mus: .3 } } },
+    { id: 'karaoke', loc: 'mall', name: g => g.state.ubar ? 'Karaoke with the barkada' : 'Karaoke', h: 2, c: 250, d: { f: 40, s: 30 }, fx: { rel: { bar: 4 }, skill: { mus: .3 } } },
     { id: 'lotto', loc: 'mall', name: 'Buy a lotto ticket', h: 0, c: 20, run: g => g.economy.playLotto() },
     { id: 'jog', loc: 'court', name: 'Go jogging', h: 1, d: { e: -12, f: 10, y: -8 }, fx: { skill: { fit: .8 } } },
     { id: 'gym', loc: 'court', name: 'Work out at the gym', h: 1, d: { e: -12, f: 6, y: -6 }, ok: g => g.has('gym') ? 0 : 'You need a gym pass', fx: { skill: { fit: 1.4 } } },
@@ -452,6 +472,12 @@ const DATA = {
     { id: 'kit-new', loc: 'home', name: '🤖 Start a new kit', h: 0, ok: g => g.state.kit ? 'Finish your current kit first' : !g.state.stash.length ? 'Buy a kit at the hobby shop (mall)' : 0, run: g => g.hobby.openKitMenu() },
     { id: 'kit-skip', loc: 'home', name: '🤖 Skip current step', h: 0, ok: g => g.state.kit ? 0 : 'No kit on the bench', run: g => g.hobby.skipStep() },
     { id: 'kit-sell', loc: 'home', name: '🤖 Sell a finished model', h: 0, ok: g => g.state.shelf.length ? 0 : 'No finished models', run: g => g.hobby.openSellMenu() },
+    { id: 'photo', loc: ['court', 'mall'], name: '📷 Go on a photo walk', h: 2, d: { e: -6, f: 16 }, ok: g => g.need('camera', 'You need a camera (mall)'), fx: { skill: { des: .8, cha: .2 } } },
+    { id: 'skate', loc: 'court', name: '🛹 Skateboard at the park', h: 1, d: { e: -10, f: 14, y: -6 }, ok: g => g.need('skate', 'You need a skateboard (mall)'), fx: { skill: { fit: .8 } } },
+    { id: 'dance', loc: ['home', 'school'], name: '💃 Dance practice', h: 1, d: { e: -8, f: 12 }, fx: { skill: { fit: .4, cha: .5 } } },
+    { id: 'chess', loc: ['home', 'school'], name: '♟️ Play chess online', h: 1, d: { e: -3, f: 8 }, fx: { skill: { int: .6 } } },
+    { id: 'garden', loc: 'home', name: '🪴 Tend your plants', h: 1, c: 30, d: { e: 2, f: 10 }, fx: { skill: { cook: .2 } } },
+    { id: 'boardgame', loc: 'home', name: '🎲 Board game night with friends', h: 3, c: 60, d: { f: 28, s: 24 }, ok: g => g.state.ppl.length ? 0 : 'You need a friend first', run: g => g.state.ppl.forEach(q => { q.r = clamp(q.r + 3); }) },
     { id: 'design', loc: 'home', name: 'Practice design (Canva/Figma)', h: 2, d: { e: -8, f: 4 }, fx: { skill: { des: 1.2 } } },
     { id: 'pj-work', loc: ['home', 'school'], name: '📂 Work on a project', h: 0, ok: g => !g.state.pj.length ? 'No active project' : g.state.N.e < 15 ? 'Too tired' : 0, run: g => g.projects.openWork() },
     { id: 'pj-find', loc: 'school', name: '📂 Find a project', h: 0, run: g => g.projects.openOffers() }
@@ -788,7 +814,7 @@ class AcademicsManager extends Manager {
   }
   checkMissedClass(e) {
     const s = this.s, g = this.g;
-    if (e.h !== this.late() + 1 || e.w > 4 || s.wx === 'ty') return;
+    if (e.h !== this.late() + 4 || e.w > 4 || s.wx === 'ty') return;
     if (!s.att) {
       s.abs++; g.log('❌ You missed class.');
       if (e.w === DATA.academics.quizDay) s.sc.push(45);
@@ -807,12 +833,13 @@ class AcademicsManager extends Manager {
   }
   attendClass() {
     const s = this.s, g = this.g, E = g.stats.efficiency(), A = DATA.academics, P = this.P;
-    s.att = 1;
-    s.prep = clamp(s.prep + 9 * P.prep * E * (1 + s.K.int / 150) * g.stats.trait('studyMult', 1));
+    s.att = 1; const lt = g.time.hour > P.late;
+    if (lt) { s.R.prof -= 1; g.log('⏰ You were late to class. Small penalty.'); }
+    s.prep = clamp(s.prep + 9 * P.prep * E * (lt ? .75 : 1) * (1 + s.K.int / 150) * g.stats.trait('studyMult', 1));
     s.K.int += .25 * E * P.prep; s.hw++;
     if (g.time.weekday === A.quizDay) {
       const sw = Math.floor(s.t / 168) % DATA.weeksPerSemester + 1, big = sw === A.midtermWeek || sw === A.finalsWeek;
-      const sc = this.score();
+      const sc = this.score() - (lt ? 5 : 0);
       s.sc.push(sc); if (big) s.sc.push(sc);
       s.hw = 0; s.prep *= .35;
       g.log(`📝 ${big ? (sw === A.midtermWeek ? 'MIDTERM' : 'FINALS') : 'Quiz'}: ${Math.round(sc)}%`);
@@ -1071,7 +1098,7 @@ class PhoneManager extends Manager {
   constructor(g) { super(g); g.bus.on('day:begin', () => this.daily()); }
   get me() {
     const s = this.s;
-    const m0 = s.me || (s.me = { av: null, bn: null, nm: s.name, bio: 'Student in Metro Manila ✨', col: '#2457d6', fol: 5, posts: [], ch: { nm: s.name + ' Vlogs', col: '#d6403a', subs: 0, earn: 0, vids: [] } }); m0.feed = m0.feed || []; m0.sc = m0.sc || 0;
+    const m0 = s.me || (s.me = { av: null, bn: null, nm: s.name, bio: 'Student in Metro Manila ✨', col: '#2457d6', fol: 0, posts: [], ch: { nm: s.name + ' Vlogs', col: '#d6403a', subs: 0, earn: 0, vids: [] } }); m0.feed = m0.feed || []; m0.sc = m0.sc || 0; m0.act = m0.act || []; m0.fg = m0.fg || []; m0.trend = m0.trend || pick(Object.keys(DATA.social.posts));
     const bad = x => { if (/^(reply|text|comment)$/i.test(String(x.t).trim())) x.t = 'Haha salamat!'; };
     m0.posts.forEach(p => (p.cm || []).forEach(c => (c.th || []).forEach(bad))); m0.feed.forEach(f => (f.th || []).forEach(bad));
     return m0;
@@ -1090,7 +1117,7 @@ class PhoneManager extends Manager {
       g.log('🎨 Profile saved.');
     }
     else if (k === 'post') g.ui.showModal({ text: 'What are you posting on Kuwento?', options: [...Object.entries(D.posts).map(([id, v]) => ({ label: v[0], run: () => this.post(id) })), { label: 'Never mind' }] });
-    else if (k === 'video') g.ui.showModal({ text: 'What video will you make? (3 hours, needs a laptop)', options: [...Object.entries(D.vids).map(([id, v]) => ({ label: v[0], run: () => this.video(id) })), { label: 'Never mind' }] });
+    else if (k === 'video') g.ui.showModal({ text: 'What video will you make? (3 hours, needs a laptop)', options: [...Object.entries(D.vids).map(([id, v]) => ({ label: v[0], run: () => this.video(id) })), { label: '🤝 Collab with a friend', run: () => this.collab() }, { label: 'Never mind' }] });
     else if (k === 'chat') { g.ui.ps = 'in'; g.ui.chat = a || null; if (a && !s.chats[a]) { const x = s.ph.find(q => q.who === a); s.chats[a] = x ? [{ f: 'them', t: x.tx }] : []; } if (a) s.ph.forEach(q => { if (q.who === a) q.r = 1; }); }
     else if (k === 'send') { const t = Util.clean((c.f || {}).t || '').slice(0, 160); if (t && !this.busy && s.chats[a]) { s.chats[a].push({ f: 'me', t }); this.busy = a; this.talk(a, t); } }
     else if (k === 'scroll') {
@@ -1103,6 +1130,7 @@ class PhoneManager extends Manager {
     else if (k === 'kno') g.ui.rt = null;
     else if (k === 'ksend') {
       const t = Util.clean((c.f || {}).t || '').slice(0, 140), rt = g.ui.rt; if (!t || !rt) return;
+      if (rt.k === 'p') { g.ui.rt = null; return this.post('status', t); }
       let tg; if (rt.k === 'c') { const [pi, ci] = rt.a.split('-'); tg = ((m.posts[+pi] || {}).cm || [])[+ci]; } else tg = m.feed[+rt.a];
       g.ui.rt = null; if (!tg) return;
       tg.th = tg.th || []; tg.th.push({ u: 'You', t }); s.N.s += 3; this.bump(tg.u, .6); this.kreply(tg, tg.u, t);
@@ -1113,41 +1141,71 @@ class PhoneManager extends Manager {
       if (s.ppl.length >= DATA.maxPeople) return g.ui.toast('Your circle is full for now');
       s.ppl.push({ n: x.n, t: x.t, r: 12 }); m.sg = m.sg.filter(q => q !== x); s.N.s += 5; g.log(`🤝 You added ${x.n} on Kuwento.`);
     }
+    else if (k === 'kpost') g.ui.rt = { k: 'p' };
+    else if (k === 'fol') { const x = m.feed[+a]; if (x && !x.f && !m.fg.includes(x.u)) { m.fg.push(x.u); s.N.f += 1; if (Math.random() < .4) { m.fol++; this.act(`👋 ${x.u} followed you back`); } } }
+    else if (k === 'story') {
+      const dy = Math.floor(s.t / 24); if (m.st === dy) return g.ui.toast('You already posted a story today');
+      m.st = dy; m.lp = dy; const v = Math.round(m.fol * rnd(.2, .6)) + s.ppl.length; s.ppl.forEach(q => { q.r = clamp(q.r + .6); }); s.N.f += 4; s.N.s += 4;
+      g.log(`📸 Story posted: ${v} views`); this.act(`📸 Your story got ${v} views`);
+    }
+    else if (k === 'watch') g.ui.showModal({ text: 'What do you want to watch? (1 hour)', options: [['💻 Coding tutorials', 'code'], ['🤖 Gunpla builds', 'gun'], ['🎸 Guitar lessons', 'mus'], ['🍳 Cooking videos', 'cook'], ['🎨 Design tips', 'des']].map(([l, sk]) => ({ label: l, run: () => { g.time.tick(); s.K[sk] += .35; s.N.f += 8; s.N.e -= 2; g.log(`📺 Watched ${l.slice(3)} and learned something.`); } })).concat([{ label: 'Never mind' }]) });
+    else if (k === 'live') {
+      if (!g.has('laptop')) return g.ui.toast('You need a working laptop to livestream.');
+      g.time.tick(); g.time.tick();
+      const v = Math.round((ch.subs + 5) * rnd(.5, 1.5) * (1 + s.K.cha / 60)), dn = ch.subs >= 50 ? Math.round(v * rnd(2, 6)) : 0;
+      ch.subs += Math.round(v / 8); s.m += dn; ch.earn += dn; s.N.e -= 12; s.N.f += 6; s.K.cha += .3; g.maint.wearMany({ laptop: 1 });
+      g.log(`🔴 Livestream: ${v} viewers${dn ? ', +' + fmt(dn) + ' in donations' : ''}`); this.act(`🔴 Live: ${v} viewers`);
+    }
     else if (k === 'reply') this.reply(+a);
     else if (k === 'like') { const x = s.ph[+a]; if (x && !x.lk) { x.lk = 1; s.N.f += 2; } }
   }
-  post(id) {
-    const g = this.g, s = this.s, m = this.me, [l, sk] = DATA.social.posts[id];
-    const likes = Math.round((s.K[sk] * .6 + s.K.des * .8 + (m.av ? 10 : 0) + rnd(0, 25)) * (1 + m.fol / 25));
-    g.time.tick(); m.fol += Math.round(likes / 15);
+  act(t) { const m = this.me; m.act.unshift({ t, d: DATA.days[this.g.time.weekday].slice(0, 3) }); m.act.length = Math.min(m.act.length, 8); }
+  post(id, cap) {
+    const g = this.g, s = this.s, m = this.me, st = id === 'status', [l0, sk] = st ? ['💬 Status', 'cha'] : DATA.social.posts[id], l = st ? '💬 ' + String(cap).replace(/[<>&]/g, '') : l0;
+    let likes = Math.round((s.K[sk] * .6 + s.K.des * .8 + (m.av ? 10 : 0) + rnd(0, 25)) * (1 + m.fol / 25));
+    const hot = m.trend === id, vir = Math.random() < .06; if (hot) likes = Math.round(likes * 1.5); if (vir) likes *= 4;
+    g.time.tick(); m.fol += Math.round(likes / 15); m.lp = Math.floor(s.t / 24);
     const pp = { l, likes, d: DATA.days[g.time.weekday].slice(0, 3) }; m.posts.unshift(pp); this.comments(pp, l); m.posts.length = Math.min(8, m.posts.length);
     s.N.f += 8; s.N.s += 8; s.K.des += .3;
-    g.log(`📱 Posted ${l}: ${likes} likes`);
+    g.log(`📱 Posted ${l}: ${likes} likes${hot ? ' (trending!)' : ''}`);
+    if (vir) { g.push('alert', `🚀 Your post went viral: ${likes} likes!`); this.act(`🚀 "${l}" went viral`); }
   }
-  video(id) {
+  collab() {
+    const g = this.g, s = this.s; if (!s.ppl.length) return g.ui.toast('You need a friend to collab with.');
+    g.ui.showModal({ text: 'Who do you want to collab with?', options: [...s.ppl.map(p => ({ label: `${p.n} (closeness ${Math.round(p.r)})`, run: () => this.video('vlog', p) })), { label: 'Never mind' }] });
+  }
+  video(id, fr) {
     const g = this.g, s = this.s, ch = this.me.ch, [l, sk] = DATA.social.vids[id];
     if (!g.has('laptop')) return g.ui.toast('You need a working laptop to edit videos.');
     if (id === 'cover' && !g.has('guitar')) return g.ui.toast('You need a working guitar.');
-    const q = Math.round(s.K[sk] * .7 + s.K.des * .5 + s.K.cha * .2 + rnd(0, 20));
+    const q = Math.round(s.K[sk] * .7 + s.K.des * .5 + s.K.cha * .2 + rnd(0, 20) + (fr ? 8 + fr.r / 10 : 0));
     for (let i = 0; i < 3; i++) g.time.tick();
-    const vv = { n: l + ' #' + (ch.vids.length + 1), q, v: 0, age: 0 }; ch.vids.unshift(vv); this.comments(vv, l + ' video'); ch.vids.length = Math.min(6, ch.vids.length);
+    if (fr) fr.r = clamp(fr.r + 4); const vv = { n: l + (fr ? ' ft. ' + fr.n : '') + ' #' + (ch.vids.length + 1), q, v: 0, age: 0 }; ch.vids.unshift(vv); this.comments(vv, l + ' video'); ch.vids.length = Math.min(6, ch.vids.length);
     s.N.e -= 10; s.N.f -= 3; s.K[sk] += .5; g.maint.wearMany({ laptop: 1.5 });
     g.log(`▶️ Uploaded "${l}" (quality ${q})`);
   }
   daily() {
-    const g = this.g, s = this.s, m = this.me, ch = m.ch; let tot = 0; m.sc = 0;
+    const g = this.g, s = this.s, m = this.me, ch = m.ch; let tot = 0; m.sc = 0; this.checkUnlock();
     m.posts.forEach(p => { p.likes += Math.round(rnd(0, .1) * m.fol); });
     ch.vids.forEach(v => {
       v.age++; const gn = Math.round(v.q * (1 + ch.subs / 15) * rnd(.4, 1.2) / (1 + v.age * .3)); v.v += gn; tot += gn;
       if (gn >= 150) g.push('alert', `📈 "${v.n}" is trending: +${gn} views`);
     });
     ch.subs += Math.round(tot / 40);
+    const dy = Math.floor(s.t / 24); m.trend = pick(Object.keys(DATA.social.posts));
+    if (m.fol > 3 && dy - (m.lp ?? dy) >= 4) { const lost = Math.max(1, Math.round(m.fol * .03)); m.fol -= lost; this.act(`📉 Lost ${lost} followers for being inactive`); }
+    ch.ms = ch.ms || 0; [100, 500, 1000].forEach((n, i) => { if (ch.subs >= n && ch.ms <= i) { ch.ms = i + 1; const r = [300, 1500, 5000][i]; s.m += r; ch.earn += r; g.push('alert', `🏅 ${n} subscribers! Bonus ${fmt(r)}`); this.act(`🏅 Reached ${n} subscribers`); } });
     if (ch.subs >= 50 && tot) { const inc = Math.round(tot * .03); if (inc) { ch.earn += inc; s.m += inc; g.push('alert', `💵 ManilaTube ad revenue: +${fmt(inc)}`); } }
+  }
+  checkUnlock() {
+    const s = this.s, g = this.g;
+    if (!s.ubar && s.ppl.filter(p => p.r >= 30).length >= 2) { s.ubar = 1; s.R.bar = Math.max(s.R.bar, 15); g.log('🧑‍🤝‍🧑 Your new friends added you to a barkada group chat!'); }
+    if (!s.ucr && s.ppl.some(p => p.r >= 50)) { s.ucr = 1; s.R.crush = Math.max(s.R.crush, 10); g.log('💘 Your circle introduced you to someone special: your crush!'); }
   }
   genFeed() {
     const m = this.me, s = this.s, P = DATA.personTypes, H = ['@jeepney_jay', '@mikay.eats', '@kuya.vlogs', '@ate_carla', '@jc.codes', '@mnl.cats', '@lrt.commuter', '@tropa.laro'],
       C = ['Traffic sa EDSA na naman 😩', 'Milk tea run kasama ang tropa 🧋', 'Natapos ko na ang thesis draft!', 'Sino may extra charger? 🔌', 'Ulan na naman, sino may payong? ☔', 'Hot take: pancit canton > ramen', 'LRT sa rush hour is a sport 🚆', 'Pusa ko ang bida ng araw 🐈'];
-    for (let i = 0; i < 4; i++) { const p = s.ppl.length && Math.random() < .5 ? pick(s.ppl) : null; m.feed.unshift(p ? { u: p.n, f: 1, tx: `Another day, more ${P[p.t].desc} ${P[p.t].icon}`, lk: 0, th: [] } : { u: pick(H), f: 0, tx: pick(C), lk: 0, th: [] }); }
+    for (let i = 0; i < 4; i++) { const p = s.ppl.length && Math.random() < .5 ? pick(s.ppl) : null; m.feed.unshift(p ? { u: p.n, f: 1, tx: `Another day, more ${P[p.t].desc} ${P[p.t].icon}`, lk: 0, th: [] } : { u: m.fg.length && Math.random() < .5 ? pick(m.fg) : pick(H), f: 0, tx: pick(C), lk: 0, th: [] }); }
     m.feed.length = Math.min(m.feed.length, 12);
   }
   async kreply(tg, who, t) {
@@ -1175,7 +1233,7 @@ class PhoneManager extends Manager {
     if (!txt) g.ui.toast('AI unavailable, using a scripted reply');
     c.push({ f: 'them', t: txt || pick(['Haha oo nga.', 'Sige, mamaya na lang.', 'Ingat ka ha!']) }); if (c.length > 20) c.splice(0, c.length - 20);
     const mood = clamp(Number(r && r.mood) || 0, -2, 3); this.bump(who, txt ? mood : .5);
-    s.N.s += 3; this.busy = null; g.commit();
+    s.N.s += 3; this.busy = null; this.checkUnlock(); g.commit();
   }
   async comments(item, what) {
     const sm = await this.sample(); if (!sm) return;
@@ -1391,7 +1449,7 @@ class EventManager extends Manager {
     if (!st || (st.when && !st.when(this.s))) return;
     this.present(st);
   }
-  random() { this.present(pick(DATA.events)); }
+  random() { const u = this.g.state.ubar; this.present(pick(DATA.events.filter(e => u || !/barkada/i.test(e.text)))); }
   present(ev) {
     this.g.ui.showModal({ text: ev.text, options: ev.options.map(o => ({ label: o.label, run: () => this.g.effects.apply(o.fx) })) });
   }
@@ -1497,7 +1555,7 @@ class GameEngine {
   }
   feed() {
     const s = this.state; if (!s || s.over || Math.random() > .6) return;
-    const src = [['👩 Mom', ['Anak, kumain ka na ba?', 'Ingat ka sa biyahe.', 'Don’t forget the bills this Sunday!']], ['🧑‍🤝‍🧑 Barkada GC', ['Milk tea later?', 'Who’s up for LAN?']], ...s.ppl.map(p => [DATA.personTypes[p.t].icon + ' ' + p.n, ['Tara, hang out?', 'Need my notes?']]), ...(s.R.crush >= 20 ? [['💘 Crush', ['Saw your story 👀', 'Good morning!']]] : [])];
+    const src = [['👩 Mom', ['Anak, kumain ka na ba?', 'Ingat ka sa biyahe.', 'Don’t forget the bills this Sunday!']], ...(s.ubar ? [['🧑‍🤝‍🧑 Barkada GC', ['Milk tea later?', 'Who’s up for LAN?']]] : []), ...s.ppl.map(p => [DATA.personTypes[p.t].icon + ' ' + p.n, ['Tara, hang out?', 'Need my notes?']]), ...(s.ucr ? [['💘 Crush', ['Saw your story 👀', 'Good morning!']]] : [])];
     const [who, t] = pick(src);
     if (Math.random() < .5) this.push('msg', pick(t), who);
     else this.push('feed', pick(['posted a story 📸', 'shared a meme 😂', 'is at the mall 🛍️', 'checked in at the park 🌳']), who);
@@ -1716,7 +1774,7 @@ class Renderer {
   lifeTab(T) {
     const g = this.g, s = g.state, a = g.academics.average(), row = (n, v, c) => `<div class="row"><span>${n}</span>${this.bar(v, c)}<b>${Math.round(v)}</b></div>`;
     const sk = Object.entries(DATA.skills).map(([k, [e, n]]) => row(`${e} ${n}`, s.K[k], 'var(--ac)')).join('');
-    const rl = Object.entries(DATA.relationships).map(([k, [e, n]]) => row(`${e} ${k === 'prof' ? s.pf.n : n}`, s.R[k])).join('');
+    const rl = Object.entries(DATA.relationships).filter(([k]) => k === 'bar' ? s.ubar : k === 'crush' ? s.ucr : true).map(([k, [e, n]]) => row(`${e} ${k === 'prof' ? s.pf.n : n}`, s.R[k])).join('');
     const tr = s.inv.filter(k => DATA.items[k].maint), pl = s.inv.filter(k => !DATA.items[k].maint);
     const items = `<div class="cd"><h3>Items</h3>${s.inv.length ? '' : 'None yet. Browse the shops at the mall.'}${tr.map(k => row(DATA.items[k].name + (g.maint.cond(k) <= 0 ? ' ⛔' : ''), g.maint.cond(k))).join('')}${pl.length ? `<div>${pl.map(k => DATA.items[k].name).join(', ')}</div>` : ''}${tr.length ? '<small>Gear wears out with use and over time. Fix it at the repair shop in the mall.</small>' : ''}</div>`;
     return `<div class="cd"><h3>Persona</h3><b>${T.join(' and ')}</b><br><small>${s.job ? `${DATA.jobs[s.job].n}, ${DATA.ranks[s.rk].name}, reliability ${Math.round(s.rj)}%` : 'No job. Apply from the Do tab.'}</small></div>
@@ -1772,19 +1830,21 @@ class Renderer {
     let b = '';
     if (ps === 'in' && g.ui.chat) b = this.thread(g.ui.chat);
     else if (ps === 'in') b = `<div class="cd"><h3>Inbox, messages and feed</h3>${s.ph.length ? s.ph.slice(0, 15).map((x, i) => `<div class="pi${x.r ? '' : ' nw'}"><b>${x.who}</b> ${x.tx}<br><small>${x.d}${x.rp ? ' · replied' : ''}</small>${x.k === 'msg' ? `<br>${x.rp ? '' : `<button data-x="reply:${i}" ${sm}>↩️ Quick reply</button> `}<button data-x="chat:${x.who}" ${sm}>💬 Chat</button>` : ''}${x.k === 'feed' && !x.lk ? `<br><button data-x="like:${i}" ${sm}>❤️ Like</button>` : ''}</div>`).join('') : '<small>Nothing yet.</small>'}</div>`;
-    if (ps === 'soc') b = `<div class="cd">${hd(ch.col, m.nm, `${m.fol} followers`)}<p><small>${e(m.bio)}</small></p><div class="gr"><button data-x="post">✍️ New post (1h)</button><button data-x="scroll">📜 Scroll feed (1h)</button></div><button data-x="find" style="width:100%;margin-top:8px">👥 Find friends</button></div><div class="cd"><h3>Your posts</h3>${m.posts.length ? m.posts.map((p, pi) => `<div class="pi">${p.l}<br><small>❤️ ${p.likes} · ${p.d}</small>${(p.cm || []).map((c, ci) => cmH(c, pi + '-' + ci)).join('')}</div>`).join('') : '<small>No posts yet. Higher Design, Charisma and a profile photo get more likes.</small>'}</div>`;
+    if (ps === 'soc') b = `<div class="cd">${hd(ch.col, m.nm, `${m.fol} followers · ${m.fg.length} following`)}<p><small>${e(m.bio)}</small></p><div class="gr"><button data-x="post">📷 New post (1h)</button><button data-x="kpost">💬 Status (1h)</button></div><div class="gr" style="margin-top:8px"><button data-x="story">📸 Story</button><button data-x="scroll">📜 Scroll feed (1h)</button></div><button data-x="find" style="width:100%;margin-top:8px">👥 Find friends</button></div><div class="cd"><h3>Your posts</h3>${m.posts.length ? m.posts.map((p, pi) => `<div class="pi">${p.l}<br><small>❤️ ${p.likes} · ${p.d}</small>${(p.cm || []).map((c, ci) => cmH(c, pi + '-' + ci)).join('')}</div>`).join('') : '<small>No posts yet. Higher Design, Charisma and a profile photo get more likes.</small>'}</div>`;
     if (ps === 'in' && !g.ui.chat) {
-      const ct = ['👩 Mom', '🧑‍🤝‍🧑 Barkada GC', ...s.ppl.map(p => DATA.personTypes[p.t].icon + ' ' + p.n), ...(s.R.crush >= 20 ? ['💘 Crush'] : [])];
+      const ct = ['👩 Mom', ...(s.ubar ? ['🧑‍🤝‍🧑 Barkada GC'] : []), ...s.ppl.map(p => DATA.personTypes[p.t].icon + ' ' + p.n), ...(s.ucr ? ['💘 Crush'] : [])];
       b = `<div class="cd"><h3>Start a chat</h3><small>Message anyone first. Replies depend on your closeness.</small><div>${ct.map(w => `<button data-x="chat:${e(w)}" ${sm}>${e(w)}</button>`).join(' ')}</div></div>` + b;
     }
     if (ps === 'soc') {
       const rt = g.ui.rt, tg = rt && (rt.k === 'c' ? ((m.posts[+rt.a.split('-')[0]] || {}).cm || [])[+rt.a.split('-')[1]] : m.feed[+rt.a]);
-      const cp = tg ? `<div class="cd"><b>Replying to ${e(tg.u)}</b><br><small>${e(tg.t || tg.tx)}</small><div class="gr" style="grid-template-columns:1fr auto auto"><input id="kc" maxlength="140" placeholder="Write a reply"><button data-x="ksend">Send</button><button data-x="kno">Cancel</button></div></div>` : '';
-      const fd = `<div class="cd"><h3>Feed</h3>${m.feed.length ? m.feed.slice(0, 8).map((p, i) => `<div class="pi"><b>${e(p.u)}</b>${p.f ? ' 🤝' : ''} ${e(p.tx)}<br>${p.lk ? '<small>❤️ Liked</small>' : `<button data-x="flk:${i}" ${mini}>❤️ Like</button>`} <button data-x="fcm:${i}" ${mini}>💬 Reply</button>${(p.th || []).map(x => `<br><small>↪ <b>${e(x.u)}</b> ${e(x.t)}</small>`).join('')}</div>`).join('') : '<small>Your feed is empty. Tap Scroll feed to load posts.</small>'}</div>`;
+      const cp = rt && rt.k === 'p' ? `<div class="cd"><b>New status</b><div class="gr" style="grid-template-columns:1fr auto auto"><input id="kc" maxlength="100" placeholder="What's on your mind?"><button data-x="ksend">Post (1h)</button><button data-x="kno">Cancel</button></div></div>` : tg ? `<div class="cd"><b>Replying to ${e(tg.u)}</b><br><small>${e(tg.t || tg.tx)}</small><div class="gr" style="grid-template-columns:1fr auto auto"><input id="kc" maxlength="140" placeholder="Write a reply"><button data-x="ksend">Send</button><button data-x="kno">Cancel</button></div></div>` : '';
+      const fd = `<div class="cd"><h3>Feed</h3>${m.feed.length ? m.feed.slice(0, 8).map((p, i) => `<div class="pi"><b>${e(p.u)}</b>${p.f ? ' 🤝' : ''} ${e(p.tx)}<br>${p.lk ? '<small>❤️ Liked</small>' : `<button data-x="flk:${i}" ${mini}>❤️ Like</button>`} <button data-x="fcm:${i}" ${mini}>💬 Reply</button>${p.f ? '' : m.fg.includes(p.u) ? ' <small>✔ Following</small>' : ` <button data-x="fol:${i}" ${mini}>➕ Follow</button>`}${(p.th || []).map(x => `<br><small>↪ <b>${e(x.u)}</b> ${e(x.t)}</small>`).join('')}</div>`).join('') : '<small>Your feed is empty. Tap Scroll feed to load posts.</small>'}</div>`;
       const fr = `<div class="cd"><h3>People you may know</h3><small>Your circle: ${s.ppl.length}/${DATA.maxPeople}</small>${(m.sg || []).map(x => `<div class="pi"><b>${e(x.n)}</b> loves ${DATA.personTypes[x.t].desc} ${DATA.personTypes[x.t].icon} <button data-x="addf:${e(x.n)}" ${mini}>➕ Add friend</button></div>`).join('') || '<br><small>Tap Find friends to see suggestions.</small>'}</div>`;
-      b = cp + b + fd + fr;
+      const tr = `<div class="cd"><small>🔥 Trending today: <b>${e(DATA.social.posts[m.trend][0])}</b>. Posting it earns +50% likes.</small></div>`;
+      const ac = `<div class="cd"><h3>Activity</h3>${m.act.length ? m.act.map(x => `<div class="pi"><small>${e(x.t)} · ${x.d}</small></div>`).join('') : '<small>Nothing yet. Post, go live or follow people to get noticed.</small>'}</div>`;
+      b = cp + tr + b + ac + fd + fr;
     }
-    if (ps === 'yt') b = `<div class="cd">${hd(m.col, ch.nm, `${ch.subs} subscribers · ${ch.subs >= 50 ? 'monetized, earned ' + fmt(ch.earn) : (50 - ch.subs) + ' more to monetize'}`)}<button data-x="video" style="width:100%;margin-top:8px">🎬 Make a video (3h)</button></div><div class="cd"><h3>Your videos</h3>${ch.vids.length ? ch.vids.map(v => `<div class="pi">${e(v.n)}<br><small>👁 ${v.v} views · quality ${v.q}</small>${(v.cm || []).map(c => `<br><small>💬 <b>${e(c.u)}</b> ${e(c.t)}</small>`).join('')}</div>`).join('') : '<small>No videos yet. Views build over several days.</small>'}</div>`;
+    if (ps === 'yt') b = `<div class="cd">${hd(m.col, ch.nm, `${ch.subs} subscribers · ${ch.subs >= 50 ? 'monetized, earned ' + fmt(ch.earn) : (50 - ch.subs) + ' more to monetize'}`)}<button data-x="video" style="width:100%;margin-top:8px">🎬 Make a video (3h)</button><div class="gr" style="margin-top:8px"><button data-x="live">🔴 Go live (2h)</button><button data-x="watch">📺 Watch videos (1h)</button></div></div><div class="cd"><h3>Your videos</h3>${ch.vids.length ? ch.vids.map(v => `<div class="pi">${e(v.n)}<br><small>👁 ${v.v} views · quality ${v.q}</small>${(v.cm || []).map(c => `<br><small>💬 <b>${e(c.u)}</b> ${e(c.t)}</small>`).join('')}</div>`).join('') : '<small>No videos yet. Views build over several days.</small>'}</div>`;
     if (ps === 'me') b = `<div class="cd"><h3>Customize</h3>Display name<input id="f-nm" maxlength="24" value="${e(m.nm)}">Bio<input id="f-bio" maxlength="80" value="${e(m.bio)}">Theme color<input id="f-col" type="color" value="${m.col}">Channel name<input id="f-chn" maxlength="24" value="${e(ch.nm)}">Channel color<input id="f-chc" type="color" value="${ch.col}"><button data-x="save" style="width:100%">💾 Save profile</button></div>
       <div class="cd"><h3>Photos</h3><small>Photos are resized and stored only in this browser.</small><br>Profile picture<input type="file" accept="image/*" id="up-av">Banner photo<input type="file" accept="image/*" id="up-bn"><div class="gr"><button data-x="rm:av">Remove profile picture</button><button data-x="rm:bn">Remove banner</button></div></div>`;
     return `<div class="tb" style="position:static;flex-wrap:wrap">${tabs}</div>${b}`;
