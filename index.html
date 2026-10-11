@@ -121,21 +121,33 @@ const DATA = {
     dev: { n: 'Freelance Developer', p: 140, e: 3, f: 1, req: { skill: 'code', min: 20 }, x: 'high pay, needs coding skill', wear: { laptop: 2 } },
     sell: { n: 'Online Seller', p: 0, e: 5, f: 1, x: 'income swings a lot' }
   },
-  shift: { startHour: 12, lastStartHour: 19, hours: 5, missedPenalty: 4, startReliability: 70 },
+  /* Work hours are built around the school day (class is 6h, usually 9 AM to 3 PM, plus a 1h commute to work).
+     Weekday shifts are short evening shifts that start AFTER class; weekends have longer daytime shifts.
+     Pay, energy and fun costs scale with shift length, so the hourly rate is the same either way.
+     Attendance is a WEEKLY quota (any 3 shifts, weekday or weekend, your choice) instead of a penalty for every weekday you skip.
+     Each shift short of the quota costs missedPenalty reliability; reaching 0 gets you fired. */
+  shift: {
+    weekday: { startHour: 16, lastStartHour: 18, hours: 4 },
+    weekend: { startHour: 9, lastStartHour: 14, hours: 6 },
+    weeklyQuota: 3, missedPenalty: 4, startReliability: 70
+  },
+  /* Per-hour need decay while awake (traits below override these). Tuned so that daily upkeep (meals, shower, fun)
+     no longer eats most of the waking day, and so that energy lasts through a school day plus an evening shift. */
+  decay: { e: 3, h: 3.5, y: 1.8, f: 1.8, s: 1.4 },
   courses: {
     'BS Computer Science': { int: 8, code: 15, des: 3 }, 'BS Nursing': { int: 8, fit: 4 }, 'BS Accountancy': { int: 10 },
     'BS Education': { cha: 10, des: 5 }, 'BS Criminology': { fit: 10 }, 'BS Tourism': { cha: 10, des: 6 }
   },
   traits: {
-    Hardworking: { desc: '+20% studying, tires faster', mods: { studyMult: 1.2, energyDrain: 4.4 } },
+    Hardworking: { desc: '+20% studying, tires faster', mods: { studyMult: 1.2, energyDrain: 3.3 } },
     Resourceful: { desc: '-15% spending, +25% sideline income', mods: { spendMult: .85, sideMult: 1.25 } },
-    Sociable: { desc: 'Bigger social gains, gets bored faster', excl: ['Introvert'], mods: { socialGain: 1.3, socialDrain: 2.8 } },
-    Introvert: { desc: 'Social drains slowly, smaller gains', excl: ['Sociable'], mods: { socialGain: .8, socialDrain: 1.2 } },
-    'Big Eater': { desc: 'Gets hungry fast, food is more fun', mods: { hungerDrain: 6.5, foodFun: 5 } },
+    Sociable: { desc: 'Bigger social gains, gets bored faster', excl: ['Introvert'], mods: { socialGain: 1.3, socialDrain: 2 } },
+    Introvert: { desc: 'Social drains slowly, smaller gains', excl: ['Sociable'], mods: { socialGain: .8, socialDrain: .85 } },
+    'Big Eater': { desc: 'Gets hungry fast, food is more fun', mods: { hungerDrain: 4.6, foodFun: 5 } },
     Saver: { desc: 'Higher savings interest and allowance', mods: { saveRate: .015, allowMult: 1.1 } }
   },
   economy: { baseAllowance: 450, tuitionBonusAt: 1500, tuitionBonus: 200, nanayAllowance: 3, weeklyBill: 250, debtInterest: .05, tuitionEveryWeeks: 4, maxLoan: 3000 },
-  academics: { baseScore: 48, quizDay: 4, midtermWeek: 8, finalsWeek: 16, absencePenalty: .8, failLimit: 2, deansListBonus: 2000, gradeBands: [[96, 1], [93, 1.25], [90, 1.5], [87, 1.75], [84, 2], [81, 2.25], [78, 2.5], [75, 3]] },
+  academics: { baseScore: 48, terrorGraceSems: 2, freshmanSupport: [4, 2], quizDay: 4, midtermWeek: 8, finalsWeek: 16, absencePenalty: .8, failLimit: 2, deansListBonus: 2000, gradeBands: [[96, 1], [93, 1.25], [90, 1.5], [87, 1.75], [84, 2], [81, 2.25], [78, 2.5], [75, 3]] },
   locations: {
     home: { icon: '🏠', name: () => 'Home' },
     school: { icon: '🏫', name: s => s.sch },
@@ -479,8 +491,8 @@ const DATA = {
     { id: 'ask-prof', loc: 'school', name: g => 'Ask ' + g.state.pf.n + ' for help', h: 1, d: { e: -3 }, ok: g => { const w = g.time.weekday, h = g.time.hour; return w > 4 || h < 8 || h > 16 ? 'Ma’am is not around' : 0; }, run: g => g.academics.askProf() },
     { id: 'classmates', loc: 'school', name: 'Hang out with classmates', h: 1, d: { s: 20, f: 10 } },
     { id: 'canteen', loc: 'school', name: 'Canteen meal', h: 1, c: 60, d: g => ({ h: 50, f: 3 + g.stats.trait('foodFun', 0) }) },
-    { id: 'shift', loc: 'work', name: g => 'Work shift' + (g.state.job ? ': ' + DATA.jobs[g.state.job].n : ''), h: 5,
-      ok: g => { const h = g.time.hour; return g.state.wx === 'ty' ? 'Work is suspended' : !g.state.job ? 'You have no job' : g.state.sh ? 'Already worked today' : h < DATA.shift.startHour || h > DATA.shift.lastStartHour ? `Shifts start ${clock(DATA.shift.startHour)} to ${clock(DATA.shift.lastStartHour)}` : 0; },
+    { id: 'shift', loc: 'work', name: g => 'Work shift' + (g.state.job ? ': ' + DATA.jobs[g.state.job].n : '') + ` (${g.career.window(g.time.weekday).hours}h)`, h: g => g.career.window(g.time.weekday).hours,
+      ok: g => { const h = g.time.hour, W = g.career.window(g.time.weekday); return g.state.wx === 'ty' ? 'Work is suspended' : !g.state.job ? 'You have no job' : g.state.sh ? 'Already worked today' : h < W.startHour || h > W.lastStartHour ? `${g.time.weekday > 4 ? 'Weekend' : 'Weekday'} shifts start ${clock(W.startHour)} to ${clock(W.lastStartHour)}` : 0; },
       run: g => g.career.doShift() },
     { id: 'coworkers', loc: 'work', name: 'Chat with coworkers', h: 1, d: { s: 12, f: 6 } },
     { id: 'shops', loc: 'mall', name: 'Browse the shops', h: 1, run: g => g.shop.openMall() },
@@ -566,7 +578,7 @@ class GameState {
       name: Util.clean(f.name || 'Juan') || 'Juan', co: f.course, bg: f.bg, city: f.city, sch: f.school,
       tu: C.sc.find(x => x[0] === f.school)[1], col: C.c, tr: [...f.traits], job: f.job,
       t: DATA.start.hour, m: DATA.start.cash, sav: 0, debt: 0,
-      N: { ...DATA.start.needs }, K, prep: 20, hw: 0, sc: [], abs: 0, att: 0, sh: 0, xp: 0, rk: 0, rj: DATA.shift.startReliability,
+      N: { ...DATA.start.needs }, K, prep: 20, hw: 0, sc: [], abs: 0, att: 0, sh: 0, wkSh: 0, xp: 0, rk: 0, rj: DATA.shift.startReliability,
       R: { ...DATA.start.rel }, loc: 'home', stash: [...DATA.start.stash], shelf: [], kit: null, mj: {}, rep: 0, built: 0, wins: 0,
       ppl: [], club: null, fund: 0, wx: 'sun', tyLast: -99, badRun: 0, rm: { t: 'family', items: [], wall: null }, look: f.look || { ...DATA.chr.def, acc: [] }, inv: f.job === 'rider' ? ['bike'] : [], buddy: 0, fails: 0, hist: [], log: [], sick: 0,
       cond: {}, pf: { k: 'fair', n: 'Ma’am Reyes' }, dn: { k: 'fair', n: 'Dean Mercado' }, pj: [], pdone: [], ph: [], me: null, chats: {}, warns: 0, thesis: null, mk: { ev: null, phase: null, left: 0, fake: false, hist: [] }
@@ -581,7 +593,7 @@ class GameState {
     S.ppl = S.ppl || []; S.club = S.club || null; S.fund = S.fund || 0; S.wx = S.wx || 'sun'; S.tyLast = S.tyLast ?? -99; S.rm = S.rm || { t: 'family', items: [], wall: null }; S.look = S.look || { ...DATA.chr.def, acc: [] }; S.badRun = S.badRun || 0;
     for (const k of ['cook', 'code', 'mus', 'gun', 'des']) S.K[k] = S.K[k] ?? 5;
     S.stash = S.stash || ['zk']; S.shelf = S.shelf || []; S.kit = S.kit || null; S.mj = S.mj || {};
-    S.rep = S.rep || 0; S.built = S.built || 0; S.wins = S.wins || 0;
+    S.wkSh = S.wkSh || 0; S.rep = S.rep || 0; S.built = S.built || 0; S.wins = S.wins || 0;
     S.hist = S.hist || []; S.log = S.log || []; S.sc = S.sc || []; S.fails = S.fails || 0;
     S.cond = S.cond || {}; S.pf = S.pf || { k: 'fair', n: 'Ma’am Reyes' }; S.dn = S.dn || { k: 'fair', n: 'Dean Mercado' }; S.pj = S.pj || []; S.ph = S.ph || []; S.me = S.me || null; S.chats = S.chats || {}; S.pdone = S.pdone || []; S.warns = S.warns || 0; S.thesis = S.thesis || null; S.mk = S.mk || { ev: null, phase: null, left: 0, fake: false, hist: [] };
     return S;
@@ -679,7 +691,8 @@ class PlayerStats extends Manager {
     const N = this.s.N, g = this.g;
     if (sleeping) { N.e += g.has('fan') ? 13 : 11; N.h -= 1.5; N.y -= .7; N.f -= .7; N.s -= .5; }
     else {
-      N.e -= this.trait('energyDrain', 4); N.h -= this.trait('hungerDrain', 5); N.y -= 2.5; N.f -= 2.5; N.s -= this.trait('socialDrain', 2);
+      const D = DATA.decay;
+      N.e -= this.trait('energyDrain', D.e); N.h -= this.trait('hungerDrain', D.h); N.y -= D.y; N.f -= D.f; N.s -= this.trait('socialDrain', D.s);
       if (g.has('pet')) N.f += .6;
       if (N.s < 25) N.f -= 1;
       if (N.h < 10) N.e -= 2;
@@ -863,7 +876,9 @@ class AcademicsManager extends Manager {
   gpa(p) { const b = DATA.academics.gradeBands.find(([min]) => p >= min); return b ? b[1] : 5; }
   score(mod = 0) {
     const s = this.s;
-    return clamp(DATA.academics.baseScore + s.prep * .4 + s.K.int * .25 + rnd(-7, 7) + s.R.prof / 20 - 4 * s.hw * this.P.hw + this.P.quiz + mod);
+    /* freshmanSupport: a small score cushion in semesters 1 and 2 (orientation, study groups) that fades to zero. */
+    const fresh = DATA.academics.freshmanSupport[this.g.time.semester - 1] || 0;
+    return clamp(DATA.academics.baseScore + fresh + s.prep * .4 + s.K.int * .25 + rnd(-7, 7) + s.R.prof / 20 - 4 * s.hw * this.P.hw + this.P.quiz + mod);
   }
   checkMissedClass(e) {
     const s = this.s, g = this.g;
@@ -914,7 +929,8 @@ class AcademicsManager extends Manager {
   }
   dismissCheck() { const s = this.s; if (s.fails >= DATA.academics.failLimit) s.over = 'You were dismissed from school after failing twice. There are other paths, so try again!'; }
   rollFaculty() {
-    const s = this.s, g = this.g, pk = pick(Object.keys(DATA.profs).filter(k => k !== s.pf.k)), dk = pick(Object.keys(DATA.deans)), P = DATA.profs[pk], D = DATA.deans[dk];
+    /* Pacing: the Terror Prof cannot show up in the first terrorGraceSems semesters, while your skills are still low. */
+    const s = this.s, g = this.g, pk = pick(Object.keys(DATA.profs).filter(k => k !== s.pf.k && (k !== 'terror' || g.time.semester > DATA.academics.terrorGraceSems))), dk = pick(Object.keys(DATA.deans)), P = DATA.profs[pk], D = DATA.deans[dk];
     s.pf = { k: pk, n: pick(P.names) }; s.dn = { k: dk, n: D.name };
     s.R.prof = clamp(s.R.prof * .5 + 5);
     g.ui.showModal({ text: `🎓 New semester!<br>${P.icon} <b>${s.pf.n}</b>: ${P.label}<br><small>${P.desc}</small><br>${D.icon} <b>${s.dn.n}</b>: ${D.label}<br><small>${D.desc}</small>`, options: [{ label: 'Bring it on' }] });
@@ -1147,28 +1163,32 @@ class ProjectManager extends Manager {
 class CareerManager extends Manager {
   constructor(g) {
     super(g);
-    g.bus.on('hour', e => this.checkMissedShift(e));
     g.bus.on('day:begin', () => { this.s.sh = 0; });
+    g.bus.on('day:close', c => { if (c.w === 0 && c.wk > 1) this.weeklyReview(); }); /* Monday 12 AM = the end of last week */
   }
   meetsRequirement(k) {
     const r = DATA.jobs[k].req;
     if (!r) return true;
     return r.item ? this.g.has(r.item) : this.s.K[r.skill] >= r.min;
   }
-  checkMissedShift(e) {
-    const s = this.s;
-    if (e.h === 21 && e.w < 5 && s.job && !s.sh && s.wx !== 'ty') {
-      s.rj -= DATA.shift.missedPenalty; this.g.log('😠 You missed your shift. Your boss is angry.');
-      if (s.rj <= 0) { s.job = null; this.g.log('You were fired.'); }
-    }
+  /* Shift window for a weekday index (0 = Monday). Weekdays are evening shifts after class; weekends are daytime. */
+  window(w) { return w > 4 ? DATA.shift.weekend : DATA.shift.weekday; }
+  weeklyReview() {
+    const s = this.s, Q = DATA.shift.weeklyQuota, done = s.wkSh || 0;
+    s.wkSh = 0;
+    if (!s.job || done >= Q) return;
+    s.rj -= DATA.shift.missedPenalty * (Q - done);
+    this.g.log(`😠 You worked ${done} of ${Q} expected shifts this week. Your boss is unhappy.`);
+    if (s.rj <= 0) { s.job = null; this.g.log('You were fired.'); }
   }
   doShift() {
     const s = this.s, g = this.g, J = DATA.jobs[s.job], E = Math.min(g.stats.efficiency(), 1), m = DATA.ranks[s.rk].mult;
-    s.sh = 1;
+    const hrs = this.window(g.time.weekday).hours, k = hrs / 5; /* k = 1 matches the old flat 5-hour shift */
+    s.sh = 1; s.wkSh = (s.wkSh || 0) + 1;
     const base = J.p || (rnd(45, 170) + s.K.cha * .6);
-    let p = Math.round(5 * base * m * (.65 + .35 * E) * Math.sqrt(s.col || 1));
-    if (s.job === 'cafe') p += Math.round(s.K.cha * 2.5 * E);
-    s.m += p; s.xp += 8 + 4 * E; s.rj = Math.min(100, s.rj + 3); s.N.e -= J.e * 2; s.N.f -= J.f * 3;
+    let p = Math.round(hrs * base * m * (.65 + .35 * E) * Math.sqrt(s.col || 1));
+    if (s.job === 'cafe') p += Math.round(s.K.cha * 2.5 * E * k);
+    s.m += p; s.xp += (8 + 4 * E) * k; s.rj = Math.min(100, s.rj + 3); s.N.e -= J.e * 2 * k; s.N.f -= J.f * 3 * k;
     if (s.job === 'fast') s.N.h += 25;
     if (s.job === 'tutor') s.K.int += .3; else s.K.cha += .25;
     g.log(`💼 Shift done: +${fmt(p)}`);
@@ -1746,11 +1766,13 @@ class GameEngine {
     const cost = this.economy.dc(a.c);
     if (s.m < cost) return this.ui.toast('Not enough money! 😅');
     s.m -= cost;
+    const eBefore = s.N.e;
     a.run();
     this.maint.onAction(a.key);
     if (a.sleep) { const n = this.time.sleepHours(); for (let i = 0; i < n; i++) this.time.tick(true); }
     else for (let i = 0; i < a.h; i++) this.time.tick();
     this.stats.applyNeedDeltas(a.d);
+    if (!a.sleep && s.N.e > 0 && s.N.e < 20 && eBefore >= 20) this.ui.toast('😮‍💨 Energy is low. Go home and sleep before you pass out!');
     if (s.N.e <= 0 && !a.sleep) {
       this.log('😵 You passed out from exhaustion! Lost 6 hours and ₱100.');
       this.economy.spend(100);
@@ -2030,10 +2052,10 @@ class Renderer {
   }
   objectives() {
     const g = this.g, s = g.state, h = g.time.hour, w = g.time.weekday, ob = [], locs = g.world.locations();
-    if (w < 5) ob.push(s.att ? '✅ Class done' : h <= 9 ? '🎒 Be at school by ' + clock(9) : '❌ Absent today');
+    if (w < 5 && s.wx !== 'ty') { const late = g.academics.late(); ob.push(s.att ? '✅ Class done' : h <= late ? '🎒 Be at school by ' + clock(late) : h <= late + 3 ? `⏰ Late! Attend by ${clock(late + 3)} or be marked absent` : '❌ Absent today'); }
     if (s.kit) ob.push(`🤖 Building: ${DATA.gunpla.kits[s.kit.k].name}`);
     for (const l of ['mall', 'school', 'court']) if (g.hobby.meetDay(l, g.time.dayIndex) && s.wx !== 'ty') ob.push(`🤖 ${DATA.gunpla.meets[l].n} at ${locs[l][1]}, ${clock(DATA.gunpla.meets[l].h[0])} to ${clock(DATA.gunpla.meets[l].h[1])}`);
-    if (s.job) ob.push(s.sh ? '✅ Shift done' : `💼 Shift starts ${clock(DATA.shift.startHour)} to ${clock(DATA.shift.lastStartHour)}`);
+    if (s.job && s.wx !== 'ty') { const W = g.career.window(w), q = ` (this week ${s.wkSh || 0}/${DATA.shift.weeklyQuota})`; ob.push(s.sh ? '✅ Shift done' + q : `💼 ${W.hours}h shift, start ${clock(W.startHour)} to ${clock(W.lastStartHour)}` + q); }
     return ob;
   }
   renderGame() {
