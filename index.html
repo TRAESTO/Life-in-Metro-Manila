@@ -1149,8 +1149,9 @@ class PhoneManager extends Manager {
   }
   async kreply(tg, who, t) {
     let r = null;
-    try { const sm = await this.sample(); if (sm) r = await sm.json(`Social media sim in Metro Manila. The player ${this.me.nm} replied "${t}" to a post or comment by ${who}. Reply as ${who} in short Taglish, max 14 words. JSON only: {"t":"reply"}`, { cache: false, modelTier: 'quick' }); } catch { r = null; }
-    tg.th.push({ u: who, t: Util.clean(String((r && r.t) || '')).slice(0, 100) || pick(['Haha salamat!', 'Uy thanks!', 'Truee 😂', 'Sige sige!']) });
+    try { const sm = await this.sample(); if (sm) r = await sm.json(`Social media sim in Metro Manila. The player ${this.me.nm} replied "${t}" to a post or comment by ${who}. Write ${who}'s actual reply to what the player said, in short natural Taglish, max 14 words, reacting to their words. Never answer with the word "reply". JSON only, for example {"t":"Uy salamat, tara kain tayo mamaya 😄"}`, { cache: false, modelTier: 'quick' }); } catch { r = null; }
+    let x = Util.clean(String((r && r.t) || '')).slice(0, 100); if (!x || /^(reply|text|comment)$/i.test(x)) x = pick(['Haha salamat!', 'Uy thanks!', 'Truee 😂', 'Sige sige!']);
+    tg.th.push({ u: who, t: x });
     if (tg.th.length > 6) tg.th.splice(0, tg.th.length - 6); this.g.commit();
   }
   async sample() {
