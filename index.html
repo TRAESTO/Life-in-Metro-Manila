@@ -1,0 +1,1762 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Metro Manila Life: Student Sim</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&display=swap">
+<style>
+:root{--bg:#e8edf5;--cd:#fff;--ink:#13203d;--mu:#5b6783;--ac:#2457d6;--gd:#a96f00;--ok:#1f9d6b;--wn:#e0a100;--bad:#d6403a;--ln:#d3dae8;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0e1525;--cd:#18223a;--ink:#eaf0ff;--mu:#9aa8c7;--ac:#6c93ff;--gd:#f2b632;--ln:#28344f}}
+:root[data-theme=dark]{--bg:#0e1525;--cd:#18223a;--ink:#eaf0ff;--mu:#9aa8c7;--ac:#6c93ff;--gd:#f2b632;--ln:#28344f}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+h1,h2,.mn,b.t{font-family:"Bricolage Grotesque",system-ui,sans-serif}
+#app{max-width:640px;margin:auto;padding:10px}
+.cd{background:var(--cd);border:1px solid var(--ln);border-radius:14px;padding:10px 12px;margin-bottom:10px}
+h3{margin:0 0 6px;font-size:14px;color:var(--mu);font-weight:600}h1{margin:4px 0;font-size:30px}
+.rw{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.mn{font-size:26px;font-weight:800;color:var(--gd)}
+small,em{color:var(--mu);font-size:12px;font-style:normal}
+.nd{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:8px 0;text-align:center;font-size:12px}
+.br{height:6px;border-radius:4px;background:var(--ln);overflow:hidden;margin-top:3px}.br i{display:block;height:100%;border-radius:4px;transition:width .3s}
+.ch{display:flex;flex-wrap:wrap;gap:6px}.ch span{background:var(--bg);border-radius:20px;padding:2px 10px;font-size:12px}
+.tb{display:flex;gap:6px;margin-bottom:10px}.tb button{flex:1}
+button{font:inherit;color:var(--ink);background:var(--cd);border:1px solid var(--ln);border-radius:10px;padding:9px;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+button.on,#go{background:var(--ac);color:#fff;border-color:var(--ac)}
+.gr{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.ab{text-align:left;display:flex;flex-direction:column;gap:2px}.ab.off{opacity:.45}
+.row{display:grid;grid-template-columns:110px 1fr 36px;gap:8px;align-items:center;font-size:13px;margin:5px 0}.row .br{margin:0}
+.ov{position:fixed;inset:0;background:#000a;display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}.ov .cd{max-width:420px;width:100%;margin:0;max-height:88vh;overflow-y:auto}.ov button{width:100%;margin-top:6px}
+#t{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#13203d;color:#fff;padding:8px 14px;border-radius:20px;font-size:13px;opacity:0;transition:.2s;pointer-events:none;z-index:10}#t.s{opacity:1}
+input,select{font:inherit;width:100%;padding:8px;border-radius:8px;border:1px solid var(--ln);background:var(--bg);color:var(--ink);margin:3px 0 8px}
+label.c{display:flex;gap:8px;align-items:flex-start;margin:4px 0;font-size:14px}label.c input{width:auto;margin:3px 0}
+.mdl{font:12px/1.1 ui-monospace,Menlo,Consolas,monospace;white-space:pre;background:var(--bg);padding:8px;border-radius:8px;margin:6px 0;overflow-x:auto;max-width:100%;width:max-content}.mdl.sm{font-size:8px;padding:4px}.fl{animation:fl .6s}@keyframes fl{from{background:var(--wn)}}
+.lg div{font-size:13px;padding:3px 0;border-bottom:1px dashed var(--ln)}.big{font-size:20px;font-weight:700}
+button{transition:background .15s,transform .1s,opacity .2s,border-color .15s;min-height:44px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+button:active{transform:scale(.97)}@media(hover:hover){button:hover{border-color:var(--ac)}}
+.ov{animation:fi .2s}.ov .cd{animation:pop .22s}@keyframes fi{from{opacity:0}}@keyframes pop{from{transform:translateY(12px) scale(.97);opacity:0}}
+.br i{transition:width .4s ease}.gr{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.tb{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding:4px 0;z-index:5}
+.bd{background:var(--bad);color:#fff;border-radius:10px;padding:0 6px;font-size:11px;margin-left:3px}
+.pi{padding:6px 0 6px 8px;border-bottom:1px dashed var(--ln);font-size:13px;border-left:3px solid transparent}.pi.nw{border-left-color:var(--ac);background:var(--bg)}
+#sv{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:10px;background:var(--cd);border:1px solid var(--ln);padding:3px 10px;border-radius:14px;font-size:12px;opacity:0;transform:translateY(-6px);transition:.25s;pointer-events:none;z-index:11}#sv.s{opacity:1;transform:none}#sv.bad{color:var(--bad)}
+input[type=color]{height:40px;padding:2px}input[type=file]{padding:6px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body><div id="app"></div><div id="t"></div><div id="sv" role="status" aria-live="polite"></div>
+<script>
+'use strict';
+/* =====================================================================
+   METRO MANILA LIFE: STUDENT SIM  (modular architecture)
+
+   1.  Utilities
+   2.  DATA              all content and tuning numbers (jobs, items, events, kits...)
+   3.  Infrastructure    StateMachine, EventBus, Storage, GameState, EffectEngine
+   4.  Managers          World, Time, PlayerStats, Economy, Academics, Career,
+                         Social, Shop, Hobby (Gunpla), Events
+   5.  ActionRegistry    builds the "Do" menu from DATA.actions
+   6.  UIController      UI state machine (PLAY / MODAL / MINIGAME / GAMEOVER)
+   7.  GameEngine        wires everything together; the only place commands enter
+   8.  Renderer          the ONLY code that touches the DOM
+   ===================================================================== */
+
+/* ---------------------------------------------------------------- 1. UTILITIES */
+const Util = {
+  rnd: (a, b) => a + Math.random() * (b - a),
+  clamp: (v, a = 0, b = 100) => Math.max(a, Math.min(b, v)),
+  fmt: n => '₱' + Math.round(n).toLocaleString('en-US'),
+  avg: a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : 0,
+  pick: a => a[Math.floor(Math.random() * a.length)],
+  shuffle: a => [...a].sort(() => Math.random() - .5),
+  clock: h => `${h % 12 || 12}:00 ${h < 12 ? 'AM' : 'PM'}`,
+  clean: s => String(s).replace(/[<>&"]/g, ''),
+  val: (x, ...a) => typeof x === 'function' ? x(...a) : x
+};
+const { rnd, clamp, fmt, avg, pick, shuffle, clock, val } = Util;
+
+/* ---------------------------------------------------------------- 2. DATA
+   Effect objects ("fx") are interpreted by EffectEngine. Supported keys:
+   spend, bill, cash, debt, need, needSet, skill, rel, relSet, prep, hw, xp,
+   sick, buddy, person, chance:[{p,fx}], menu:'jobs', log
+*/
+const DATA = {
+  saveKey: 'bcs2',
+  startDate: [2026, 5, 8],
+  totalSemesters: 8,
+  weeksPerSemester: 16,
+  days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+  ranks: [{ name: 'Trainee', xp: 0, mult: 1 }, { name: 'Regular', xp: 40, mult: 1.15 }, { name: 'Senior', xp: 120, mult: 1.3 }, { name: 'Team Lead', xp: 260, mult: 1.5 }],
+  needs: { e: ['⚡', 'Energy'], h: ['🍚', 'Fullness'], y: ['🚿', 'Hygiene'], f: ['🎮', 'Fun'], s: ['💬', 'Social'] },
+  skills: { int: ['🧠', 'Intellect'], cha: ['😎', 'Charisma'], fit: ['💪', 'Fitness'], cook: ['🍳', 'Cooking'], code: ['💻', 'Coding'], mus: ['🎸', 'Music'], gun: ['🤖', 'Gunpla'], des: ['🎨', 'Design'] },
+  relationships: { nanay: ['👩', 'Mom'], bar: ['🧑‍🤝‍🧑', 'Barkada'], crush: ['💘', 'Crush'], prof: ['👩‍🏫', 'Ma’am Reyes'] },
+  start: {
+    cash: 1500, hour: 6,
+    needs: { e: 85, h: 70, y: 80, f: 70, s: 60 },
+    skills: { int: 15, cha: 12, fit: 10, cook: 5, code: 5, mus: 5, gun: 5, des: 5 },
+    rel: { nanay: 50, bar: 30, crush: 10, prof: 20 },
+    stash: ['zk']
+  },
+  weather: {
+    table: [['ty', .04], ['rain', .28], ['cloud', .5], ['sun', 1]],
+    label: { sun: '☀️ Sunny', cloud: '⛅ Cloudy', rain: '🌧️ Rainy', ty: '🌀 Typhoon' },
+    travelMult: { ty: 3, rain: 2 }
+  },
+  jobs: {
+    fast: { n: 'Fastfood Crew', p: 85, e: 5, f: 2, x: 'free meal on duty' },
+    call: { n: 'Call Center Agent', p: 130, e: 7, f: 4, req: { skill: 'cha', min: 10 }, x: 'high pay, exhausting' },
+    store: { n: 'Mini-mart Cashier', p: 90, e: 4, f: 3, x: 'quiet and steady' },
+    cafe: { n: 'Barista', p: 95, e: 5, f: 1, x: 'tips scale with charisma' },
+    tutor: { n: 'Online Tutor', p: 150, e: 4, f: 1, req: { skill: 'int', min: 22 }, x: 'high pay, needs brains', wear: { laptop: 1.5 } },
+    rider: { n: 'Delivery Rider', p: 105, e: 6, f: 2, req: { item: 'bike' }, x: 'needs a bicycle', wear: { bike: 3 } },
+    dev: { n: 'Freelance Developer', p: 140, e: 3, f: 1, req: { skill: 'code', min: 20 }, x: 'high pay, needs coding skill', wear: { laptop: 2 } },
+    sell: { n: 'Online Seller', p: 0, e: 5, f: 1, x: 'income swings a lot' }
+  },
+  shift: { startHour: 12, lastStartHour: 19, hours: 5, missedPenalty: 12, startReliability: 70 },
+  courses: {
+    'BS Computer Science': { int: 8, code: 15, des: 3 }, 'BS Nursing': { int: 8, fit: 4 }, 'BS Accountancy': { int: 10 },
+    'BS Education': { cha: 10, des: 5 }, 'BS Criminology': { fit: 10 }, 'BS Tourism': { cha: 10, des: 6 }
+  },
+  traits: {
+    Hardworking: { desc: '+20% studying, tires faster', mods: { studyMult: 1.2, energyDrain: 4.4 } },
+    Resourceful: { desc: '-15% spending, +25% sideline income', mods: { spendMult: .85, sideMult: 1.25 } },
+    Sociable: { desc: 'Bigger social gains, gets bored faster', excl: ['Introvert'], mods: { socialGain: 1.3, socialDrain: 2.8 } },
+    Introvert: { desc: 'Social drains slowly, smaller gains', excl: ['Sociable'], mods: { socialGain: .8, socialDrain: 1.2 } },
+    'Big Eater': { desc: 'Gets hungry fast, food is more fun', mods: { hungerDrain: 6.5, foodFun: 5 } },
+    Saver: { desc: 'Higher savings interest and allowance', mods: { saveRate: .015, allowMult: 1.1 } }
+  },
+  economy: { baseAllowance: 450, tuitionBonusAt: 1500, tuitionBonus: 200, nanayAllowance: 3, weeklyBill: 250, debtInterest: .05, tuitionEveryWeeks: 4, maxLoan: 3000 },
+  academics: { baseScore: 48, quizDay: 4, midtermWeek: 8, finalsWeek: 16, absencePenalty: .8, failLimit: 2, deansListBonus: 2000, gradeBands: [[96, 1], [93, 1.25], [90, 1.5], [87, 1.75], [84, 2], [81, 2.25], [78, 2.5], [75, 3]] },
+  locations: {
+    home: { icon: '🏠', name: () => 'Home' },
+    school: { icon: '🏫', name: s => s.sch },
+    work: { icon: '💼', name: () => 'Workplace' },
+    mall: { icon: '🛍️', name: (s, c) => c.ml },
+    court: { icon: '🌳', name: (s, c) => c.pk }
+  },
+  cities: {
+    'Caloocan': { c: .95, bg: ['Bagong Silang', 'Camarin', 'Sangandaan', 'Grace Park'], sc: [['University of Caloocan City', 700]], ml: 'SM City Grand Central', pk: 'Bonifacio Monument Circle' },
+    'Manila': { c: 1, bg: ['Sampaloc', 'Tondo', 'Sta. Mesa', 'Malate'], sc: [['Polytechnic University of the Philippines', 600], ['University of Santo Tomas', 2800], ['Far Eastern University', 2600]], ml: 'SM City Manila', pk: 'Rizal Park' },
+    'Quezon City': { c: 1, bg: ['Project 4', 'Commonwealth', 'Cubao', 'Teachers Village'], sc: [['Quezon City University', 600], ['UP Diliman', 800], ['Ateneo de Manila University', 3500]], ml: 'SM North EDSA', pk: 'Quezon Memorial Circle' },
+    'Makati': { c: 1.25, bg: ['Poblacion', 'Guadalupe Nuevo', 'Bangkal', 'Pio del Pilar'], sc: [['University of Makati', 600], ['Mapúa Makati', 3000]], ml: 'Greenbelt and Glorietta', pk: 'Ayala Triangle Gardens' },
+    'Pasig': { c: 1.05, bg: ['Kapitolyo', 'Rosario', 'Manggahan', 'Santolan'], sc: [['Pamantasan ng Lungsod ng Pasig', 600], ['University of Asia and the Pacific', 3200]], ml: 'Estancia Mall', pk: 'Pasig Rainforest Park' },
+    'Taguig': { c: 1.2, bg: ['Fort Bonifacio', 'Western Bicutan', 'Signal Village', 'Ususan'], sc: [['Taguig City University', 600], ['Enderun Colleges', 3500]], ml: 'Market! Market!', pk: 'Bonifacio High Street' },
+    'Marikina': { c: 1, bg: ['Concepcion Uno', 'Sto. Niño', 'Malanday', 'Industrial Valley'], sc: [['Marikina Polytechnic College', 700]], ml: 'SM City Marikina', pk: 'Marikina Riverbanks' },
+    'Mandaluyong': { c: 1.1, bg: ['Barangka', 'Plainview', 'Addition Hills', 'Highway Hills'], sc: [['Rizal Technological University', 600], ['Jose Rizal University', 2200]], ml: 'SM Megamall', pk: 'Greenfield District' },
+    'Pasay': { c: 1.05, bg: ['Malibay', 'Maricaban', 'Libertad'], sc: [['Philippine State College of Aeronautics', 600], ['Manila Adventist College', 2000]], ml: 'SM Mall of Asia', pk: 'MOA Seaside Boulevard' },
+    'Parañaque': { c: 1.05, bg: ['BF Homes', 'Sucat', 'Don Bosco', 'Moonwalk'], sc: [['Olivarez College', 2000]], ml: 'SM City Sucat', pk: 'Baclaran' },
+    'Las Piñas': { c: 1, bg: ['Pamplona', 'Talon', 'Almanza', 'Pulang Lupa'], sc: [['University of Perpetual Help System DALTA', 2200]], ml: 'SM Southmall', pk: 'Bamboo Organ Church' },
+    'Muntinlupa': { c: 1.1, bg: ['Putatan', 'Tunasan', 'Alabang', 'Bayanan'], sc: [['Pamantasan ng Lungsod ng Muntinlupa', 600], ['San Beda University Alabang', 3200]], ml: 'Alabang Town Center', pk: 'Filinvest City Wetland Park' },
+    'Valenzuela': { c: .95, bg: ['Karuhatan', 'Marulas', 'Malinta', 'Gen. T. de Leon'], sc: [['Pamantasan ng Lungsod ng Valenzuela', 600], ['Our Lady of Fatima University', 2400]], ml: 'SM City Valenzuela', pk: "People's Park" }
+  },
+  items: {
+    bike: { name: '🚲 Bicycle', price: 1800, desc: 'free commuting', store: 'mall',
+      maint: { uses: { go: 1.5 }, weekly: 1, fix: 350, warn: 'Your bike tires are getting thin.', broken: 'Your bike has a flat tire. You are paying jeepney fares again until it is fixed.', fail: 'Pop! Your bike tire blew out.' } },
+    cooker: { name: '🍚 Rice cooker', price: 700, desc: 'cheaper, heartier home meals', store: 'mall',
+      maint: { uses: { cook: 3 }, weekly: .5, fix: 300, warn: 'Your rice cooker is heating unevenly.', broken: 'Your rice cooker stopped heating. Home meals cost more again.', fail: 'The rice cooker tripped and died mid-cook.' } },
+    laptop: { name: '💻 Laptop', price: 5500, desc: '+15% studying', store: 'mall',
+      maint: { uses: { study: 1.2, code: 1.5, design: 1.2, videos: .6 }, weekly: 1, fix: 1200, warn: 'Your laptop battery is draining fast.', broken: 'Your laptop will not boot. No study bonus until it is repaired.', fail: 'Your laptop screen flickered and went black.' } },
+    fan: { name: '🌀 Electric fan', price: 900, desc: 'better sleep', store: 'mall',
+      maint: { uses: { sleep: 3 }, weekly: .5, fix: 250, warn: 'Your electric fan is rattling.', broken: 'Your electric fan burned out. Sleep is hot and restless again.', fail: 'Your fan motor burned out.' } },
+    guitar: { name: '🎸 Guitar', price: 2500, desc: 'practice, busk, impress', store: 'mall',
+      maint: { uses: { guitar: 4 }, weekly: 1.5, fix: 250, warn: 'Your guitar strings sound dull.', broken: 'Your guitar needs new strings before you can play or busk.', fail: 'Snap! A guitar string broke.' } },
+    gym: { name: '🏋️ Gym pass', price: 900, desc: 'stronger workouts', store: 'mall' },
+    pet: { name: '🐕 Adopt a dog', price: 300, desc: 'cheers you up, ₱100 weekly food', store: 'mall' },
+    outfit: { name: '👕 New outfit', price: 1200, desc: '+5 charisma', store: 'mall', onBuy: { skill: { cha: 5 } } },
+    books: { name: '📚 Textbooks', price: 800, desc: '+4 intellect', store: 'mall', onBuy: { skill: { int: 4 } } },
+    nippers: { name: '✂️ Side nippers', price: 350, desc: 'cleaner cuts', store: 'hobby',
+      maint: { uses: {}, weekly: 0, fix: 150, warn: 'Your nippers are getting dull.', broken: 'Your nippers are too dull to use. Cuts are sloppy until they are replaced.', fail: 'The nipper blade chipped.' } },
+    sand: { name: '🧽 Sanding sticks', price: 250, desc: 'smoother parts', store: 'hobby' },
+    liner: { name: '🖊️ Panel liner set', price: 300, desc: 'wider lining zone, enables weathering', store: 'hobby' },
+    topc: { name: '🧴 Matte top coat', price: 400, desc: 'full finish score', store: 'hobby' },
+    airb: { name: '💨 Airbrush set', price: 5000, desc: 'best paint jobs', store: 'hobby',
+      maint: { uses: {}, weekly: 0, fix: 900, warn: 'Your airbrush nozzle is getting clogged.', broken: 'Your airbrush is clogged. No airbrushed finishes until it is cleaned.', fail: 'The airbrush needle bent.' } }
+  },
+  personTypes: {
+    gamer: { icon: '🎮', desc: 'games', bonus: { need: { f: 10 } } },
+    foodie: { icon: '🍜', desc: 'food', bonus: { need: { h: 25 }, skill: { cook: .8 } } },
+    sporty: { icon: '🏀', desc: 'sports', bonus: { skill: { fit: .8 } } },
+    artsy: { icon: '🎨', desc: 'art', bonus: { skill: { mus: .8, des: .6 } } },
+    techie: { icon: '💻', desc: 'tech', bonus: { skill: { code: .8 } } },
+    gunpla: { icon: '🤖', desc: 'gunpla', bonus: { skill: { gun: .8 } } }
+  },
+  names: ['Paolo', 'Bea', 'Jerome', 'Kath', 'Migs', 'Aly', 'Dan', 'Trixie', 'Carlo', 'Joy', 'Renz', 'Nina'],
+  maxPeople: 8,
+  clubs: {
+    deb: { name: 'Debate Society', skill: 'cha' }, tech: { name: 'Tech Club', skill: 'code' }, choir: { name: 'Choir', skill: 'mus' },
+    vars: { name: 'Varsity Team', skill: 'fit' }, coun: { name: 'Student Council', skill: 'cha', prof: 2 }, gun: { name: 'Gunpla Club', skill: 'gun' }, art: { name: 'Arts Guild', skill: 'des' }
+  },
+  bank: [
+    { id: 'dep', label: 'Save ₱200' }, { id: 'wd', label: 'Withdraw ₱200 from savings' }, { id: 'bor', label: 'Borrow ₱500' },
+    { id: 'rep', label: 'Repay ₱500' }, { id: 'iv', label: 'Invest ₱500' }, { id: 'ou', label: 'Cash out ₱500' }, { id: 'iv2', label: 'Invest ₱1,000' }, { id: 'ouall', label: 'Cash out all' }
+  ],
+  maintenance: { warnAt: 30, suddenFailure: .04, quickService: 30, quickCostPct: .4, minFullPct: .4, emergencyMult: 1.3, emergencyRestore: 60 },
+  market: {
+    chance: .14, fakeChance: .25, base: { drift: .006, vol: .05 },
+    alerts: {
+      bear: [{ label: 'Cash out everything', fx: { cashout: 'all' } }, { label: 'Cash out ₱500', fx: { cashout: 500 } }, { label: 'Hold steady' }],
+      bull: [{ label: 'Invest ₱1,000', fx: { invest: 1000 } }, { label: 'Invest ₱500', fx: { invest: 500 } }, { label: 'Stay put' }]
+    },
+    events: {
+      tech: { kind: 'bull', icon: '💻', name: 'Tech boom', drift: .07, vol: .05, weeks: [2, 3], rumor: '📰 Analysts expect a tech boom next week. Rumors are not always right. What do you do with your fund?', start: '💻 Tech boom! The index is surging.' },
+      rally: { kind: 'bull', icon: '🏦', name: 'BSP rate-cut rally', drift: .05, vol: .04, weeks: [2, 2], rumor: '📰 The central bank is hinting at a rate cut. A rally could start next week. What do you do?', start: '🏦 Rate-cut rally! Investors are piling in.' },
+      crash: { kind: 'bear', icon: '📉', name: 'PSE crash', drift: -.12, vol: .07, weeks: [1, 2], rumor: '📰 Traders whisper that the PSE could crash next week. Rumors are not always right. What do you do?', start: '📉 The PSE is crashing! Your fund is bleeding.' },
+      crypto: { kind: 'bear', icon: '🪙', name: 'Crypto meltdown spillover', drift: -.09, vol: .1, weeks: [1, 3], rumor: '📰 A big crypto exchange is wobbling and markets are nervous. Spillover could hit next week. What do you do?', start: '🪙 The crypto meltdown is spilling into stocks!' },
+      inflation: { kind: 'bear', icon: '🔥', name: 'Inflation spike', drift: -.025, vol: .04, weeks: [3, 5], priceMult: 1.12, rumor: '📰 Inflation numbers look ugly. Prices and markets could both suffer next week. What do you do?', start: '🔥 Inflation spike! Prices are up and the market is jittery.' }
+    }
+  },
+  lotto: { cost: 20, tiers: [{ p: .003, cash: 6000, log: '🎰 JACKPOT! +₱6,000' }, { p: .05, cash: 100, log: '🎟️ Small prize: +₱100' }], miss: '🎟️ No luck this time.' },
+  goals: [
+    { label: '💰 Save ₱10,000', test: s => s.sav >= 1e4 },
+    { label: '🏅 Semester GPA of 1.75 or better', test: s => s.hist.some(x => x.g <= 1.75) },
+    { label: '⭐ Become Team Lead', test: s => s.rk >= 3 },
+    { label: '💘 Win over your crush (80)', test: s => s.R.crush >= 80 },
+    { label: '🧑‍🤝‍🧑 Squad goals (barkada at 80)', test: s => s.R.bar >= 80 },
+    { label: '🎸 Music skill 30', test: s => s.K.mus >= 30 },
+    { label: '🍳 Cooking skill 30', test: s => s.K.cook >= 30 },
+    { label: '💻 Coding skill 40', test: s => s.K.code >= 40 },
+    { label: '🤝 5 friends at 60 closeness', test: s => s.ppl.filter(p => p.r >= 60).length >= 5 },
+    { label: '🐕 Own a dog', test: s => s.inv.includes('pet') },
+    { label: '📈 Grow investments to ₱5,000', test: s => s.fund >= 5000 },
+    { label: '🤖 Build 3 gunpla kits', test: s => s.built >= 3 },
+    { label: '🏆 Win a gunpla meet', test: s => s.wins > 0 },
+    { label: '⭐ Gunpla reputation 30', test: s => s.rep >= 30 },
+    { label: '🎨 Design skill 30', test: s => s.K.des >= 30 },
+    { label: '📂 Complete 3 projects', test: s => s.pdone.filter(x => !x.fail).length >= 3 },
+    { label: '🎓 Defend your thesis', test: s => !!s.thesis && !s.thesis.fail }
+  ],
+  gigs: [
+    { name: 'Sell palamig and snacks', h: 3, e: 12, pay: () => rnd(120, 260) },
+    { name: 'Resell ukay finds online', h: 3, e: 8, pay: () => rnd(80, 320), skill: 'cha' },
+    { name: 'Tutor a neighbor kid', h: 2, e: 6, req: g => g.state.K.int >= 20, pay: g => 200 + g.state.K.int * 2, skill: 'int' },
+    { name: 'Deliver orders by bike', h: 3, e: 14, req: g => g.has('bike'), pay: () => rnd(220, 420), skill: 'fit', wear: { bike: 4 } },
+    { name: 'Freelance coding job', h: 3, e: 8, req: g => g.state.K.code >= 15, pay: g => 300 + g.state.K.code * 8, skill: 'code', wear: { laptop: 3 } },
+    { name: 'Busk with your guitar', h: 2, e: 6, req: g => g.has('guitar'), pay: g => rnd(80, 250) + g.state.K.mus * 3, skill: 'mus', wear: { guitar: 5 } },
+    { name: 'Edit videos for an online seller', h: 3, e: 9, req: g => g.has('laptop') && g.state.K.code >= 10, pay: () => rnd(200, 380), skill: 'code', wear: { laptop: 3 } },
+    { name: 'Commission a Gunpla paint job', h: 3, e: 8, req: g => g.state.K.gun >= 25, pay: g => 250 + g.state.K.gun * 6, skill: 'gun' },
+    { name: 'Design a poster or logo', h: 3, e: 8, req: g => g.state.K.des >= 15, pay: g => 250 + g.state.K.des * 7, skill: 'des', wear: { laptop: 2 } }
+  ],
+  holidays: {
+    '6-12': { text: '🇵🇭 Independence Day! No class vibes today.', fx: { need: { f: 15 } } },
+    '11-1': { text: '🕯️ Undas: your family visits the cemetery.', fx: { rel: { nanay: 5 }, need: { s: 15 } } },
+    '12-25': { text: '🎄 Christmas! Aguinaldo from relatives: +₱1,500.', fx: { cash: 1500, need: { f: 40 } } },
+    '1-1': { text: '🎆 New Year! Fireworks with the neighbors.', fx: { need: { f: 30 } } },
+    '2-14': { text: "💘 Valentine's Day: your crush notices you.", fx: { rel: { crush: 4 } } },
+    '5-1': { text: '🛠️ Labor Day! The whole city is on a break.', fx: { need: { f: 12 } } },
+    '11-30': { text: '🇵🇭 Bonifacio Day: free concert at the park.', fx: { need: { f: 20, s: 10 } } }
+  },
+  events: [
+    { text: '🌧️ A sudden downpour flooded the street!', options: [{ label: 'Take a Grab (₱150)', fx: { spend: 150 } }, { label: 'Wade through the flood', fx: { need: { y: -30 }, chance: [{ p: .3, fx: { sick: 3 } }] } }] },
+    { text: '🧋 Your barkada invites you for milk tea.', options: [{ label: 'Join them (₱100)', fx: { spend: 100, need: { s: 25, f: 18 }, rel: { bar: 5 } } }, { label: 'Not now', fx: { rel: { bar: -2 } } }] },
+    { text: '📱 Your phone screen cracked!', options: [{ label: 'Get it fixed (₱350)', fx: { spend: 350 } }, { label: 'Live with it', fx: { need: { f: -20, s: -10 } } }] },
+    { text: '👩 Mom: "Anak, can I borrow ₱200?"', options: [{ label: 'Lend it', fx: { spend: 200, rel: { nanay: 8 } } }, { label: 'Say no', fx: { rel: { nanay: -6 } } }] },
+    { text: '💸 You found ₱100 in an old bag!', options: [{ label: 'Yay!', fx: { cash: 100 } }] },
+    { text: '💻 A neighbor: "Can you type my thesis? ₱400."', options: [{ label: 'Accept', fx: { cash: 400, need: { e: -25, f: -8 } } }, { label: 'Decline' }] },
+    { text: '😳 Your crush messages: "Hi! Saw your story."', options: [{ label: 'Reply right away!', fx: { rel: { crush: 6 }, need: { s: 8 } } }, { label: 'Leave them on seen', fx: { rel: { crush: -3 } } }] },
+    { text: '📢 Ma’am: "Project due tomorrow!"', options: [{ label: 'Pull an all-nighter', fx: { prep: 12, need: { e: -20 } } }, { label: 'Wing it', fx: { hw: 1 } }] },
+    { text: '🔌 Brownout at home!', options: [{ label: 'Hang out outside', fx: { need: { f: 5, y: -8 } } }] },
+    { text: '🍢 A street vendor offers free taste tests.', options: [{ label: 'Try everything', fx: { need: { h: 25, f: 8 } } }, { label: 'Pass' }] },
+    { text: '📶 Your mobile data ran out mid-assignment!', options: [{ label: 'Buy load (₱50)', fx: { spend: 50 } }, { label: 'Hunt for free WiFi', fx: { need: { f: -8, e: -5 } } }] },
+    { text: '🎤 A friend invites you to a school singing contest.', options: [{ label: 'Join in', fx: { skill: { mus: 1.5 }, need: { f: 10, s: 10, e: -10 } } }, { label: 'Decline' }] },
+    { text: '🧾 Scam text: "You won ₱50,000! Click here."', options: [{ label: 'Ignore it', fx: { skill: { int: .3 } } }, { label: 'Click the link', fx: { spend: 300 } }] },
+    { text: '🐈 A stray kitten follows you home.', options: [{ label: 'Feed it (₱50)', fx: { spend: 50, need: { f: 20 } } }, { label: 'Shoo it away', fx: { need: { f: -3 } } }] },
+    { text: '🛒 Big sale at the ukay-ukay!', options: [{ label: 'Splurge (₱400)', fx: { spend: 400, skill: { cha: 1.5 }, need: { f: 15 } } }, { label: 'Just look around', fx: { need: { f: 3 } } }] },
+    { text: '🏀 The barangay league needs one more player.', options: [{ label: 'Play!', fx: { skill: { fit: 1.5 }, need: { f: 15, e: -15 }, rel: { bar: 4 } } }, { label: 'Skip' }] },
+    { text: '😢 You are feeling homesick.', options: [{ label: 'Call Mom', fx: { rel: { nanay: 5 }, need: { f: 10 } } }, { label: 'Push through', fx: { need: { f: -10 } } }] },
+    { text: '📚 A professor posts a surprise bonus quiz.', options: [{ label: 'Cram for it', fx: { prep: 10, need: { e: -10 } } }, { label: 'Skip it' }] },
+    { text: '🎓 A scholarship talk is happening today.', options: [{ label: 'Attend', fx: { skill: { int: 1 }, rel: { prof: 3 }, need: { e: -5 } } }, { label: 'Skip' }] },
+    { text: '🤝 Your group project partner stopped replying.', options: [{ label: 'Carry the work alone', fx: { need: { e: -20 }, prep: 8 } }, { label: 'Report it to Ma’am', fx: { rel: { prof: 2 }, need: { f: -3 } } }] },
+    { text: '🍲 A neighbor shares leftover adobo.', options: [{ label: 'Gladly accept', fx: { need: { h: 25, f: 5 } } }, { label: 'Politely decline' }] },
+    { text: '🎮 The barkada is at the LAN shop.', options: [{ label: 'Join them (₱100)', fx: { spend: 100, need: { f: 20, s: 15 }, rel: { bar: 4 } } }, { label: 'Pass' }] },
+    { text: '🤖 A hobby-shop regular offers build tips.', options: [{ label: 'Listen closely', fx: { skill: { gun: 1.2 }, need: { f: 5 } } }, { label: 'Not interested' }] },
+    { text: '🚌 Jeepney drivers hold a transport strike.', options: [{ label: 'Walk it off', fx: { need: { e: -12, y: -6 } } }, { label: 'Book a ride-hailing (₱180)', fx: { spend: 180 } }] }
+  ],
+  story: {
+    3: { text: '📖 A classmate, Mika, asks: "Want to be study buddies?"', options: [{ label: 'Say yes', fx: { buddy: 1, skill: { cha: 2 }, person: { n: 'Mika', t: 'techie', r: 45 }, log: '📖 Mika is now your study buddy.' } }, { label: 'Maybe later' }] },
+    6: { when: s => !!s.job, text: '📖 Your boss: "You are reliable. Want extra hours this month?"', options: [{ label: 'Take extra hours', fx: { xp: 30, need: { e: -15 }, log: '📈 You impressed your boss.' } }, { label: 'Keep things as they are' }] },
+    9: { text: '📖 A typhoon floods your barangay. Neighbors need help.', options: [{ label: 'Help out', fx: { need: { e: -25 }, rel: { bar: 8, nanay: 5 }, log: '🤝 Your barangay noticed your help.' } }, { label: 'Stay dry at home', fx: { need: { f: 10 } } }] },
+    12: { text: '📖 Mom is hospitalized with a fever. The bill is ₱1,500.', options: [{ label: 'Pay the bill', fx: { bill: 1500, rel: { nanay: 15 } } }, { label: 'Borrow from relatives', fx: { rel: { nanay: 4 }, debt: 1500 } }] },
+    15: { when: s => s.R.prof >= 40, text: '📖 Your professor offers you a research assistant role.', options: [{ label: 'Accept (+₱500)', fx: { cash: 500, prep: 15, skill: { int: 3 }, need: { e: -15 } } }, { label: 'Decline' }] },
+    18: { text: '📖 A campus job fair is happening this week.', options: [{ label: 'Go and apply', fx: { menu: 'jobs' } }, { label: 'Skip it' }] },
+    20: { when: s => s.R.crush >= 50, text: '📖 Your crush confesses their feelings!', options: [{ label: 'Say yes!', fx: { relSet: { crush: 90 }, needSet: { f: 100 } } }, { label: 'Stay friends', fx: { relSet: { crush: 60 } } }] },
+    26: { text: '📖 Your barkada plans a beach trip to Batangas. It costs ₱2,000.', options: [{ label: 'Go!', fx: { spend: 2000, needSet: { f: 100 }, rel: { bar: 15 }, need: { e: -20 } } }, { label: 'Stay home and save', fx: { rel: { bar: -4 } } }] },
+    34: { when: s => s.K.int >= 40, text: '📖 A company offers you a summer internship with a ₱1,200 stipend.', options: [{ label: 'Accept', fx: { cash: 1200, skill: { int: 3 }, need: { e: -20 }, log: '💼 You finished a summer internship.' } }, { label: 'Decline' }] },
+    44: { text: '📖 Your barkada throws a surprise dinner for your birthday.', options: [{ label: 'Treat everyone (₱500)', fx: { spend: 500, rel: { bar: 15 }, need: { f: 40, s: 20 } } }, { label: 'Just enjoy the night', fx: { rel: { bar: 6 }, need: { f: 30 } } }] },
+    60: { text: '📖 Typhoon season: your school becomes an evacuation center.', options: [{ label: 'Volunteer', fx: { need: { e: -25 }, rel: { bar: 6, nanay: 4 }, skill: { cha: 1 } } }, { label: 'Stay home' }] },
+    76: { text: '📖 Your thesis defense is coming up. A tutor offers review sessions.', options: [{ label: 'Pay for sessions (₱600)', fx: { spend: 600, prep: 20, skill: { int: 2 } } }, { label: 'Study on your own', fx: { prep: 8, need: { e: -10 } } }] },
+    96: { text: '📖 Graduation photos cost ₱800.', options: [{ label: 'Book the package', fx: { spend: 800, need: { f: 25 }, rel: { nanay: 6 } } }, { label: 'Skip it', fx: { rel: { nanay: -2 } } }] },
+    112: { text: '📖 A career fair for graduating students is on campus.', options: [{ label: 'Visit the booths', fx: { menu: 'jobs' } }, { label: 'Skip it' }] }
+  },
+  /* ----- Gunpla ----- */
+  gunpla: {
+    kits: {
+      rx: { name: 'HG RX-78-2 Gundam', grade: 'HG', price: 750, diff: 1 },
+      zk: { name: 'HG Zaku II', grade: 'HG', price: 700, diff: 1 },
+      bb: { name: 'HG Gundam Barbatos', grade: 'HG', price: 950, diff: 2 },
+      nu: { name: 'RG Nu Gundam', grade: 'RG', price: 2400, diff: 3 },
+      fr: { name: 'MG Freedom Gundam', grade: 'MG', price: 4200, diff: 4 },
+      sz: { name: 'MG Sazabi Ver.Ka', grade: 'MG', price: 5500, diff: 5 }
+    },
+    stages: [
+      { id: 'cut', name: 'Cut and clean parts', max: 25, h: 2, type: 'timing', wear: { nippers: 12 },
+        timing: { n: kd => 3 + kd, w: (kd, g) => Math.max(.05, .14 - kd * .012 + (g.has('nippers') ? .03 : 0)), sp: kd => .5 + .1 * kd,
+          text: 'Nip each part off the runner. Press SNIP when the ^ is on the [X] gate.', btn: 'SNIP!', glyph: ['[ ]', '[X]', '[#]'], prog: ['tray: ', '#'] } },
+      { id: 'asm', name: 'Assemble', max: 30, h: 3, type: 'assembly' },
+      { id: 'line', name: 'Panel lining', max: 15, h: 1, type: 'timing',
+        timing: { n: () => 4, w: (kd, g) => Math.max(.05, .14 - kd * .01 + (g.has('liner') ? .03 : 0)), sp: kd => .55 + .1 * kd,
+          text: 'Run the panel liner along the groove. Press DRAW when the ^ is on the (@) joint.', btn: 'DRAW!', glyph: ['(=)', '(@)', '(+)'], prog: ['lined: ', '+'] } },
+      { id: 'paint', name: 'Paint and style', max: 18, h: 2, type: 'paint' },
+      { id: 'top', name: 'Top coat and finish', max: 10, h: 1, type: 'instant' }
+    ],
+    paintOptions: [
+      { label: 'Straight build (free)', cost: 0, pts: 4, style: 'Straight build' },
+      { label: 'Marker touch-ups (₱150)', cost: 150, pts: 9, style: 'Marker detailed' },
+      { label: 'Hand-painted (₱300)', cost: 300, pts: 12, style: 'Hand-painted' },
+      { label: 'Airbrushed (₱400, needs airbrush)', cost: 400, pts: 18, style: 'Airbrushed', req: 'airb', wear: { airb: 18 } },
+      { label: 'Weathered battle damage (₱300, needs panel liner)', cost: 300, pts: 15, style: 'Weathered', req: 'liner' }
+    ],
+    meets: {
+      mall: { n: 'Hobby Con Gunpla Meet', fee: 100, pz: [2500, 1200, 500], w: 5, k: 4, o: 3, h: [10, 18], r: 8 },
+      school: { n: 'Campus Gunpla Showdown', fee: 50, pz: [1800, 900, 400], w: 4, k: 6, o: 5, h: [13, 17], r: 4 },
+      court: { n: 'Park Gunpla Tambay Meet', fee: 0, pz: [800, 300, 0], w: 6, k: 2, o: 1, h: [9, 17], r: 0 }
+    },
+    partOrder: ['torso', 'head', 'legL', 'legR', 'armL', 'armR', 'pack', 'rifle', 'shield'],
+    partLabel: { torso: 'TORSO', head: 'HEAD', legL: 'LEFT LEG', legR: 'RIGHT LEG', armL: 'LEFT ARM', armR: 'RIGHT ARM', pack: 'BACKPACK', rifle: 'BEAM RIFLE', shield: 'SHIELD' },
+    decoys: ['SPARE NUB', 'DECAL SHEET'],
+    colorIdx: { head: 0, armL: 0, armR: 0, torso: 1, legL: 1, legR: 1, pack: 2, shield: 2, rifle: 3 },
+    layout: {
+      torso: [[8, 2, '_/#####\\_'], [8, 3, '/| ### |\\'], [9, 4, '\\=====/']],
+      legL: [[9, 5, '|=|'], [9, 6, '| |'], [8, 7, '/_|_']],
+      legR: [[13, 5, '|=|'], [13, 6, '| |'], [12, 7, '_|_\\']],
+      armL: [[4, 2, '[==]'], [5, 3, '||'], [5, 4, '[]']],
+      armR: [[17, 2, '[==]'], [18, 3, '||'], [18, 4, '[]']],
+      pack: [[7, 1, '/'], [17, 1, '\\']],
+      rifle: [[19, 5, '=[=>']],
+      shield: [[1, 2, '/^\\'], [1, 3, '| |'], [1, 4, '\\v/']]
+    },
+    palettes: {
+      rx: { h: ['\\|/', '[o_o]'], c: ['#e7ecf5', '#3a6fd8', '#d9423a', '#8a93a6'] },
+      zk: { h: ['_^_', '(=o=)'], c: ['#5aa866', '#3d7a47', '#b8903a', '#6b7280'] },
+      bb: { h: ['\\ /', '[>o<]'], c: ['#d8dde8', '#9a3a3a', '#e2b23a', '#6b7280'] },
+      nu: { h: ['\\|/', '[ooo]'], c: ['#e7ecf5', '#e1e4ec', '#3a6fd8', '#c9a63a'] },
+      fr: { h: ['\\\\|//', '[o_o]'], c: ['#f2f4f8', '#2f4fc4', '#d6a43a', '#6b7280'] },
+      sz: { h: ['_|_', '[(o)]'], c: ['#d1363a', '#a82a2e', '#ffd24a', '#6b7280'] }
+    },
+    finishCss: { 'Straight build': 'opacity:.8;', 'Marker detailed': '', 'Hand-painted': 'filter:saturate(1.2);', Airbrushed: 'filter:saturate(1.35);text-shadow:0 0 6px currentColor;', Weathered: 'filter:grayscale(.45) brightness(.85);' }
+  },
+  /* ----- The "Do" menu. loc may be an array. c/d/name/h may be values or fn(g).
+         ok(g) returns a reason string when blocked. fx = declarative effects; run(g) = custom logic. */
+  /* ----- Professor and dean archetypes (rolled every semester).
+     late = last hour you can arrive, grace = free absences, absPen = average lost per extra absence,
+     prep = learning per class, study = self-study multiplier, hw = homework penalty multiplier,
+     quiz = score modifier, pop/popMod = pop quiz chance and modifier, askRel/askPrep = office hours,
+     proj = project grading modifier, due = course deadline multiplier, ext = free extensions, work = project speed */
+  profs: {
+    chill: { icon: '🛋️', label: 'The Chill Prof', names: ['Sir Dizon', 'Ma’am Bautista'], late: 11, grace: 3, absPen: .3, prep: .75, study: 1, hw: .5, quiz: 6, pop: 0, popMod: 0, askRel: 4, askPrep: 10, proj: 4, due: 1.3, ext: 1, work: 1,
+      desc: 'Arrive by 11 AM, 3 free absences, easy quizzes and homework, extensions on projects. You learn less per class.' },
+    fair: { icon: '📘', label: 'The By-the-Book Prof', names: ['Ma’am Reyes', 'Sir Cruz', 'Ma’am Lim'], late: 9, grace: 0, absPen: .8, prep: 1, study: 1, hw: 1, quiz: 0, pop: 0, popMod: 0, askRel: 5, askPrep: 10, proj: 0, due: 1, ext: 0, work: 1,
+      desc: 'Arrive by 9 AM. Normal quizzes, no surprises, no extensions.' },
+    terror: { icon: '😈', label: 'The Terror Prof', names: ['Ma’am Magsaysay', 'Sir Valdez', 'Dr. Salonga'], late: 8, grace: 0, absPen: 1.6, prep: 1.25, study: 1, hw: 1.5, quiz: -5, pop: .4, popMod: -5, askRel: 2, askPrep: 8, proj: -4, due: .85, ext: 0, work: 1,
+      desc: 'Arrive by 8 AM or be absent. Surprise pop quizzes, harsh grading, heavy homework penalty, tight deadlines. You learn a lot per class.' },
+    mentor: { icon: '🔬', label: 'The Research Mentor', names: ['Dr. Concepcion', 'Prof. Navarro'], late: 9, grace: 1, absPen: .8, prep: .9, study: 1.1, hw: 1, quiz: -2, pop: 0, popMod: 0, askRel: 8, askPrep: 14, proj: 6, due: 1, ext: 1, work: 1.2,
+      desc: 'Office hours help a lot. Project work goes 20% faster, projects are graded kindly, and you get one extension per project.' }
+  },
+  deans: {
+    terror: { icon: '👹', name: 'Dean Villareal', label: 'The Terror Dean', sweep: .1, fine: 250, list: 1.25, bonus: 3500, warn: 2.5,
+      desc: 'Surprise attendance sweeps with ₱250 fines. Dean’s List needs GPA 1.25 but pays ₱3,500. GPA worse than 2.5 earns a warning, and two warnings count as a failure.' },
+    fair: { icon: '🧑‍💼', name: 'Dean Mercado', label: 'The Fair Dean', sweep: .03, fine: 100, list: 1.5, bonus: 2000, warn: 3,
+      desc: 'Rare sweeps (₱100 fine). Dean’s List at GPA 1.5 pays ₱2,000. GPA of 3.0 earns a warning.' },
+    kind: { icon: '🤗', name: 'Dean Aquino', label: 'The Supportive Dean', sweep: 0, fine: 0, list: 1.75, bonus: 1500, warn: 5,
+      desc: 'No sweeps and no warnings. Dean’s List at GPA 1.75 pays ₱1,500.' }
+  },
+  social: {
+    posts: { ootd: ['👗 OOTD selfie', 'cha'], food: ['🍜 Food pic', 'cook'], meme: ['😂 Meme', 'int'], take: ['🔥 Hot take', 'int'], gun: ['🤖 Gunpla showcase', 'gun'] },
+    vids: { vlog: ['🎥 Daily vlog', 'cha'], tut: ['💻 Coding tutorial', 'code'], build: ['🤖 Gunpla build video', 'gun'], cover: ['🎸 Guitar cover', 'mus'] }
+  },
+  projectCap: 2,
+  /* Thesis thresholds are scaled per course (a Nursing thesis needs less coding than a CS one). */
+  thesisScale: { 'BS Computer Science': { int: .9, code: 1.1, des: .8 }, 'BS Nursing': { int: 1.05, code: .55, des: .7 }, 'BS Accountancy': { int: 1.1, code: .65, des: .6 }, 'BS Education': { code: .55, des: .9 }, 'BS Criminology': { int: .95, code: .55, des: .6 }, 'BS Tourism': { int: .9, code: .5, des: 1 } },
+  /* Projects: milestones are evaluated on the Monday that starts week (start + due). Each needs enough effort
+     (Work on a project, 3h sessions) AND skill levels near every threshold. Lopsided skills cap the result. */
+  projects: {
+    infog: { icon: '📊', name: 'Infographic Report', kind: 'Course', graded: true, lives: 2, minSem: 1, desc: 'A short report with a clean layout.',
+      reward: { skill: { int: 1.5, des: 3 }, rel: { prof: 6 } }, failFx: { rel: { prof: -6 } },
+      ms: [{ name: 'Research the topic', due: 2, effort: 24, need: { int: 20 } }, { name: 'Draft the layout', due: 3, effort: 28, need: { int: 25, des: 10 } }, { name: 'Final submission', due: 5, effort: 22, need: { int: 28, des: 14 } }] },
+    webapp: { icon: '📱', name: 'Web App Project', kind: 'Course', graded: true, lives: 2, minSem: 2, desc: 'Plan, build and demo a small app.',
+      reward: { skill: { code: 4, des: 3, int: 2 }, rel: { prof: 8 } }, failFx: { rel: { prof: -8 } },
+      ms: [{ name: 'Plan the features', due: 2, effort: 26, need: { int: 30, code: 22 } }, { name: 'Working prototype', due: 4, effort: 38, need: { int: 34, code: 30, des: 16 } }, { name: 'Polish the UI', due: 6, effort: 36, need: { int: 36, code: 36, des: 24 } }, { name: 'Demo day', due: 8, effort: 30, need: { int: 40, code: 40, des: 28 } }] },
+    booth: { icon: '🎪', name: 'Org Fair Booth', kind: 'Extra-curricular', club: 'any', repeat: true, lives: 2, minSem: 1, desc: 'Run your org’s booth at the student fair. Needs a student org.',
+      reward: { cash: 700, skill: { cha: 2.5, des: 2 }, rel: { bar: 8 }, need: { f: 20 } }, failFx: { rel: { bar: -4 }, need: { f: -12 } },
+      ms: [{ name: 'Concept and budget', due: 2, effort: 20, need: { cha: 16, des: 10 } }, { name: 'Build the booth', due: 3, effort: 26, need: { cha: 16, des: 16 } }, { name: 'Open house day', due: 4, effort: 18, need: { cha: 22, des: 18 } }] },
+    hack: { icon: '🏁', name: 'Hackathon Sprint', kind: 'Extra-curricular', club: 'tech', repeat: true, lives: 2, minSem: 2, desc: 'Build and pitch an MVP with your Tech Club. Needs the Tech Club.',
+      reward: { cash: 1800, skill: { code: 3, des: 2, cha: 2 }, rel: { bar: 6 } }, failFx: { need: { f: -10 } },
+      ms: [{ name: 'Team and idea', due: 1, effort: 14, need: { int: 34, cha: 14 } }, { name: 'Build the MVP', due: 3, effort: 40, need: { int: 36, code: 32, des: 16 } }, { name: 'Pitch day', due: 4, effort: 22, need: { code: 34, des: 22, cha: 22 } }] },
+    thesis: { icon: '🎓', name: 'Thesis', kind: 'Thesis', graded: true, lives: 3, span: true, auto: true, scale: true, desc: 'Two semesters of milestones. Assigned at the start of semester 7.',
+      reward: { cash: 1500, skill: { int: 5 }, rel: { nanay: 15 } }, failFx: { rel: { nanay: -10 }, need: { f: -30 } },
+      ms: [{ name: 'Topic and adviser approval', due: 3, effort: 28, need: { int: 60 } }, { name: 'Proposal defense', due: 8, effort: 50, need: { int: 70, code: 30, des: 22 } }, { name: 'Chapters 1 to 3', due: 13, effort: 60, need: { int: 78, code: 38, des: 28 } },
+        { name: 'Prototype and data', due: 21, effort: 70, need: { int: 86, code: 48, des: 36 } }, { name: 'Chapters 4 and 5', due: 27, effort: 60, need: { int: 94, code: 52, des: 42 } }, { name: 'Final defense', due: 31, effort: 45, need: { int: 100, code: 56, des: 46 } }] }
+  },
+  actions: [
+    { id: 'sleep', loc: 'home', name: 'Sleep', h: 0, sleep: true },
+    { id: 'shower', loc: 'home', name: 'Take a shower', h: 1, d: { y: 65 } },
+    { id: 'cook', loc: 'home', name: 'Cook at home', h: 1, c: g => g.has('cooker') ? 25 : 40, d: g => ({ h: (g.has('cooker') ? 50 : 40) + g.state.K.cook / 4, f: g.state.K.cook / 10 }) },
+    { id: 'study', loc: 'home', name: 'Study', h: 2, d: { e: -8, f: -6 }, run: g => g.academics.study(11) },
+    { id: 'homework', loc: 'home', name: 'Do homework', h: 1, d: { e: -4, f: -3 }, ok: g => g.state.hw ? 0 : 'No pending homework', run: g => { g.state.hw--; g.state.K.int += .15; } },
+    { id: 'social', loc: 'home', name: 'Social media and mobile games', h: 1, c: 5, d: { f: 22, s: 5 } },
+    { id: 'crush-chat', loc: 'home', name: 'Chat with your crush', h: 1, c: 5, d: { s: 8, f: 8 }, fx: { rel: { crush: 3 } } },
+    { id: 'help-mom', loc: 'home', name: 'Help Mom at home', h: 1, d: { f: -3 }, fx: { rel: { nanay: 4 } } },
+    { id: 'medicine', loc: 'home', name: 'Take medicine', h: 1, c: 90, ok: g => g.state.sick ? 0 : 'You are not sick', fx: { sick: 0, log: '💊 You recovered.' } },
+    { id: 'class', loc: 'school', name: 'Go to class', h: 6, d: { s: 8, f: -8 },
+      ok: g => { const s = g.state, h = g.time.hour, w = g.time.weekday; return s.wx === 'ty' ? 'Classes are suspended' : w > 4 ? 'Weekend, no class' : s.att ? 'Already attended' : h > g.academics.late() ? `Past ${clock(g.academics.late())}, you are marked absent` : 0; },
+      run: g => g.academics.attendClass() },
+    { id: 'library', loc: 'school', name: 'Study in the library', h: 2, d: { e: -8, f: -4 }, ok: g => g.time.hour > 17 ? 'Library is closed' : 0, run: g => g.academics.study(12) },
+    { id: 'ask-prof', loc: 'school', name: g => 'Ask ' + g.state.pf.n + ' for help', h: 1, d: { e: -3 }, ok: g => { const w = g.time.weekday, h = g.time.hour; return w > 4 || h < 8 || h > 16 ? 'Ma’am is not around' : 0; }, run: g => g.academics.askProf() },
+    { id: 'classmates', loc: 'school', name: 'Hang out with classmates', h: 1, d: { s: 20, f: 10 } },
+    { id: 'canteen', loc: 'school', name: 'Canteen meal', h: 1, c: 60, d: g => ({ h: 50, f: 3 + g.stats.trait('foodFun', 0) }) },
+    { id: 'shift', loc: 'work', name: g => 'Work shift' + (g.state.job ? ': ' + DATA.jobs[g.state.job].n : ''), h: 5,
+      ok: g => { const h = g.time.hour; return g.state.wx === 'ty' ? 'Work is suspended' : !g.state.job ? 'You have no job' : g.state.sh ? 'Already worked today' : h < DATA.shift.startHour || h > DATA.shift.lastStartHour ? `Shifts start ${clock(DATA.shift.startHour)} to ${clock(DATA.shift.lastStartHour)}` : 0; },
+      run: g => g.career.doShift() },
+    { id: 'coworkers', loc: 'work', name: 'Chat with coworkers', h: 1, d: { s: 12, f: 6 } },
+    { id: 'shops', loc: 'mall', name: 'Browse the shops', h: 1, run: g => g.shop.openMall() },
+    { id: 'arcade', loc: 'mall', name: 'Arcade and window shopping', h: 3, c: 150, d: { f: 45, s: 10, y: -6 } },
+    { id: 'jollibee', loc: 'mall', name: 'Jollibee with the barkada', h: 1, c: 190, d: g => ({ h: 70, f: 15 + g.stats.trait('foodFun', 0), s: 18 }), fx: { rel: { bar: 4 } } },
+    { id: 'date', loc: 'mall', name: 'Date your crush', h: 3, c: 350, d: { s: 25, f: 40 }, ok: g => g.state.R.crush < 30 ? 'Needs 30+ closeness' : 0, run: g => { g.state.R.crush += 8 + g.state.K.cha / 10; } },
+    { id: 'apply', loc: 'mall', name: 'Apply for another job', h: 2, c: 50, run: g => g.career.openJobMenu() },
+    { id: 'stroll', loc: 'court', name: g => 'Stroll around ' + g.world.locations().court[1], h: 1, d: { f: 16, s: 4, y: -3 } },
+    { id: 'court-barkada', loc: 'court', name: 'Hang out with the barkada', h: 2, d: { s: 30, f: 16 }, fx: { rel: { bar: 4 } } },
+    { id: 'basketball', loc: 'court', name: 'Play pickup basketball', h: 1, d: { e: -10, f: 12, h: -8 }, fx: { skill: { fit: .6 } } },
+    { id: 'karinderya', loc: 'court', name: 'Karinderya (viand and rice)', h: 1, c: 70, d: g => ({ h: 58, f: 3 + g.stats.trait('foodFun', 0) }) },
+    { id: 'street-food', loc: 'court', name: 'Street food (fishball, isaw)', h: 1, c: 30, d: g => ({ h: 22, f: 6 + g.stats.trait('foodFun', 0) }) },
+    { id: 'gig', loc: ['home', 'mall'], name: 'Find a gig', h: 0, run: g => g.career.openGigMenu() },
+    { id: 'wait', loc: 'home', name: 'Wait an hour', h: 1 },
+    { id: 'read', loc: 'home', name: 'Read a book', h: 2, d: { e: -3, f: -2 }, fx: { skill: { int: .8 } } },
+    { id: 'videos', loc: 'home', name: 'Watch videos (data)', h: 2, c: 10, d: { f: 30, e: -2 } },
+    { id: 'guitar', loc: 'home', name: 'Practice guitar', h: 1, d: { f: 15, e: -3 }, ok: g => g.need('guitar', 'You need a guitar'), fx: { skill: { mus: 1 } } },
+    { id: 'code', loc: 'home', name: 'Code a side project', h: 2, d: { e: -8, f: 4 }, fx: { skill: { code: 1.2 } } },
+    { id: 'recipe', loc: 'home', name: 'Try a new recipe', h: 2, c: 80, d: { e: -6, h: 35, f: 12 }, fx: { skill: { cook: 1.5 } } },
+    { id: 'call-family', loc: 'home', name: 'Call your family', h: 1, d: { s: 12, f: 6 }, fx: { rel: { nanay: 3 } } },
+    { id: 'join-club', loc: 'school', name: 'Join a student org', h: 1, ok: g => g.state.club ? 'You already joined one' : 0, run: g => g.social.openClubMenu() },
+    { id: 'club-meet', loc: 'school', name: g => 'Attend club meeting' + (g.state.club ? ': ' + DATA.clubs[g.state.club].name : ''), h: 2, d: { e: -6, s: 15, f: 8 },
+      ok: g => !g.state.club ? 'Join an org first' : g.time.hour > 19 ? 'Too late' : 0, run: g => g.social.attendClub() },
+    { id: 'meet-people', loc: ['school', 'mall', 'court'], name: 'Meet new people', h: 1, ok: g => g.state.ppl.length >= DATA.maxPeople ? 'Your circle is full for now' : 0, run: g => g.social.meet() },
+    { id: 'wander', loc: ['mall', 'court'], name: 'Wander around the city', h: 2, d: { f: 6 }, run: g => g.events.random() },
+    { id: 'movie', loc: 'mall', name: 'Watch a movie', h: 3, c: 350, d: { f: 50, s: 8 } },
+    { id: 'karaoke', loc: 'mall', name: 'Karaoke with the barkada', h: 2, c: 250, d: { f: 40, s: 30 }, fx: { rel: { bar: 4 }, skill: { mus: .3 } } },
+    { id: 'lotto', loc: 'mall', name: 'Buy a lotto ticket', h: 0, c: 20, run: g => g.economy.playLotto() },
+    { id: 'jog', loc: 'court', name: 'Go jogging', h: 1, d: { e: -12, f: 10, y: -8 }, fx: { skill: { fit: .8 } } },
+    { id: 'gym', loc: 'court', name: 'Work out at the gym', h: 1, d: { e: -12, f: 6, y: -6 }, ok: g => g.has('gym') ? 0 : 'You need a gym pass', fx: { skill: { fit: 1.4 } } },
+    { id: 'volunteer', loc: 'court', name: 'Volunteer at the barangay', h: 2, d: { e: -8, f: 10, s: 10 }, fx: { skill: { cha: .5 }, rel: { nanay: 2 } } },
+    { id: 'mass', loc: 'court', name: 'Attend mass', h: 1, d: { f: 10, s: 8 }, ok: g => g.time.weekday === 6 ? 0 : 'Mass is on Sundays', fx: { rel: { nanay: 2 } } },
+    { id: 'hobby-shop', loc: 'mall', name: 'Browse the hobby shop', h: 1, run: g => g.hobby.openShop() },
+    { id: 'repair', loc: 'mall', name: '🔧 Repair shop', h: 1, run: g => g.maint.openRepair() },
+    { id: 'kit-new', loc: 'home', name: '🤖 Start a new kit', h: 0, ok: g => g.state.kit ? 'Finish your current kit first' : !g.state.stash.length ? 'Buy a kit at the hobby shop (mall)' : 0, run: g => g.hobby.openKitMenu() },
+    { id: 'kit-skip', loc: 'home', name: '🤖 Skip current step', h: 0, ok: g => g.state.kit ? 0 : 'No kit on the bench', run: g => g.hobby.skipStep() },
+    { id: 'kit-sell', loc: 'home', name: '🤖 Sell a finished model', h: 0, ok: g => g.state.shelf.length ? 0 : 'No finished models', run: g => g.hobby.openSellMenu() },
+    { id: 'design', loc: 'home', name: 'Practice design (Canva/Figma)', h: 2, d: { e: -8, f: 4 }, fx: { skill: { des: 1.2 } } },
+    { id: 'pj-work', loc: ['home', 'school'], name: '📂 Work on a project', h: 0, ok: g => !g.state.pj.length ? 'No active project' : g.state.N.e < 15 ? 'Too tired' : 0, run: g => g.projects.openWork() },
+    { id: 'pj-find', loc: 'school', name: '📂 Find a project', h: 0, run: g => g.projects.openOffers() }
+  ]
+};
+
+/* ---------------------------------------------------------------- 3. INFRASTRUCTURE */
+class StateMachine {
+  constructor(name, initial, table) { this.name = name; this.state = initial; this.table = table; }
+  can(to) { const a = this.table[this.state] || []; return a.includes(to) || a.includes('*'); }
+  go(to) {
+    if (this.state === to) return true;
+    if (!this.can(to)) { console.warn(`[${this.name}] blocked transition ${this.state} -> ${to}`); return false; }
+    this.state = to; return true;
+  }
+  is(...s) { return s.includes(this.state); }
+  force(to) { this.state = to; }
+}
+
+class EventBus {
+  constructor() { this.h = {}; }
+  on(e, f) { (this.h[e] = this.h[e] || []).push(f); }
+  emit(e, p) { (this.h[e] || []).forEach(f => f(p)); }
+}
+
+class Storage {
+  constructor(key) { this.key = key; }
+  load() { try { return JSON.parse(localStorage.getItem(this.key)); } catch { return null; } }
+  save(s) { try { localStorage.setItem(this.key, JSON.stringify(s)); return true; } catch { return false; } }
+  clear() { try { localStorage.removeItem(this.key); } catch { /* ignore */ } }
+}
+
+class GameState {
+  static create(f) {
+    const C = DATA.cities[f.city], K = { ...DATA.start.skills };
+    for (const k in DATA.courses[f.course]) K[k] += DATA.courses[f.course][k];
+    return {
+      name: Util.clean(f.name || 'Juan') || 'Juan', co: f.course, bg: f.bg, city: f.city, sch: f.school,
+      tu: C.sc.find(x => x[0] === f.school)[1], col: C.c, tr: [...f.traits], job: f.job,
+      t: DATA.start.hour, m: DATA.start.cash, sav: 0, debt: 0,
+      N: { ...DATA.start.needs }, K, prep: 20, hw: 0, sc: [], abs: 0, att: 0, sh: 0, xp: 0, rk: 0, rj: DATA.shift.startReliability,
+      R: { ...DATA.start.rel }, loc: 'home', stash: [...DATA.start.stash], shelf: [], kit: null, mj: {}, rep: 0, built: 0, wins: 0,
+      ppl: [], club: null, fund: 0, wx: 'sun', inv: f.job === 'rider' ? ['bike'] : [], buddy: 0, fails: 0, hist: [], log: [], sick: 0,
+      cond: {}, pf: { k: 'fair', n: 'Ma’am Reyes' }, dn: { k: 'fair', n: 'Dean Mercado' }, pj: [], pdone: [], ph: [], me: null, chats: {}, warns: 0, thesis: null, mk: { ev: null, phase: null, left: 0, fake: false, hist: [] }
+    };
+  }
+  /* Fills in anything an older save is missing so it never throws */
+  static migrate(S) {
+    S.loc = S.loc || 'home'; S.inv = S.inv || []; S.R.prof = S.R.prof ?? 20; S.buddy = S.buddy || 0;
+    if (!DATA.cities[S.city]) S.city = 'Caloocan';
+    const C0 = DATA.cities[S.city];
+    S.sch = S.sch || C0.sc[0][0]; S.tu = S.tu ?? C0.sc[0][1]; S.col = S.col ?? C0.c;
+    S.ppl = S.ppl || []; S.club = S.club || null; S.fund = S.fund || 0; S.wx = S.wx || 'sun';
+    for (const k of ['cook', 'code', 'mus', 'gun', 'des']) S.K[k] = S.K[k] ?? 5;
+    S.stash = S.stash || ['zk']; S.shelf = S.shelf || []; S.kit = S.kit || null; S.mj = S.mj || {};
+    S.rep = S.rep || 0; S.built = S.built || 0; S.wins = S.wins || 0;
+    S.hist = S.hist || []; S.log = S.log || []; S.sc = S.sc || []; S.fails = S.fails || 0;
+    S.cond = S.cond || {}; S.pf = S.pf || { k: 'fair', n: 'Ma’am Reyes' }; S.dn = S.dn || { k: 'fair', n: 'Dean Mercado' }; S.pj = S.pj || []; S.ph = S.ph || []; S.me = S.me || null; S.chats = S.chats || {}; S.pdone = S.pdone || []; S.warns = S.warns || 0; S.thesis = S.thesis || null; S.mk = S.mk || { ev: null, phase: null, left: 0, fake: false, hist: [] };
+    return S;
+  }
+}
+
+/* Interprets declarative "fx" objects from DATA */
+class EffectEngine {
+  constructor(g) { this.g = g; }
+  apply(fx) {
+    if (!fx) return;
+    const g = this.g, s = g.state;
+    if (fx.spend) g.economy.spend(fx.spend);
+    if (fx.bill) g.economy.bill(fx.bill);
+    if (fx.cash) s.m += fx.cash;
+    if (fx.debt) s.debt += fx.debt;
+    if (fx.invest) { const n = Math.min(fx.invest, s.m); if (n > 0) { s.m -= n; s.fund += n; g.log(`💹 Invested ${fmt(n)} in the index fund.`); } }
+    if (fx.cashout) { const n = fx.cashout === 'all' ? s.fund : Math.min(fx.cashout, s.fund); if (n > 0) { s.fund -= n; s.m += n; g.log(`💵 Cashed out ${fmt(n)} from the index fund.`); } }
+    if (fx.need) for (const k in fx.need) s.N[k] += fx.need[k];
+    if (fx.needSet) for (const k in fx.needSet) s.N[k] = fx.needSet[k];
+    if (fx.skill) for (const k in fx.skill) s.K[k] += fx.skill[k];
+    if (fx.rel) for (const k in fx.rel) s.R[k] += fx.rel[k];
+    if (fx.relSet) for (const k in fx.relSet) s.R[k] = fx.relSet[k];
+    if (fx.prep) s.prep += fx.prep;
+    if (fx.hw) s.hw += fx.hw;
+    if (fx.xp) s.xp += fx.xp;
+    if (fx.sick !== undefined) s.sick = fx.sick;
+    if (fx.buddy) s.buddy = 1;
+    if (fx.person) s.ppl.push({ ...fx.person });
+    if (fx.chance) fx.chance.forEach(c => { if (Math.random() < c.p) this.apply(c.fx); });
+    if (fx.menu === 'jobs') g.career.openJobMenu();
+    if (fx.log) g.log(fx.log);
+  }
+}
+
+/* ---------------------------------------------------------------- 4. MANAGERS */
+class Manager { constructor(g) { this.g = g; } get s() { return this.g.state; } }
+
+class WorldManager extends Manager {
+  get city() { return DATA.cities[this.s.city]; }
+  locations() {
+    const out = {};
+    for (const k in DATA.locations) out[k] = [DATA.locations[k].icon, DATA.locations[k].name(this.s, this.city)];
+    return out;
+  }
+  rollWeather() {
+    const r = Math.random(), s = this.s;
+    s.wx = DATA.weather.table.find(([, p]) => r < p)[0];
+    if (s.wx === 'ty') this.g.log('🌀 Typhoon! Classes and work are suspended.');
+  }
+  travelCost() {
+    return this.g.has('bike') ? 0 : 13 * (DATA.weather.travelMult[this.s.wx] || 1);
+  }
+}
+
+class TimeManager extends Manager {
+  get hour() { return this.s.t % 24; }
+  get dayIndex() { return Math.floor(this.s.t / 24); }
+  get weekday() { return this.dayIndex % 7; }
+  get week() { return Math.floor(this.s.t / 168) + 1; }
+  get semester() { return Math.floor((this.week - 1) / DATA.weeksPerSemester) + 1; }
+  get date() { const [y, m, d] = DATA.startDate; return new Date(y, m, d + this.dayIndex); }
+  sleepHours() { const h = this.hour; return h < 6 ? 6 - h : h >= 20 ? 30 - h : 3; }
+  tick(sleeping = false) {
+    this.s.t++;
+    this.g.bus.emit('hour', { sleeping, h: this.hour, w: this.weekday });
+    if (this.hour === 0) this.newDay();
+  }
+  newDay() {
+    const d = this.dayIndex, ctx = { d, w: d % 7, wk: Math.floor(d / 7) + 1 };
+    this.g.world.rollWeather();
+    this.g.bus.emit('day:begin', ctx);
+    this.g.bus.emit('day:close', ctx);
+  }
+}
+
+class PlayerStats extends Manager {
+  constructor(g) {
+    super(g);
+    g.bus.on('hour', e => this.decay(e.sleeping));
+    g.bus.on('day:begin', () => this.rollSickness());
+  }
+  trait(key, def) {
+    for (const t of this.s.tr) { const m = DATA.traits[t] && DATA.traits[t].mods; if (m && m[key] !== undefined) return m[key]; }
+    return def;
+  }
+  efficiency() { const N = this.s.N; return Math.max(.3, .35 + .85 * (N.e * 2 + N.h + N.f + N.y * .5) / 450) * (this.s.sick ? .6 : 1); }
+  studyMult() { return this.trait('studyMult', 1) * (this.g.has('laptop') ? 1.15 : 1) * (this.s.buddy ? 1.1 : 1); }
+  decay(sleeping) {
+    const N = this.s.N, g = this.g;
+    if (sleeping) { N.e += g.has('fan') ? 13 : 11; N.h -= 1.5; N.y -= .7; N.f -= .7; N.s -= .5; }
+    else {
+      N.e -= this.trait('energyDrain', 4); N.h -= this.trait('hungerDrain', 5); N.y -= 2.5; N.f -= 2.5; N.s -= this.trait('socialDrain', 2);
+      if (g.has('pet')) N.f += .6;
+      if (N.s < 25) N.f -= 1;
+      if (N.h < 10) N.e -= 2;
+    }
+    for (const k in N) N[k] = clamp(N[k]);
+  }
+  rollSickness() {
+    const s = this.s;
+    if (s.sick && --s.sick === 0) this.g.log('💪 You recovered.');
+    if (!s.sick && (s.N.y < 20 || s.N.e < 15 || s.N.h < 10) && Math.random() < .2) { s.sick = 3; this.g.log('🤒 You got sick! Efficiency drops.'); }
+  }
+  applyNeedDeltas(d) {
+    const N = this.s.N;
+    for (const k in d) {
+      let v = d[k];
+      if (k === 's' && v > 0) v *= this.trait('socialGain', 1);
+      N[k] = clamp(N[k] + v);
+    }
+  }
+  normalize() {
+    const s = this.s;
+    for (const k in s.N) s.N[k] = clamp(s.N[k]);
+    for (const k in s.R) s.R[k] = clamp(s.R[k]);
+    s.prep = clamp(s.prep); s.hw = Math.max(0, s.hw); s.m = Math.max(0, s.m);
+  }
+}
+
+class EconomyManager extends Manager {
+  constructor(g) { super(g); g.bus.on('day:close', c => { if (c.w === 6) this.weekly(c.wk); }); }
+  dc(c) { return c ? Math.round(c * (this.s.col || 1) * this.g.stats.trait('spendMult', 1) * this.g.market.priceMult()) : c; }
+  weeklyBill() { return Math.round(DATA.economy.weeklyBill * (this.s.col || 1) * this.g.market.priceMult()); }
+  spend(n) { this.s.m -= Math.min(this.s.m, n); }
+  bill(n) { const s = this.s; if (s.m >= n) s.m -= n; else { s.debt += n - s.m; s.m = 0; } }
+  weekly(wk) {
+    const s = this.s, E = DATA.economy, st = this.g.stats;
+    const al = Math.round((E.baseAllowance + (s.tu > E.tuitionBonusAt ? E.tuitionBonus : 0) + s.R.nanay * E.nanayAllowance) * st.trait('allowMult', 1));
+    const bill = this.weeklyBill(), tu = wk % E.tuitionEveryWeeks === 0 ? s.tu : 0;
+    const it = Math.round(s.debt * E.debtInterest), iv = Math.round(s.sav * st.trait('saveRate', .005));
+    s.m += al; s.debt += it; s.sav += iv;
+    const r = this.g.market.weekly(), hadFund = s.fund > 0;
+    s.fund = Math.round(s.fund * (1 + r));
+    if (hadFund) this.g.log(`${r >= 0 ? '📈' : '📉'} Index fund ${r >= 0 ? '+' : ''}${(r * 100).toFixed(1)}% this week (now ${fmt(s.fund)}).`);
+    if (this.g.has('pet')) this.spend(100);
+    this.bill(bill + tu);
+    this.g.log(`🧾 Sunday: +${fmt(al)} allowance, -${fmt(bill)} bills${tu ? ', -' + fmt(tu) + ' tuition' : ''}${it ? ', +' + fmt(it) + ' debt interest' : ''}.`);
+  }
+  bank(op) {
+    const s = this.s;
+    const ops = {
+      dep: () => { const n = Math.min(200, s.m); s.m -= n; s.sav += n; },
+      wd: () => { const n = Math.min(200, s.sav); s.sav -= n; s.m += n; },
+      bor: () => {
+        if (s.debt > DATA.economy.maxLoan) return this.g.ui.toast('No one will lend to you anymore!');
+        s.m += 500; s.debt += 500; s.R.bar -= 3; this.g.log('🤝 Borrowed ₱500 (5% interest per week).');
+      },
+      rep: () => { const n = Math.min(500, s.m, s.debt); s.m -= n; s.debt -= n; },
+      iv: () => { const n = Math.min(500, s.m); s.m -= n; s.fund += n; },
+      ou: () => { const n = Math.min(500, s.fund); s.fund -= n; s.m += n; },
+      iv2: () => { const n = Math.min(1000, s.m); s.m -= n; s.fund += n; },
+      ouall: () => { s.m += s.fund; s.fund = 0; }
+    };
+    if (ops[op]) ops[op]();
+  }
+  playLotto() {
+    const r = Math.random();
+    let acc = 0;
+    for (const t of DATA.lotto.tiers) {
+      acc += t.p;
+      if (r < acc) { this.s.m += t.cash; return this.g.log(t.log); }
+    }
+    this.g.log(DATA.lotto.miss);
+  }
+}
+
+/* Index fund weather: rumors give a one-week warning, then the event drives returns */
+class MarketManager extends Manager {
+  get m() { return this.s.mk; }
+  get event() { return this.m.ev ? DATA.market.events[this.m.ev] : null; }
+  activeEvent() { return this.m.phase === 'active' ? this.event : null; }
+  priceMult() { const e = this.activeEvent(); return e && e.priceMult ? e.priceMult : 1; }
+  status() {
+    const m = this.m, e = this.event;
+    if (!e) return { phase: 'steady', text: '😐 Markets are steady.' };
+    if (m.phase === 'rumor') return { phase: 'rumor', text: `⚠️ Rumor: ${e.icon} ${e.name} may hit next week.` };
+    return { phase: 'active', text: `${e.icon} ${e.name}: ${m.left} week${m.left > 1 ? 's' : ''} left${e.priceMult ? ` (prices +${Math.round((e.priceMult - 1) * 100)}%)` : ''}` };
+  }
+  clear() { const m = this.m; m.ev = null; m.phase = null; m.left = 0; m.fake = false; }
+  /* Called every Sunday by EconomyManager. Returns this week's fractional return. */
+  weekly() {
+    const m = this.m, M = DATA.market;
+    if (m.ev && m.phase === 'rumor') {
+      const e = this.event;
+      if (m.fake) { this.g.log('📰 False alarm: the markets stayed calm.'); this.clear(); }
+      else { m.phase = 'active'; m.left = Math.floor(rnd(e.weeks[0], e.weeks[1] + 1)); this.g.log(e.start); }
+    }
+    const e = this.activeEvent(), drift = e ? e.drift : M.base.drift, vol = e ? e.vol : M.base.vol;
+    const r = clamp(drift + rnd(-vol, vol), -.35, .4);
+    m.hist.push(Math.round(r * 1000) / 1000); if (m.hist.length > 8) m.hist.shift();
+    if (e) { if (--m.left <= 0) { this.g.log(`${e.icon} ${e.name} cooled off.`); this.clear(); } }
+    else if (!m.ev && Math.random() < M.chance) this.announce();
+    return r;
+  }
+  announce() {
+    const m = this.m, M = DATA.market, id = pick(Object.keys(M.events)), e = M.events[id];
+    m.ev = id; m.phase = 'rumor'; m.left = 0; m.fake = Math.random() < M.fakeChance;
+    this.g.log(`📰 Market rumor: ${e.icon} ${e.name}.`);
+    this.g.events.present({ text: e.rumor, options: M.alerts[e.kind] });
+  }
+}
+
+/* Gear wears out with use and over time; broken gear stops working until repaired */
+class MaintenanceManager extends Manager {
+  constructor(g) { super(g); g.bus.on('day:close', c => { if (c.w === 6) this.weeklyDecay(); }); }
+  owns(k) { return this.s.inv.includes(k); }
+  tracked(k) { return !!DATA.items[k].maint; }
+  cond(k) { const v = this.s.cond[k]; return v === undefined ? 100 : v; }
+  working(k) { return this.owns(k) && (!this.tracked(k) || this.cond(k) > 0); }
+  needsAttention() { return this.s.inv.some(k => this.tracked(k) && this.cond(k) < DATA.maintenance.warnAt); }
+  wear(k, n) {
+    if (!n || !this.working(k) || !this.tracked(k)) return;
+    const s = this.s, M = DATA.items[k].maint, mt = DATA.maintenance, was = this.cond(k);
+    let c = Math.max(0, was - n), sudden = false;
+    if (c > 0 && c < 25 && Math.random() < mt.suddenFailure) { c = 0; sudden = true; }
+    s.cond[k] = c;
+    if (c === 0) {
+      this.g.log(`💥 ${sudden ? M.fail + ' ' : ''}${M.broken}`);
+      this.breakAlert(k, (sudden ? M.fail + ' ' : '') + M.broken);
+    } else if (c < mt.warnAt && was >= mt.warnAt) this.g.log(`⚠️ ${M.warn}`);
+  }
+  wearMany(o) { if (o) for (const k in o) this.wear(k, o[k]); }
+  onAction(key) {
+    const id = key.split('@')[0];
+    for (const k in DATA.items) { const m = DATA.items[k].maint, u = m && m.uses && m.uses[id]; if (u) this.wear(k, u); }
+  }
+  weeklyDecay() { for (const k of this.s.inv) if (this.tracked(k)) this.wear(k, DATA.items[k].maint.weekly); }
+  fullCost(k) { const mt = DATA.maintenance, M = DATA.items[k].maint; return Math.round(this.g.economy.dc(M.fix * (mt.minFullPct + (1 - mt.minFullPct) * (1 - this.cond(k) / 100)))); }
+  quickCost(k) { return Math.round(this.g.economy.dc(DATA.items[k].maint.fix * DATA.maintenance.quickCostPct)); }
+  breakAlert(k, msg) {
+    const g = this.g, s = this.s, mt = DATA.maintenance, cost = Math.round(g.economy.dc(DATA.items[k].maint.fix * mt.emergencyMult));
+    g.ui.showModal({ text: '🔧 ' + msg, options: [
+      { label: `Emergency fix (${fmt(cost)}, back to ${mt.emergencyRestore}%)`, run: () => {
+        if (s.m < cost) return g.ui.toast('Not enough money!');
+        s.m -= cost; s.cond[k] = mt.emergencyRestore; g.log('🛠️ Emergency fix: ' + DATA.items[k].name);
+      } },
+      { label: 'Deal with it later (repair shop at the mall)' }
+    ] });
+  }
+  openRepair() {
+    const g = this.g, s = this.s, mt = DATA.maintenance, options = [];
+    for (const k of s.inv) {
+      if (!this.tracked(k)) continue;
+      const it = DATA.items[k], c = this.cond(k);
+      if (c >= 100) continue;
+      const full = this.fullCost(k), quick = this.quickCost(k);
+      options.push({ label: `${it.name} (${Math.round(c)}%): full repair ${fmt(full)}`, run: () => {
+        if (s.m < full) return g.ui.toast('Not enough money!');
+        s.m -= full; s.cond[k] = 100; g.log('🛠️ Repaired ' + it.name); this.openRepair();
+      } });
+      if (c <= 100 - mt.quickService) options.push({ label: `${it.name}: quick service (+${mt.quickService}%) ${fmt(quick)}`, run: () => {
+        if (s.m < quick) return g.ui.toast('Not enough money!');
+        s.m -= quick; s.cond[k] = Math.min(100, this.cond(k) + mt.quickService); g.log('🛠️ Serviced ' + it.name); this.openRepair();
+      } });
+    }
+    const any = options.length > 0;
+    options.push({ label: 'Leave' });
+    g.ui.showModal({ text: any ? 'Repair shop. What needs fixing?' : 'Everything you own is in good shape.', options });
+  }
+}
+
+class AcademicsManager extends Manager {
+  constructor(g) {
+    super(g);
+    g.bus.on('hour', e => this.checkMissedClass(e));
+    g.bus.on('day:begin', () => { this.s.att = 0; });
+    g.bus.on('day:close', c => { if (c.w === 0 && c.wk > 1 && (c.wk - 1) % DATA.weeksPerSemester === 0) this.endSemester(); });
+  }
+  get P() { return DATA.profs[this.s.pf.k]; }
+  get D() { return DATA.deans[this.s.dn.k]; }
+  late() { return this.P.late; }
+  average() { return avg(this.s.sc) - Math.max(0, this.s.abs - this.P.grace) * this.P.absPen; }
+  gpa(p) { const b = DATA.academics.gradeBands.find(([min]) => p >= min); return b ? b[1] : 5; }
+  score(mod = 0) {
+    const s = this.s;
+    return clamp(DATA.academics.baseScore + s.prep * .4 + s.K.int * .25 + rnd(-7, 7) + s.R.prof / 20 - 4 * s.hw * this.P.hw + this.P.quiz + mod);
+  }
+  checkMissedClass(e) {
+    const s = this.s, g = this.g;
+    if (e.h !== this.late() + 1 || e.w > 4 || s.wx === 'ty') return;
+    if (!s.att) {
+      s.abs++; g.log('❌ You missed class.');
+      if (e.w === DATA.academics.quizDay) s.sc.push(45);
+      else if (Math.random() < this.P.pop * .6) { s.sc.push(40); g.log('📝 You missed a pop quiz: 40%.'); }
+    }
+    if (Math.random() < this.D.sweep) this.sweep(!!s.att);
+  }
+  sweep(here) {
+    const s = this.s, g = this.g, D = this.D, n = s.dn.n;
+    if (here) { s.R.prof += 1; return g.log(`🕵️ ${n} swept the room. You were present.`); }
+    const chance = clamp(s.K.cha / 80, .15, .7);
+    g.ui.showModal({ text: `🕵️ ${n} did a surprise attendance sweep and found your empty seat!`, options: [
+      { label: `Pay the ${fmt(D.fine)} fine`, run: () => g.economy.spend(D.fine) },
+      { label: 'Write an apology letter (Charisma check)', run: () => { if (Math.random() < chance) g.log('✉️ The dean accepted your apology.'); else { g.economy.spend(D.fine); s.abs++; g.log('✉️ Letter rejected: fine plus another absence.'); } } },
+      { label: 'Ignore it', run: () => { s.R.prof -= 4; s.abs++; g.log('😬 You ignored the dean. Another absence.'); } }] });
+  }
+  attendClass() {
+    const s = this.s, g = this.g, E = g.stats.efficiency(), A = DATA.academics, P = this.P;
+    s.att = 1;
+    s.prep = clamp(s.prep + 9 * P.prep * E * (1 + s.K.int / 150) * g.stats.trait('studyMult', 1));
+    s.K.int += .25 * E * P.prep; s.hw++;
+    if (g.time.weekday === A.quizDay) {
+      const sw = Math.floor(s.t / 168) % DATA.weeksPerSemester + 1, big = sw === A.midtermWeek || sw === A.finalsWeek;
+      const sc = this.score();
+      s.sc.push(sc); if (big) s.sc.push(sc);
+      s.hw = 0; s.prep *= .35;
+      g.log(`📝 ${big ? (sw === A.midtermWeek ? 'MIDTERM' : 'FINALS') : 'Quiz'}: ${Math.round(sc)}%`);
+    } else if (Math.random() < P.pop) {
+      const sc = this.score(P.popMod); s.sc.push(sc); s.prep *= .7;
+      g.log(`📝 POP QUIZ: ${Math.round(sc)}%`);
+      g.ui.showModal({ text: `📝 POP QUIZ! ${s.pf.n} hands out a surprise quiz. You scored <b>${Math.round(sc)}%</b>.`, options: [{ label: sc >= 75 ? 'Nice!' : 'Ouch' }] });
+    } else g.log('📚 You attended class.');
+  }
+  study(base) {
+    const s = this.s, g = this.g;
+    s.prep = clamp(s.prep + base * g.stats.efficiency() * (1 + s.K.int / 150) * g.stats.studyMult() * this.P.study);
+    s.K.int += .3;
+  }
+  askProf() {
+    const s = this.s, P = this.P;
+    s.prep = clamp(s.prep + P.askPrep * this.g.stats.efficiency()); s.R.prof += P.askRel; s.K.int += .2;
+    this.g.projects.boost(5 * P.work);
+  }
+  dismissCheck() { const s = this.s; if (s.fails >= DATA.academics.failLimit) s.over = 'You were dismissed from school after failing twice. There are other paths, so try again!'; }
+  rollFaculty() {
+    const s = this.s, g = this.g, pk = pick(Object.keys(DATA.profs).filter(k => k !== s.pf.k)), dk = pick(Object.keys(DATA.deans)), P = DATA.profs[pk], D = DATA.deans[dk];
+    s.pf = { k: pk, n: pick(P.names) }; s.dn = { k: dk, n: D.name };
+    s.R.prof = clamp(s.R.prof * .5 + 5);
+    g.ui.showModal({ text: `🎓 New semester!<br>${P.icon} <b>${s.pf.n}</b>: ${P.label}<br><small>${P.desc}</small><br>${D.icon} <b>${s.dn.n}</b>: ${D.label}<br><small>${D.desc}</small>`, options: [{ label: 'Bring it on' }] });
+  }
+  endSemester() {
+    const s = this.s, g = this.g, a = this.average(), gp = this.gpa(a), n = s.hist.length + 1, D = this.D;
+    s.hist.push({ n, a: Math.round(a), g: gp });
+    g.log(`🎓 Semester ${n} done: ${Math.round(a)}%, GPA ${gp.toFixed(2)}`);
+    if (gp === 5) { s.fails++; g.log(`⚠️ You failed! Warning from ${s.dn.n}.`); }
+    else if (gp <= D.list) { s.m += D.bonus; g.log(`🏅 Dean’s Lister! +${fmt(D.bonus)} scholarship from ${s.dn.n}.`); }
+    if (gp <= 2) s.warns = 0;
+    else if (gp !== 5 && gp >= D.warn && ++s.warns >= 2) { s.fails++; s.warns = 0; g.log(`🚨 ${s.dn.n}: two warnings on record. It counts as a failure.`); }
+    else if (gp !== 5 && gp >= D.warn) g.log(`⚠️ ${s.dn.n} issued a warning (${s.warns} of 2).`);
+    s.sc = []; s.abs = 0; s.prep = 20; s.hw = 0;
+    this.dismissCheck();
+    if (!s.over && n >= DATA.totalSemesters) { const t = s.thesis; s.over = 'You graduated, ' + s.name + '!' + (t && !t.fail ? (t.q >= 85 ? ' With thesis honors!' : ' Thesis defended.') : '') + ' 🎓 Thanks for all the late nights and hard work.'; }
+    if (!s.over) { this.rollFaculty(); g.bus.emit('semester:start'); }
+  }
+}
+
+class ProjectManager extends Manager {
+  constructor(g) { super(g); g.bus.on('day:close', c => this.weekly(c)); g.bus.on('semester:start', () => this.ensureThesis()); }
+  def(p) { return DATA.projects[p.id]; }
+  need(p, i = p.i) {
+    const d = this.def(p), n = d.ms[i].need, sc = d.scale ? DATA.thesisScale[this.s.co] || {} : {}, o = {};
+    for (const k in n) o[k] = Math.round(n[k] * (sc[k] ?? 1));
+    return o;
+  }
+  dues(k) {
+    const d = DATA.projects[k], f = d.kind === 'Course' ? this.g.academics.P.due : 1, o = [];
+    d.ms.forEach((m, i) => o.push(Math.max(Math.round(m.due * f), (o[i - 1] || 0) + 1)));
+    return o;
+  }
+  reason(k) {
+    const s = this.s, d = DATA.projects[k], t = this.g.time, prev = s.pdone.filter(x => x.id === k), dues = this.dues(k);
+    if (s.pj.some(p => p.id === k)) return 'Already active';
+    if (s.pj.filter(p => !this.def(p).span).length >= DATA.projectCap) return `Max ${DATA.projectCap} at once`;
+    if (t.semester < d.minSem) return `Opens semester ${d.minSem}`;
+    if (d.club && (d.club === 'any' ? !s.club : s.club !== d.club)) return `Join ${d.club === 'any' ? 'a student org' : DATA.clubs[d.club].name}`;
+    if (!d.repeat && prev.some(x => !x.fail)) return 'Already completed';
+    if (d.repeat && prev.some(x => x.sem === t.semester)) return 'Once per semester';
+    if ((t.week - 1) % DATA.weeksPerSemester + 1 + dues[dues.length - 1] > DATA.weeksPerSemester + 1) return 'Too late this semester';
+    return 0;
+  }
+  start(k, sw, dues) {
+    const g = this.g, d = DATA.projects[k], p = { id: k, sw: sw || g.time.week, i: 0, ef: 0, q: [], st: 0, ext: 0, dues: dues || this.dues(k) };
+    this.s.pj.push(p);
+    g.log(`📂 Started: ${d.name}`);
+    g.ui.showModal({ text: `${d.icon} <b>${d.name}</b> (${d.kind})<br><small>${d.desc}<br>${d.ms.map((m, i) => `${i + 1}. ${m.name}: week ${p.sw + p.dues[i]}`).join('<br>')}<br>Use "Work on a project" at home or school. Coding and design tasks need a working laptop at home; the school lab does not.</small>`, options: [{ label: 'Let’s go' }] });
+  }
+  ensureThesis() {
+    const s = this.s, t = this.g.time, d = DATA.projects.thesis;
+    if (t.semester < 7 || s.thesis || s.pj.some(p => p.id === 'thesis')) return;
+    const f = Math.min(1, (8 * DATA.weeksPerSemester - t.week) / d.ms[d.ms.length - 1].due), dues = [];
+    d.ms.forEach((m, i) => dues.push(Math.max(Math.round(m.due * f), (dues[i - 1] || 0) + 1)));
+    this.start('thesis', t.week, dues);
+  }
+  weekly(c) {
+    const s = this.s, g = this.g;
+    if (c.w !== 0 || s.over) return;
+    [...s.pj].forEach(p => { while (s.pj.includes(p) && !s.over && c.wk >= p.sw + p.dues[p.i]) this.resolve(p); });
+    if (c.wk > 1 && (c.wk - 1) % DATA.weeksPerSemester === 0) [...s.pj].filter(p => !this.def(p).span).forEach(p => this.fail(p, 'The semester ended before you finished.'));
+    s.pj.forEach(p => { if (p.sw + p.dues[p.i] - c.wk === 1) g.log(`⏰ ${this.def(p).name}: "${this.def(p).ms[p.i].name}" is due next Monday.`); });
+  }
+  resolve(p) {
+    const g = this.g, s = this.s, d = this.def(p), m = d.ms[p.i], nd = this.need(p), P = g.academics.P;
+    const rs = Object.keys(nd).map(k => ({ k, v: s.K[k] / nd[k] })), cap = x => Math.min(1.1, x) / 1.1;
+    const sk = .6 * cap(Math.min(...rs.map(r => r.v))) + .4 * cap(avg(rs.map(r => r.v)));
+    let q = 100 * cap(p.ef / m.effort) * (.45 + .55 * sk) + rnd(-3, 3) + P.proj;
+    if (rs.some(r => r.v < .6)) q = Math.min(q, 54);
+    q = Math.round(clamp(q));
+    if (q < 55 && p.ext < P.ext) { p.ext++; p.dues[p.i]++; return g.log(`🕐 ${s.pf.n} granted an extension on "${m.name}".`); }
+    const tag = q >= 85 ? 'Excellent' : q >= 70 ? 'Good' : q >= 55 ? 'Passable' : 'Failed';
+    const gaps = rs.filter(r => r.v < 1).map(r => `${DATA.skills[r.k][0]} ${Math.floor(s.K[r.k])}/${nd[r.k]}`).join(', ');
+    p.q.push(q); if (d.graded) s.sc.push(q);
+    if (q < 55) p.st++;
+    g.log(`📂 ${d.name}, ${m.name}: ${q}% (${tag})`);
+    g.ui.showModal({ text: `${d.icon} <b>${d.name}</b>: ${m.name}<br>Result: <b>${q}% (${tag})</b>, effort ${Math.round(100 * p.ef / m.effort)}%${gaps ? `<br><small>Skills short: ${gaps}</small>` : ''}`, options: [{ label: 'OK' }] });
+    if (p.st >= d.lives) return this.fail(p, 'Too many failed milestones.');
+    p.ef = Math.min(15, Math.max(0, p.ef - m.effort)); p.i++;
+    if (p.i >= d.ms.length) this.finish(p);
+  }
+  finish(p) {
+    const g = this.g, s = this.s, d = this.def(p), q = Math.round(avg(p.q));
+    if (q < 55) return this.fail(p, 'Your overall work was not strong enough.');
+    s.pj = s.pj.filter(x => x !== p); s.pdone.push({ id: p.id, q, sem: g.time.semester });
+    const f = q >= 85 ? 1.25 : q >= 70 ? 1 : .6, r = d.reward, o = {};
+    if (r.cash) o.cash = Math.round(r.cash * f);
+    ['skill', 'rel', 'need'].forEach(t => { if (r[t]) { o[t] = {}; for (const k in r[t]) o[t][k] = r[t][k] * (t === 'need' ? 1 : f); } });
+    g.effects.apply(o);
+    if (d.span) s.thesis = { q };
+    g.log(`🏆 ${d.name} complete: ${q}%${o.cash ? `, +${fmt(o.cash)}` : ''}`);
+    g.ui.showModal({ text: `🏆 <b>${d.name}</b> complete!<br>Final grade: <b>${q}%</b>${q >= 85 ? ' (honors quality!)' : ''}`, options: [{ label: 'Nice' }] });
+  }
+  fail(p, why) {
+    const g = this.g, s = this.s, d = this.def(p);
+    s.pj = s.pj.filter(x => x !== p); s.pdone.push({ id: p.id, q: 0, fail: 1, sem: g.time.semester });
+    g.effects.apply(d.failFx); g.log(`💥 ${d.name} failed. ${why}`);
+    g.ui.showModal({ text: `💥 <b>${d.name}</b> fell apart.<br><small>${why}</small>`, options: [{ label: 'Ouch' }] });
+    if (d.span) { s.thesis = { q: 0, fail: 1 }; s.fails++; g.academics.dismissCheck(); }
+  }
+  boost(n) { const p = this.s.pj[0]; if (p) p.ef = Math.min(p.ef + n, 1.3 * this.def(p).ms[p.i].effort); }
+  openWork() {
+    const s = this.s;
+    if (s.pj.length === 1) return this.openFocus(s.pj[0]);
+    this.g.ui.showModal({ text: 'Which project will you work on?', options: [...s.pj.map(p => ({ label: `${this.def(p).icon} ${this.def(p).name}: ${this.def(p).ms[p.i].name}`, run: () => this.openFocus(p) })), { label: 'Never mind' }] });
+  }
+  openFocus(p) {
+    const s = this.s, d = this.def(p), nd = this.need(p);
+    const opts = Object.keys(nd).map(k => ({ label: `Focus on ${DATA.skills[k][0]} ${DATA.skills[k][1]} (${Math.floor(s.K[k])}/${nd[k]})`, run: () => this.session(p, k) }));
+    opts.push({ label: 'Balanced work on everything', run: () => this.session(p, null) }, { label: 'Never mind' });
+    this.g.ui.showModal({ text: `${d.icon} <b>${d.name}</b>: ${d.ms[p.i].name}<br><small>A 3-hour session. Push the skill you are weakest in, because every threshold counts.</small>`, options: opts });
+  }
+  session(p, focus) {
+    const g = this.g, s = this.s, d = this.def(p), m = d.ms[p.i], nd = this.need(p), ks = Object.keys(nd), tech = !!(nd.code || nd.des);
+    const E = Math.min(g.stats.efficiency(), 1.2), r = avg(ks.map(k => Math.min(1.15, s.K[k] / nd[k])));
+    const tools = tech && !g.has('laptop') && s.loc !== 'school' ? .5 : 1;
+    if (tools < 1) g.ui.toast('No working laptop at home: half progress. The school lab works.');
+    const gain = 12 * E * (.6 + .4 * r) * g.stats.studyMult() * g.academics.P.work * tools;
+    for (let i = 0; i < 3; i++) g.time.tick();
+    p.ef = Math.min(p.ef + gain, 1.3 * m.effort);
+    ks.forEach(k => { s.K[k] += focus === null ? .35 : k === focus ? .9 : .15; });
+    s.N.e -= 14; s.N.f -= 6;
+    if (tech) g.maint.wearMany({ laptop: 1.5 });
+    g.log(`📂 ${d.name}: +${Math.round(gain)} effort (${Math.round(100 * p.ef / m.effort)}% of this milestone)`);
+  }
+  openOffers() {
+    const g = this.g, ks = Object.keys(DATA.projects).filter(k => !DATA.projects[k].auto);
+    const info = k => { const d = DATA.projects[k], pk = {}; d.ms.forEach(m => { for (const x in m.need) pk[x] = Math.max(pk[x] || 0, m.need[x]); }); return `${d.icon} <b>${d.name}</b> <small>${d.kind}, ${d.ms.length} milestones, peak needs ${Object.entries(pk).map(([x, v]) => DATA.skills[x][0] + v).join(' ')}</small>`; };
+    g.ui.showModal({ text: `Available projects:<br>${ks.map(info).join('<br>')}<br><small>Course projects are graded and count toward your GPA. Extra-curriculars pay rewards. Your professor changes deadlines.</small>`,
+      options: [...ks.map(k => { const r = this.reason(k); return { label: `${DATA.projects[k].icon} ${DATA.projects[k].name}${r ? ' 🔒 ' + r : ''}`, run: () => r ? g.ui.toast(r) : this.start(k) }; }), { label: 'Never mind' }] });
+  }
+}
+
+class CareerManager extends Manager {
+  constructor(g) {
+    super(g);
+    g.bus.on('hour', e => this.checkMissedShift(e));
+    g.bus.on('day:begin', () => { this.s.sh = 0; });
+  }
+  meetsRequirement(k) {
+    const r = DATA.jobs[k].req;
+    if (!r) return true;
+    return r.item ? this.g.has(r.item) : this.s.K[r.skill] >= r.min;
+  }
+  checkMissedShift(e) {
+    const s = this.s;
+    if (e.h === 21 && e.w < 5 && s.job && !s.sh && s.wx !== 'ty') {
+      s.rj -= DATA.shift.missedPenalty; this.g.log('😠 You missed your shift. Your boss is angry.');
+      if (s.rj <= 0) { s.job = null; this.g.log('You were fired.'); }
+    }
+  }
+  doShift() {
+    const s = this.s, g = this.g, J = DATA.jobs[s.job], E = Math.min(g.stats.efficiency(), 1), m = DATA.ranks[s.rk].mult;
+    s.sh = 1;
+    const base = J.p || (rnd(45, 170) + s.K.cha * .6);
+    let p = Math.round(5 * base * m * (.65 + .35 * E) * Math.sqrt(s.col || 1));
+    if (s.job === 'cafe') p += Math.round(s.K.cha * 2.5 * E);
+    s.m += p; s.xp += 8 + 4 * E; s.rj = Math.min(100, s.rj + 3); s.N.e -= J.e * 2; s.N.f -= J.f * 3;
+    if (s.job === 'fast') s.N.h += 25;
+    if (s.job === 'tutor') s.K.int += .3; else s.K.cha += .25;
+    g.log(`💼 Shift done: +${fmt(p)}`);
+    g.maint.wearMany(J.wear);
+    const nr = DATA.ranks.filter(r => s.xp >= r.xp).length - 1;
+    if (nr > s.rk) { s.rk = nr; g.log('🎉 Promoted to ' + DATA.ranks[nr].name + '!'); }
+  }
+  openJobMenu() {
+    const s = this.s, g = this.g;
+    const options = Object.keys(DATA.jobs).filter(k => k !== s.job).map(k => ({
+      label: `${DATA.jobs[k].n}${this.meetsRequirement(k) ? '' : ' (skill too low)'}`,
+      run: () => {
+        if (!this.meetsRequirement(k)) return g.log('You were not hired as ' + DATA.jobs[k].n);
+        s.job = k; s.rk = 0; s.xp = 0; s.rj = DATA.shift.startReliability; g.log('✅ You were hired as ' + DATA.jobs[k].n);
+      }
+    }));
+    options.push({ label: 'Never mind' });
+    g.ui.showModal({ text: 'Which job will you apply for? Your rank resets.', options });
+  }
+  openGigMenu() {
+    const g = this.g;
+    const options = DATA.gigs.map(gig => {
+      const ok = !gig.req || gig.req(g);
+      return {
+        label: `${gig.name} (${gig.h}h)${ok ? '' : ' (locked)'}`,
+        run: () => {
+          if (!ok) return g.ui.toast('Requirements not met');
+          const p = Math.round(gig.pay(g) * g.stats.trait('sideMult', 1) * Math.sqrt(this.s.col || 1));
+          for (let i = 0; i < gig.h; i++) g.time.tick();
+          this.s.N.e -= gig.e; this.s.m += p;
+          if (gig.skill) this.s.K[gig.skill] += .8;
+          g.log(`💸 ${gig.name}: +${fmt(p)}`);
+          g.maint.wearMany(gig.wear);
+        }
+      };
+    });
+    options.push({ label: 'Never mind' });
+    g.ui.showModal({ text: 'Pick a gig. Locked ones need a skill or an item.', options });
+  }
+}
+
+class SocialManager extends Manager {
+  meet(type) {
+    const s = this.s, free = DATA.names.filter(n => !s.ppl.some(p => p.n === n));
+    if (!free.length) return;
+    const n = pick(free), t = type || pick(Object.keys(DATA.personTypes));
+    s.ppl.push({ n, t, r: 15 }); s.N.s += 12;
+    this.g.log(`👋 You met ${n}, who loves ${DATA.personTypes[t].desc}.`);
+  }
+  hang(i) {
+    const s = this.s, g = this.g, p = s.ppl[i];
+    if (s.over || !p) return;
+    const c = g.economy.dc(60);
+    if (s.m < c) return g.ui.toast('Not enough money for snacks!');
+    s.m -= c;
+    for (let k = 0; k < 2; k++) g.time.tick();
+    s.N.s += 25; s.N.f += 15; p.r = clamp(p.r + 6 + s.K.cha / 20);
+    if (p.r >= 40) g.effects.apply(DATA.personTypes[p.t].bonus);
+    g.log(`🤝 You hung out with ${p.n}.`);
+  }
+  openClubMenu() {
+    const g = this.g;
+    const options = Object.entries(DATA.clubs).map(([k, v]) => ({ label: v.name, run: () => { this.s.club = k; g.log('🎓 You joined the ' + v.name + '.'); } }));
+    options.push({ label: 'Never mind' });
+    g.ui.showModal({ text: 'Which student org will you join?', options });
+  }
+  attendClub() {
+    const s = this.s, c = DATA.clubs[s.club];
+    s.K[c.skill] += 1.2;
+    if (c.prof) s.R.prof += c.prof;
+  }
+}
+
+class PhoneManager extends Manager {
+  constructor(g) { super(g); g.bus.on('day:begin', () => this.daily()); }
+  get me() {
+    const s = this.s;
+    return s.me || (s.me = { av: null, bn: null, nm: s.name, bio: 'Student in Metro Manila ✨', col: '#2457d6', fol: 5, posts: [], ch: { nm: s.name + ' Vlogs', col: '#d6403a', subs: 0, earn: 0, vids: [] } });
+  }
+  cmd(c) {
+    const g = this.g, s = this.s, m = this.me, [k, a] = c.x.split(':'), hx = v => /^#[0-9a-f]{6}$/i.test(v), D = DATA.social;
+    if (k === 'sub') { g.ui.ps = a; return; }
+    if (!g.ui.fsm.is('PLAY')) return;
+    if (k === 'img') { if (typeof c.d === 'string' && c.d.startsWith('data:image/') && c.d.length < 150000) { m[c.k === 'bn' ? 'bn' : 'av'] = c.d; g.log('🖼️ Photo updated.'); } }
+    else if (k === 'rm') m[a === 'bn' ? 'bn' : 'av'] = null;
+    else if (k === 'save') {
+      const f = c.f || {};
+      m.nm = Util.clean(f.nm || '').slice(0, 24) || m.nm; m.bio = Util.clean(f.bio || '').slice(0, 80);
+      m.ch.nm = Util.clean(f.chn || '').slice(0, 24) || m.ch.nm;
+      if (hx(f.col)) m.col = f.col; if (hx(f.chc)) m.ch.col = f.chc;
+      g.log('🎨 Profile saved.');
+    }
+    else if (k === 'post') g.ui.showModal({ text: 'What are you posting on Kuwento?', options: [...Object.entries(D.posts).map(([id, v]) => ({ label: v[0], run: () => this.post(id) })), { label: 'Never mind' }] });
+    else if (k === 'video') g.ui.showModal({ text: 'What video will you make? (3 hours, needs a laptop)', options: [...Object.entries(D.vids).map(([id, v]) => ({ label: v[0], run: () => this.video(id) })), { label: 'Never mind' }] });
+    else if (k === 'chat') { g.ui.ps = 'in'; g.ui.chat = a || null; if (a && !s.chats[a]) { const x = s.ph.find(q => q.who === a); s.chats[a] = [{ f: 'them', t: x ? x.tx : 'Uy, kumusta?' }]; } if (a) s.ph.forEach(q => { if (q.who === a) q.r = 1; }); }
+    else if (k === 'send') { const t = Util.clean((c.f || {}).t || '').slice(0, 160); if (t && !this.busy && s.chats[a]) { s.chats[a].push({ f: 'me', t }); this.busy = a; this.talk(a, t); } }
+    else if (k === 'reply') this.reply(+a);
+    else if (k === 'like') { const x = s.ph[+a]; if (x && !x.lk) { x.lk = 1; s.N.f += 2; } }
+  }
+  post(id) {
+    const g = this.g, s = this.s, m = this.me, [l, sk] = DATA.social.posts[id];
+    const likes = Math.round((s.K[sk] * .6 + s.K.des * .8 + (m.av ? 10 : 0) + rnd(0, 25)) * (1 + m.fol / 25));
+    g.time.tick(); m.fol += Math.round(likes / 15);
+    const pp = { l, likes, d: DATA.days[g.time.weekday].slice(0, 3) }; m.posts.unshift(pp); this.comments(pp, l); m.posts.length = Math.min(8, m.posts.length);
+    s.N.f += 8; s.N.s += 8; s.K.des += .3;
+    g.log(`📱 Posted ${l}: ${likes} likes`);
+  }
+  video(id) {
+    const g = this.g, s = this.s, ch = this.me.ch, [l, sk] = DATA.social.vids[id];
+    if (!g.has('laptop')) return g.ui.toast('You need a working laptop to edit videos.');
+    if (id === 'cover' && !g.has('guitar')) return g.ui.toast('You need a working guitar.');
+    const q = Math.round(s.K[sk] * .7 + s.K.des * .5 + s.K.cha * .2 + rnd(0, 20));
+    for (let i = 0; i < 3; i++) g.time.tick();
+    const vv = { n: l + ' #' + (ch.vids.length + 1), q, v: 0, age: 0 }; ch.vids.unshift(vv); this.comments(vv, l + ' video'); ch.vids.length = Math.min(6, ch.vids.length);
+    s.N.e -= 10; s.N.f -= 3; s.K[sk] += .5; g.maint.wearMany({ laptop: 1.5 });
+    g.log(`▶️ Uploaded "${l}" (quality ${q})`);
+  }
+  daily() {
+    const g = this.g, s = this.s, m = this.me, ch = m.ch; let tot = 0;
+    m.posts.forEach(p => { p.likes += Math.round(rnd(0, .1) * m.fol); });
+    ch.vids.forEach(v => {
+      v.age++; const gn = Math.round(v.q * (1 + ch.subs / 15) * rnd(.4, 1.2) / (1 + v.age * .3)); v.v += gn; tot += gn;
+      if (gn >= 150) g.push('alert', `📈 "${v.n}" is trending: +${gn} views`);
+    });
+    ch.subs += Math.round(tot / 40);
+    if (ch.subs >= 50 && tot) { const inc = Math.round(tot * .03); if (inc) { ch.earn += inc; s.m += inc; g.push('alert', `💵 ManilaTube ad revenue: +${fmt(inc)}`); } }
+  }
+  async sample() {
+    if (this.sm === undefined) { try { this.sm = window.claude ? await window.claude.use('sample') : null; } catch { this.sm = null; } }
+    return this.sm;
+  }
+  relOf(w) { const s = this.s, p = s.ppl.find(q => w.includes(q.n)); return w.includes('Crush') ? s.R.crush : w.includes('Mom') ? s.R.nanay : w.includes('Barkada') ? s.R.bar : p ? p.r : 20; }
+  bump(w, d) { const s = this.s, p = s.ppl.find(q => w.includes(q.n)); if (w.includes('Crush')) s.R.crush += d * 1.3; else if (w.includes('Mom')) s.R.nanay += d; else if (w.includes('Barkada')) s.R.bar += d; else if (p) p.r = clamp(p.r + d * 2); }
+  async talk(who, t) {
+    const g = this.g, s = this.s, c = s.chats[who], hist = c.slice(-8).map(x => (x.f === 'me' ? s.name : who) + ': ' + x.t).join('\n');
+    const P = `You roleplay ${who}, a character in a Metro Manila student life game. Closeness with the player ${s.name} (${s.co} student at ${s.sch}) is ${Math.round(this.relOf(who))} out of 100. Weather: ${DATA.weather.label[s.wx]}. Recent events: ${s.log.slice(0, 3).join(' | ')}. Chat so far:\n${hist}\nReply as ${who} in short natural Taglish, max 25 words, in character: warmer if closeness is high, more distant if low. Return JSON only: {"reply":"text","mood":number from -2 to 3 for how the player's last message affected the relationship}`;
+    let r = null;
+    try { const sm = await this.sample(); if (sm) r = await sm.json(P, { cache: false, modelTier: 'quick' }); } catch { r = null; }
+    const txt = Util.clean(String((r && r.reply) || '')).slice(0, 200);
+    if (!txt) g.ui.toast('AI unavailable, using a scripted reply');
+    c.push({ f: 'them', t: txt || pick(['Haha oo nga.', 'Sige, mamaya na lang.', 'Ingat ka ha!']) }); if (c.length > 20) c.splice(0, c.length - 20);
+    const mood = clamp(Number(r && r.mood) || 0, -2, 3); this.bump(who, txt ? mood : .5);
+    s.N.s += 3; this.busy = null; g.commit();
+  }
+  async comments(item, what) {
+    const sm = await this.sample(); if (!sm) return;
+    const m = this.me, P = `Social media sim in Metro Manila. ${m.nm} (bio: ${m.bio}, ${m.fol} followers) just shared: ${what}, reaching ${item.likes ?? item.q} ${item.likes != null ? 'likes' : 'quality score'}. Write 3 short realistic comments in Taglish from different followers, max 14 words each. JSON only: [{"u":"username","t":"comment"}]`;
+    try { const a = await sm.json(P, { cache: false, modelTier: 'quick' }); item.cm = (Array.isArray(a) ? a : []).slice(0, 3).map(x => ({ u: Util.clean(String(x.u)).slice(0, 16), t: Util.clean(String(x.t)).slice(0, 100) })); this.g.commit(); } catch { /* AI optional */ }
+  }
+  reply(i) {
+    const g = this.g, s = this.s, x = s.ph[i]; if (!x || x.rp) return; x.rp = x.r = 1;
+    const bump = d => { if (x.who.includes('Crush')) s.R.crush += d * 1.3; else if (x.who.includes('Mom')) s.R.nanay += d; else if (x.who.includes('Barkada')) s.R.bar += d; else { const p = s.ppl.find(q => x.who.includes(q.n)); if (p) p.r = clamp(p.r + d * 2); } };
+    g.ui.showModal({ text: `Reply to ${x.who}: "${x.tx}"`, options: [{ label: 'Reply warmly 💬', run: () => { bump(3); s.N.s += 6; s.N.f += 3; s.K.cha += .15; } }, { label: 'Quick "ok" 👍', run: () => bump(1) }, { label: 'Leave on read 😶', run: () => bump(-1.5) }] });
+  }
+}
+
+class ShopSystem extends Manager {
+  openMall() {
+    const g = this.g;
+    const options = Object.entries(DATA.items).filter(([k, v]) => v.store === 'mall' && !g.maint.owns(k))
+      .map(([k, v]) => ({ label: `${v.name}, ${fmt(v.price)}: ${v.desc}`, run: () => this.buy(k, '🛍️') }));
+    options.push({ label: 'Leave' });
+    g.ui.showModal({ text: 'Shops at ' + g.world.locations().mall[1] + '. What do you want to buy?', options });
+  }
+  buy(k, tag) {
+    const v = DATA.items[k], s = this.s;
+    if (s.m < v.price) return this.g.ui.toast('Not enough money!');
+    s.m -= v.price; s.inv.push(k); s.cond[k] = 100;
+    this.g.effects.apply(v.onBuy);
+    this.g.log(`${tag} Bought ${v.name}`);
+  }
+}
+
+/* Gunpla: kit lifecycle, mini-game state machine, meets and judging */
+class HobbySystem extends Manager {
+  constructor(g) {
+    super(g);
+    /* IDLE -> TIMING | ASSEMBLY | PAINT -> IDLE. Anything else is rejected, so a stage can only be scored once. */
+    this.fsm = new StateMachine('hobby', 'IDLE', { IDLE: ['TIMING', 'ASSEMBLY', 'PAINT'], TIMING: ['IDLE'], ASSEMBLY: ['IDLE'], PAINT: ['IDLE'] });
+    this.session = null;
+    g.bus.on('day:begin', c => this.announceMeets(c));
+  }
+  get idle() { return this.fsm.is('IDLE'); }
+  get kitData() { return DATA.gunpla.kits; }
+  abort() { this.session = null; this.fsm.force('IDLE'); }
+  /* ---- meets ---- */
+  meetDay(l, d) { const m = DATA.gunpla.meets[l]; return d % 7 === m.w && Math.floor(d / 7) % m.k === m.o; }
+  meetNow(l, d, h) { const m = DATA.gunpla.meets[l]; return this.meetDay(l, d) && this.s.wx !== 'ty' && h >= m.h[0] && h < m.h[1]; }
+  announceMeets(c) {
+    const locs = this.g.world.locations();
+    for (const l in DATA.gunpla.meets) {
+      const m = DATA.gunpla.meets[l];
+      if (this.meetDay(l, c.d) && this.s.wx !== 'ty') this.g.log(`🤖 Today: ${m.n} at ${locs[l][1]}, ${clock(m.h[0])} to ${clock(m.h[1])}.`);
+      else if (this.meetDay(l, c.d + 2)) this.g.log(`🤖 In 2 days: ${m.n} at ${locs[l][1]}. Finish a kit to enter!`);
+    }
+  }
+  /* ---- shop and bench ---- */
+  openShop() {
+    const g = this.g, s = this.s;
+    const options = Object.entries(DATA.gunpla.kits).map(([k, v]) => ({
+      label: `${v.name}, ${fmt(g.economy.dc(v.price))} (difficulty ${v.diff})`,
+      run: () => { const c = g.economy.dc(v.price); if (s.m < c) return g.ui.toast('Not enough money!'); s.m -= c; s.stash.push(k); g.log('📦 Bought ' + v.name); }
+    })).concat(Object.entries(DATA.items).filter(([k, v]) => v.store === 'hobby' && !g.maint.owns(k))
+      .map(([k, v]) => ({ label: `${v.name}, ${fmt(v.price)}: ${v.desc}`, run: () => g.shop.buy(k, '🛠️') })));
+    options.push({ label: 'Leave' });
+    g.ui.showModal({ text: 'Hobby shop: kits and tools. Higher grades are harder but score better.', options });
+  }
+  openKitMenu() {
+    const s = this.s, g = this.g, K = DATA.gunpla.kits;
+    const options = s.stash.map((k, i) => ({
+      label: `${K[k].name} (difficulty ${K[k].diff})`,
+      run: () => { if (s.kit) return; s.stash.splice(i, 1); s.kit = { k, st: 0, q: 0, sty: 'Straight build' }; g.log('🤖 Started building ' + K[k].name); }
+    }));
+    options.push({ label: 'Never mind' });
+    g.ui.showModal({ text: 'Which kit goes on the bench?', options });
+  }
+  openSellMenu() {
+    const s = this.s, g = this.g, K = DATA.gunpla.kits;
+    const options = s.shelf.map((k, i) => {
+      const v = Math.round(K[k.k].price * (.35 + k.q / 150));
+      return { label: `${k.n} (quality ${k.q}): ${fmt(v)}`, run: () => { if (!s.shelf[i]) return; s.shelf.splice(i, 1); s.m += v; g.log(`💰 Sold ${k.n} for ${fmt(v)}`); } };
+    });
+    options.push({ label: 'Never mind' });
+    g.ui.showModal({ text: 'Sell a finished model to a collector?', options });
+  }
+  skipStep() {
+    const s = this.s;
+    if (!s.kit || !this.idle) return;
+    s.kit.st++; this.g.log('⏭️ You skipped a step.');
+    if (s.kit.st >= DATA.gunpla.stages.length) this.finishKit();
+  }
+  currentStage() { const k = this.s.kit; return k ? DATA.gunpla.stages[k.st] : null; }
+  /* ---- stage start: dispatches on stage type ---- */
+  startStage() {
+    const s = this.s, g = this.g, kit = s.kit, st = this.currentStage();
+    if (!kit || !st || !this.idle || !g.ui.fsm.is('PLAY')) return;
+    const kd = DATA.gunpla.kits[kit.k].diff, now = performance.now();
+    if (st.type === 'timing') {
+      const c = st.timing, n = c.n(kd);
+      this.session = { type: 'timing', stage: st, n, w: c.w(kd, g), sp: c.sp(kd), i: 0, sc: 0, t0: now, c: this.gate(0, n), msg: '' };
+      this.fsm.go('TIMING'); g.bus.emit('minigame:start');
+    } else if (st.type === 'assembly') {
+      const steps = DATA.gunpla.partOrder.slice(0, Math.min(9, 5 + kd));
+      this.session = { type: 'asm', stage: st, steps, pos: 0, err: 0, last: '', tray: shuffle([...steps, ...DATA.gunpla.decoys]) };
+      this.fsm.go('ASSEMBLY'); g.bus.emit('minigame:start');
+    } else if (st.type === 'paint') {
+      this.fsm.go('PAINT');
+      const options = DATA.gunpla.paintOptions.filter(o => (!o.req || g.has(o.req)) && s.m >= g.economy.dc(o.cost)).map(o => ({
+        label: o.label,
+        run: () => {
+          this.fsm.go('IDLE');
+          g.economy.spend(g.economy.dc(o.cost)); kit.sty = o.style;
+          if (o.wear) g.maint.wearMany(o.wear);
+          this.addPoints(Math.round(o.pts * (.7 + .3 * Math.min(1, s.K.gun / 50)) * rnd(.92, 1.08)));
+        }
+      }));
+      g.ui.showModal({ text: 'How do you want to finish the paint job?', options });
+    } else {
+      this.addPoints(Math.round(st.max * Math.min(1, (.6 + .4 * Math.min(1, s.K.gun / 50)) * (g.has('topc') ? 1 : .55))));
+    }
+  }
+  gate(i, n) { return Math.round((i + 1) * 40 / (n + 1)) / 39; }
+  cursor(now) { const m = this.session; return Math.abs(((now - m.t0) * m.sp / 1000) % 2 - 1); }
+  /* ---- timing mini-game ---- */
+  strike(now = performance.now()) {
+    const m = this.session;
+    if (!m || !this.fsm.is('TIMING')) return null;
+    const d = Math.abs(this.cursor(now) - m.c), s = d <= m.w / 2 ? 1 : Math.max(0, 1 - (d - m.w / 2) / .12);
+    m.sc += s; m.i++;
+    const r = s >= 1 ? 'Perfect!' : s > .5 ? 'Clean enough.' : 'Gouged, stress mark!';
+    if (m.i >= m.n) { const q = m.sc / m.n; this.endSession(); this.award(q); return { done: true }; }
+    m.c = this.gate(m.i, m.n); m.msg = `${r} Part ${m.i + 1} of ${m.n}`;
+    return { done: false, msg: m.msg };
+  }
+  /* ---- assembly mini-game ---- */
+  tap(part) {
+    const m = this.session;
+    if (!m || !this.fsm.is('ASSEMBLY') || m.pos >= m.steps.length) return { ok: false };
+    if (part === m.steps[m.pos]) {
+      m.last = part; m.pos++;
+      m.tray = shuffle([...m.steps.slice(m.pos), ...DATA.gunpla.decoys]);
+      if (m.pos >= m.steps.length) setTimeout(() => this.g.dispatch({ type: 'asm-finish' }), 600);
+      return { ok: true };
+    }
+    m.err++; return { ok: false };
+  }
+  finishAssembly() {
+    const m = this.session;
+    if (!m || !this.fsm.is('ASSEMBLY')) return;
+    /* No timer: the 0.2 bonus now rewards accuracy (fewer wrong picks) instead of speed */
+    const acc = 1 - Math.min(1, m.err / m.steps.length);
+    const r = Math.min(1, Math.max(0, m.pos / m.steps.length - m.err * .06) + (m.pos >= m.steps.length ? .2 * acc : 0));
+    this.endSession(); this.award(r);
+  }
+  endSession() { this.session = null; this.fsm.go('IDLE'); this.g.bus.emit('minigame:end'); }
+  /* ---- scoring ---- */
+  award(q) {
+    const s = this.s, g = this.g, st = this.currentStage();
+    let f = (.2 + .6 * q + .2 * Math.min(1, s.K.gun / 60)) * (.85 + .15 * Math.min(1, g.stats.efficiency()));
+    if (st.id === 'cut') { if (!g.has('nippers')) f *= .8; if (g.has('sand')) f *= 1.1; }
+    if (st.id === 'line' && !g.has('liner')) f *= .85;
+    this.addPoints(Math.round(st.max * Math.min(1.05, f)));
+  }
+  addPoints(p) {
+    const s = this.s, kit = s.kit, st = this.currentStage(), kd = DATA.gunpla.kits[kit.k].diff;
+    kit.q += p; s.K.gun += .7 + .3 * kd; s.N.f += 8;
+    if (st.wear) this.g.maint.wearMany(st.wear);
+    this.g.log(`🤖 ${st.name} done: +${p} quality.`);
+    kit.st++;
+    if (kit.st >= DATA.gunpla.stages.length) this.finishKit();
+  }
+  finishKit() {
+    const s = this.s, kit = s.kit, K = DATA.gunpla.kits[kit.k], q = clamp(Math.round(kit.q + rnd(-2, 3))), n = Math.min(9, 5 + K.diff);
+    s.shelf.push({ k: kit.k, n: K.name, q, st: kit.sty, np: n });
+    s.kit = null; s.built++; s.N.f += 20;
+    this.g.log(`🎉 Finished ${K.name}! Quality ${q} (${kit.sty}).`);
+    this.g.ui.showModal({ text: `🎉 ${K.name} is finished!`, view: { kind: 'model', kit: kit.k, np: n, style: kit.sty, caption: `Quality ${q}, ${kit.sty}` }, options: [{ label: 'Put it on the shelf' }] });
+  }
+  /* ---- meets ---- */
+  joinMeet(l) {
+    const s = this.s, g = this.g, m = DATA.gunpla.meets[l];
+    s.mj[l + ':' + g.time.dayIndex] = 1;
+    const options = s.shelf.map((k, i) => ({ label: `${k.n} (quality ${k.q}, ${k.st})`, run: () => this.judge(l, i) }));
+    options.push({ label: 'Just browse', run: () => { s.N.f += 15; s.K.gun += .5; if (s.ppl.length < DATA.maxPeople) this.g.social.meet('gunpla'); g.log('👀 You browsed the displays and got inspired.'); } });
+    g.ui.showModal({ text: `${m.n}: ${s.shelf.length ? 'Choose a model to enter, or just browse the displays.' : 'You have no finished kit to enter, but you can browse the displays.'}`, options });
+  }
+  judge(l, i) {
+    const s = this.s, g = this.g, m = DATA.gunpla.meets[l], k = s.shelf[i];
+    if (!k) return;
+    const sc = k.q * .75 + s.K.gun * .4 + (k.st === 'Straight build' ? 0 : 3) + rnd(-8, 8);
+    const rv = [1, 2, 3, 4].map(() => rnd(38, 66) + m.r), pl = 1 + rv.filter(v => v > sc).length, pz = m.pz[pl - 1] || 0;
+    k.pl = Math.min(k.pl || 9, pl);
+    s.rep += [10, 6, 3, 1, 0][pl - 1]; s.K.gun += 1; s.N.f += 15; s.N.s += 10; s.m += pz;
+    if (pl === 1) s.wins++;
+    if (s.ppl.length < DATA.maxPeople && Math.random() < .5) g.social.meet('gunpla');
+    g.log(`🏆 ${m.n}: your ${k.n} placed #${pl} of 5${pz ? ', won ' + fmt(pz) : ''}.`);
+    const rows = [['YOU (' + k.n + ')', sc], ...rv.map((v, j) => ['Rival ' + 'ABCD'[j], v])].sort((a, b) => b[1] - a[1])
+      .map((r, j) => `${j + 1}. ${r[0].padEnd(24)} ${Math.round(r[1])}`).join('\n');
+    g.ui.showModal({ text: m.n, view: { kind: 'results', kit: k.k, np: k.np || 6, style: k.st, rows, footer: pz ? 'Prize: ' + fmt(pz) : 'No prize this time.' }, options: [{ label: pl === 1 ? '🏆 Champion!' : 'Thanks, judges' }] });
+  }
+}
+
+class EventManager extends Manager {
+  constructor(g) {
+    super(g);
+    g.bus.on('day:begin', () => this.holiday());
+    g.bus.on('day:close', c => this.story(c));
+  }
+  holiday() {
+    const d = this.g.time.date, h = DATA.holidays[(d.getMonth() + 1) + '-' + d.getDate()];
+    if (h) { this.g.log(h.text); this.g.effects.apply(h.fx); }
+  }
+  story(c) {
+    if (c.w !== 0 || this.s.over) return;
+    const st = DATA.story[c.wk];
+    if (!st || (st.when && !st.when(this.s))) return;
+    this.present(st);
+  }
+  random() { this.present(pick(DATA.events)); }
+  present(ev) {
+    this.g.ui.showModal({ text: ev.text, options: ev.options.map(o => ({ label: o.label, run: () => this.g.effects.apply(o.fx) })) });
+  }
+}
+
+/* ---------------------------------------------------------------- 5. ACTION REGISTRY */
+class ActionRegistry {
+  constructor(g) { this.g = g; }
+  build() {
+    const g = this.g, s = g.state, locs = g.world.locations(), out = [];
+    const make = (def, loc) => ({
+      key: `${def.id}@${loc}`, loc, sleep: !!def.sleep,
+      name: val(def.name, g), h: val(def.h, g), c: val(def.c, g) || 0, d: val(def.d, g) || {},
+      ok: def.ok ? () => def.ok(g) : null,
+      run: () => { if (def.fx) g.effects.apply(def.fx); if (def.run) def.run(g, loc); }
+    });
+    Object.keys(locs).forEach(k => {
+      if (k === s.loc) return;
+      out.push({ key: 'go@' + k, loc: 'go', name: 'Go to ' + locs[k][1], h: 1, c: g.world.travelCost(), d: {}, sleep: false, ok: null, run: () => { s.loc = k; } });
+    });
+    DATA.actions.forEach(def => (Array.isArray(def.loc) ? def.loc : [def.loc]).forEach(l => out.push(make(def, l))));
+    const st = g.hobby.currentStage();
+    if (st) {
+      out.push({
+        key: 'kit-stage@home', loc: 'home', sleep: false, name: `🤖 ${st.name}: ${DATA.gunpla.kits[s.kit.k].name}`, h: st.h, c: 0, d: { e: -4, f: 10 },
+        ok: () => g.hobby.idle ? 0 : 'Finish the current step', run: () => g.hobby.startStage()
+      });
+    }
+    const dd = g.time.dayIndex, h = g.time.hour;
+    ['mall', 'school', 'court'].forEach(l => {
+      const m = DATA.gunpla.meets[l];
+      if (g.hobby.meetNow(l, dd, h)) {
+        out.push({
+          key: 'meet@' + l, loc: l, sleep: false, name: '🤖 Join: ' + m.n, h: 3, c: m.fee, d: { s: 15, f: 20 },
+          ok: () => s.mj[l + ':' + dd] ? 'You already joined this meet' : h > m.h[1] - 3 ? 'The meet is closing soon' : 0,
+          run: () => g.hobby.joinMeet(l)
+        });
+      }
+    });
+    return out;
+  }
+}
+
+/* ---------------------------------------------------------------- 6. UI CONTROLLER (state machine) */
+class UIController {
+  constructor(g) {
+    this.g = g;
+    this.fsm = new StateMachine('ui', 'PLAY', { PLAY: ['MODAL', 'MINIGAME', 'GAMEOVER'], MODAL: ['PLAY', 'GAMEOVER'], MINIGAME: ['PLAY', 'GAMEOVER'], GAMEOVER: ['PLAY'] });
+    this.queue = []; this.modal = null; this.tab = 'do';
+    g.bus.on('minigame:start', () => this.fsm.go('MINIGAME'));
+    g.bus.on('minigame:end', () => this.endMinigame());
+  }
+  toast(m) { this.g.bus.emit('toast', m); }
+  showModal(spec) { this.queue.push(spec); this.pump(); }
+  pump() {
+    if (this.fsm.is('PLAY') && this.queue.length) { this.modal = this.queue.shift(); this.fsm.go('MODAL'); }
+  }
+  chooseOption(i) {
+    if (!this.fsm.is('MODAL') || !this.modal) return;
+    const o = this.modal.options[i];
+    if (!o) return;
+    this.modal = null; this.fsm.go('PLAY');
+    if (o.run) o.run();
+    this.pump();
+  }
+  endMinigame() { if (this.fsm.is('MINIGAME')) { this.fsm.go('PLAY'); this.pump(); } }
+  reset() { this.queue = []; this.modal = null; this.tab = 'do'; this.fsm.force('PLAY'); }
+}
+
+/* ---------------------------------------------------------------- 7. GAME ENGINE */
+class GameEngine {
+  constructor() {
+    this.state = null;
+    this.bus = new EventBus();
+    this.storage = new Storage(DATA.saveKey);
+    this.ui = new UIController(this);
+    this.effects = new EffectEngine(this);
+    /* Construction order matters: it is the subscription order on the bus.
+       economy before academics so the Sunday bill is paid before semester results. */
+    this.world = new WorldManager(this);
+    this.time = new TimeManager(this);
+    this.stats = new PlayerStats(this);
+    this.economy = new EconomyManager(this);
+    this.market = new MarketManager(this);
+    this.maint = new MaintenanceManager(this);
+    this.projects = new ProjectManager(this);
+    this.academics = new AcademicsManager(this);
+    this.career = new CareerManager(this);
+    this.social = new SocialManager(this);
+    this.shop = new ShopSystem(this);
+    this.hobby = new HobbySystem(this);
+    this.events = new EventManager(this);
+    this.actions = new ActionRegistry(this);
+    this.phone = new PhoneManager(this);
+    this.bus.on('day:begin', () => this.feed());
+  }
+  has(k) { return this.maint.working(k); }
+  /* ok() helper: 0 when usable, otherwise a reason (distinguishes "not owned" from "needs repair") */
+  need(k, msg) { return this.has(k) ? 0 : this.maint.owns(k) ? `Your ${DATA.items[k].name.replace(/^\S+\s/, '')} needs repair (repair shop at the mall)` : msg; }
+  push(k, tx, who) {
+    const s = this.state; s.ph.unshift({ k, tx, who: who || '', r: 0, d: DATA.days[this.time.weekday].slice(0, 3) + ' ' + clock(this.time.hour) }); s.ph.length = Math.min(s.ph.length, 40);
+    if (k === 'msg') this.ui.toast('📩 ' + who);
+  }
+  feed() {
+    const s = this.state; if (!s || s.over || Math.random() > .6) return;
+    const src = [['👩 Mom', ['Anak, kumain ka na ba?', 'Ingat ka sa biyahe.', 'Don’t forget the bills this Sunday!']], ['🧑‍🤝‍🧑 Barkada GC', ['Milk tea later?', 'Who’s up for LAN?']], ...s.ppl.map(p => [DATA.personTypes[p.t].icon + ' ' + p.n, ['Tara, hang out?', 'Need my notes?']]), ...(s.R.crush >= 20 ? [['💘 Crush', ['Saw your story 👀', 'Good morning!']]] : [])];
+    const [who, t] = pick(src);
+    if (Math.random() < .5) this.push('msg', pick(t), who);
+    else this.push('feed', pick(['posted a story 📸', 'shared a meme 😂', 'is at the mall 🛍️', 'checked in at the park 🌳']), who);
+  }
+  log(m) { const s = this.state; if (/^(⏰|🏆|💥|🕐|🕵|🚨|⚠|🏅|📂|❌|😠|🤒|🎓)/u.test(m)) this.push('alert', m); s.log.unshift(`${DATA.days[this.time.weekday].slice(0, 3)} ${clock(this.time.hour)} ${m}`); s.log.length = Math.min(s.log.length, 30); }
+  boot() {
+    const raw = this.storage.load();
+    if (raw && raw.N) { this.state = GameState.migrate(raw); if (this.state.over) this.ui.fsm.force('GAMEOVER'); }
+    this.bus.emit('render');
+  }
+  commit() {
+    if (!this.state) return;
+    this.stats.normalize();
+    if (this.state.over && !this.ui.fsm.is('GAMEOVER')) { this.hobby.abort(); this.ui.fsm.go('GAMEOVER'); }
+    this.bus.emit('saved', this.storage.save(this.state));
+    this.bus.emit('render');
+  }
+  startGame(f) {
+    const tr = f.traits || [];
+    if (tr.length !== 2) return this.ui.toast('Pick exactly 2 personas');
+    if (tr.some(t => (DATA.traits[t].excl || []).some(x => tr.includes(x)))) return this.ui.toast('Those two personas do not go together');
+    const J = DATA.jobs[f.job], K = { ...DATA.start.skills };
+    for (const k in DATA.courses[f.course]) K[k] += DATA.courses[f.course][k];
+    if (J.req && J.req.skill && K[J.req.skill] < J.req.min) return this.ui.toast('Your course skills are too low for that job');
+    this.hobby.abort(); this.ui.reset();
+    this.state = GameState.create(f);
+    this.log('Your student life begins in ' + this.state.city + '! 🎒');
+    this.commit();
+  }
+  resetGame() {
+    this.hobby.abort(); this.ui.reset(); this.state = null; this.storage.clear(); this.bus.emit('render');
+  }
+  runAction(key) {
+    const s = this.state;
+    if (!s || s.over || !this.ui.fsm.is('PLAY')) return;
+    const a = this.actions.build().find(x => x.key === key);
+    if (!a) return;
+    const why = a.ok && a.ok();
+    if (why) return this.ui.toast(why);
+    const cost = this.economy.dc(a.c);
+    if (s.m < cost) return this.ui.toast('Not enough money! 😅');
+    s.m -= cost;
+    a.run();
+    this.maint.onAction(a.key);
+    if (a.sleep) { const n = this.time.sleepHours(); for (let i = 0; i < n; i++) this.time.tick(true); }
+    else for (let i = 0; i < a.h; i++) this.time.tick();
+    this.stats.applyNeedDeltas(a.d);
+    if (s.N.e <= 0 && !a.sleep) {
+      this.log('😵 You passed out from exhaustion! Lost 6 hours and ₱100.');
+      this.economy.spend(100);
+      for (let i = 0; i < 6; i++) this.time.tick(true);
+    }
+    if (!a.sleep && !s.over && this.ui.fsm.is('PLAY') && Math.random() < .12) this.events.random();
+    this.commit();
+  }
+  /* Single entry point for every player command. The Renderer never calls managers directly. */
+  dispatch(c) {
+    switch (c.type) {
+      case 'ph': this.phone.cmd(c); return this.commit();
+      case 'tab': if (this.state && this.ui.tab === 'ph') this.state.ph.forEach(x => { x.r = 1; }); this.ui.tab = c.tab; return this.commit();
+      case 'start': return this.startGame(c.form);
+      case 'reset': return this.resetGame();
+      case 'action': return this.runAction(c.key);
+      case 'option': this.ui.chooseOption(c.i); return this.commit();
+      case 'bank': if (this.ui.fsm.is('PLAY')) { this.economy.bank(c.op); this.commit(); } return;
+      case 'hang': if (this.ui.fsm.is('PLAY')) { this.social.hang(c.i); this.commit(); } return;
+      case 'strike': { const r = this.hobby.strike(); if (r && r.done) this.commit(); return r; }
+      case 'tap': return this.hobby.tap(c.part);
+      case 'asm-finish': this.hobby.finishAssembly(); return this.commit();
+    }
+  }
+}
+
+/* ---------------------------------------------------------------- 8. RENDERER (DOM only) */
+class Renderer {
+  constructor(g, root) {
+    this.g = g; this.root = root; this.raf = 0; this.toastTimer = 0;
+    g.bus.on('render', () => this.render());
+    g.bus.on('toast', m => this.toast(m));
+    g.bus.on('saved', ok => this.saveFlash(ok));
+    root.addEventListener('click', e => this.onClick(e));
+    root.addEventListener('change', e => { if (e.target && e.target.id === 'ci') this.fillCity(); else if (e.target && e.target.type === 'file') this.upload(e.target); });
+  }
+  $(s) { return document.querySelector(s); }
+  toast(m) { const e = this.$('#t'); e.textContent = m; e.className = 's'; clearTimeout(this.toastTimer); this.toastTimer = setTimeout(() => { e.className = ''; }, 1800); }
+  /* ---- input -> commands ---- */
+  onClick(e) {
+    const t = e.target.closest('[data-x],[data-tab],[data-a],[data-m],[data-o],[data-p],[data-g],#go,#nw');
+    if (!t) return;
+    const D = t.dataset, g = this.g;
+    if (D.x) g.dispatch({ type: 'ph', x: D.x, f: D.x === 'save' ? this.readMe() : D.x.startsWith('send') ? { t: (this.$('#cm') || {}).value } : null });
+    else if (D.tab) g.dispatch({ type: 'tab', tab: D.tab });
+    else if (D.a) g.dispatch({ type: 'action', key: D.a });
+    else if (D.m) g.dispatch({ type: 'bank', op: D.m });
+    else if (D.o != null) g.dispatch({ type: 'option', i: +D.o });
+    else if (D.p != null) g.dispatch({ type: 'hang', i: +D.p });
+    else if (D.g === 'h') {
+      const r = g.dispatch({ type: 'strike' });
+      if (r && !r.done) { const el = this.$('#rr'); if (el) el.textContent = r.msg; }
+    } else if (D.g === 't') {
+      const r = g.dispatch({ type: 'tap', part: D.v });
+      if (r && r.ok) this.refreshAssembly();
+      else { t.style.outline = '2px solid var(--bad)'; setTimeout(() => { t.style.outline = ''; }, 300); }
+    }
+    else if (t.id === 'go') g.dispatch({ type: 'start', form: this.readForm() });
+    else if (t.id === 'nw') { if ((g.state && g.state.over) || confirm('Restart the game?')) g.dispatch({ type: 'reset' }); }
+  }
+  readForm() {
+    return {
+      name: this.$('#nm').value, course: this.$('#co').value, job: this.$('#jb').value, city: this.$('#ci').value,
+      school: this.$('#sc').value, bg: this.$('#bg').value,
+      traits: [...document.querySelectorAll('.tr:checked')].map(x => x.value)
+    };
+  }
+  /* ---- helpers ---- */
+  bar(v, c) { return `<div class="br"><i style="width:${clamp(v)}%;background:${c || (v > 50 ? 'var(--ok)' : v > 25 ? 'var(--wn)' : 'var(--bad)')}"></i></div>`; }
+  esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  model(k, ps, sty, fl, sm) {
+    const D = DATA.gunpla, G = Array.from({ length: 8 }, () => Array(24).fill(null)), P = D.palettes[k], W = sty === 'Weathered';
+    ps.forEach(id => {
+      const segs = id === 'head' ? [[11, 0, P.h[0]], [10, 1, P.h[1]]] : D.layout[id];
+      segs.forEach(([x, y, t]) => [...t].forEach((c, i) => { G[y][x + i] = { c: W && c === '#' && (x + i + y) % 3 === 0 ? '%' : c, k: id }; }));
+    });
+    const esc = { '>': '&gt;', '<': '&lt;', '&': '&amp;' };
+    return `<pre class="mdl${sm ? ' sm' : ''}" style="${D.finishCss[sty] || ''}">${G.map(r => r.map(c => c ? `<span class="${c.k === fl ? 'fl' : ''}" style="color:${P.c[D.colorIdx[c.k]]}">${esc[c.c] || c.c}</span>` : ' ').join('')).join('\n')}</pre>`;
+  }
+  track(m, p) {
+    const W = 40, a = Array(W).fill('='), b = Array(W).fill(' '), y = m.stage.timing.glyph;
+    for (let i = 0; i < m.n; i++) { const gt = Math.round((i + 1) * W / (m.n + 1)); [...y[i < m.i ? 0 : i === m.i ? 1 : 2]].forEach((c, j) => { a[gt - 1 + j] = c; }); }
+    b[Math.round(p * (W - 1))] = '^';
+    return `+${a.join('')}+\n ${b.join('')}\n ${m.stage.timing.prog[0]}${m.stage.timing.prog[1].repeat(m.i)}`;
+  }
+  refreshAssembly() {
+    const e = this.$('#am'), h = this.g.hobby, m = h.session;
+    if (!e || !m || m.type !== 'asm') return;
+    const kit = this.g.state.kit, nx = m.steps[m.pos], L = DATA.gunpla.partLabel;
+    e.innerHTML = this.model(kit.k, m.steps.slice(0, m.pos), kit.sty, m.last) +
+      `<p><b>Step ${Math.min(m.pos + 1, m.steps.length)} of ${m.steps.length}:</b> ${nx ? 'attach the ' + L[nx] : 'done!'}</p><div class="gr">${m.tray.map(t => `<button data-g="t" data-v="${t}">${L[t] || t}</button>`).join('')}</div>`;
+  }
+  loop() {
+    cancelAnimationFrame(this.raf);
+    const step = () => {
+      const g = this.g, m = g.hobby.session;
+      if (!m || !g.ui.fsm.is('MINIGAME')) return;
+      if (m.type !== 'timing') return;
+      const e = this.$('#rn');
+      if (e) e.textContent = this.track(m, g.hobby.cursor(performance.now()));
+      this.raf = requestAnimationFrame(step);
+    };
+    this.raf = requestAnimationFrame(step);
+  }
+  /* ---- screens ---- */
+  render() {
+    const g = this.g;
+    if (!g.state) return this.renderCreate();
+    this.renderGame();
+  }
+  fillCity() {
+    const C = DATA.cities[this.$('#ci').value];
+    if (!C) return;
+    this.$('#sc').innerHTML = C.sc.map(x => `<option value="${x[0]}">${x[0]} (${x[1] > 1500 ? 'private' : 'public'}, ${fmt(x[1])} per 4 weeks)</option>`).join('');
+    this.$('#bg').innerHTML = C.bg.map(b => `<option>${b}</option>`).join('');
+  }
+  renderCreate() {
+    this.root.innerHTML = `<div class="cd"><h1>Metro Manila Life</h1><p>Student by day, worker by night. Pick your city, your school and your hustle. Can you graduate without drowning in debt?</p>
+ <label>Name<input id="nm" value="Juan" maxlength="16"></label>
+ <label>Course<select id="co">${Object.keys(DATA.courses).map(c => `<option>${c}</option>`).join('')}</select></label>
+ <label>City<select id="ci">${Object.keys(DATA.cities).map(c => `<option>${c}</option>`).join('')}</select></label>
+ <label>School<select id="sc"></select></label>
+ <label>Neighborhood<select id="bg"></select></label>
+ <label>Night job<select id="jb">${Object.entries(DATA.jobs).map(([k, j]) => `<option value="${k}">${j.n}: ${j.x}</option>`).join('')}</select></label>
+ <div>Persona (pick 2)</div>${Object.entries(DATA.traits).map(([k, v]) => `<label class="c"><input type="checkbox" class="tr" value="${k}"><span><b>${k}</b><br><small>${v.desc}</small></span></label>`).join('')}
+ <button id="go" style="width:100%;margin-top:8px">Start your life</button></div>`;
+    this.fillCity();
+  }
+  objectives() {
+    const g = this.g, s = g.state, h = g.time.hour, w = g.time.weekday, ob = [], locs = g.world.locations();
+    if (w < 5) ob.push(s.att ? '✅ Class done' : h <= 9 ? '🎒 Be at school by ' + clock(9) : '❌ Absent today');
+    if (s.kit) ob.push(`🤖 Building: ${DATA.gunpla.kits[s.kit.k].name}`);
+    for (const l of ['mall', 'school', 'court']) if (g.hobby.meetDay(l, g.time.dayIndex) && s.wx !== 'ty') ob.push(`🤖 ${DATA.gunpla.meets[l].n} at ${locs[l][1]}, ${clock(DATA.gunpla.meets[l].h[0])} to ${clock(DATA.gunpla.meets[l].h[1])}`);
+    if (s.job) ob.push(s.sh ? '✅ Shift done' : `💼 Shift starts ${clock(DATA.shift.startHour)} to ${clock(DATA.shift.lastStartHour)}`);
+    return ob;
+  }
+  renderGame() {
+    const g = this.g, s = g.state, ui = g.ui, T = s.tr, h = g.time.hour, w = g.time.weekday, wk = g.time.week, sn = g.time.semester;
+    const tw = (DATA.economy.tuitionEveryWeeks - wk % DATA.economy.tuitionEveryWeeks) % DATA.economy.tuitionEveryWeeks, locs = g.world.locations(), tab = ui.tab;
+    let x = `<div class="cd"><div class="rw"><div>${this.av(g.phone.me.av, s.name, g.phone.me.col, 30)} <b class="t">${s.name}</b><br><small>${s.co} at ${s.sch}, ${s.bg}, ${s.city}</small></div><div class="mn">${fmt(s.m)}</div></div>
+ <div class="rw" style="margin-top:6px"><b>${h >= 6 && h < 17 ? '☀️' : h < 19 && h >= 17 ? '🌇' : '🌙'} ${DATA.days[w].slice(0, 3)}, ${g.time.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}, ${clock(h)}</b><small>Week ${wk}, semester ${sn} of ${DATA.totalSemesters}</small></div>
+ <div class="nd">${Object.entries(DATA.needs).map(([k, [e, n]]) => `<div title="${n}">${e} <b>${Math.round(s.N[k])}</b>${this.bar(s.N[k])}</div>`).join('')}</div>
+ <div class="ch">${this.objectives().map(o => `<span>${o}</span>`).join('')}<span>📍 ${locs[s.loc][1]}</span><span>${DATA.weather.label[s.wx || 'sun']}</span><span>📌 Homework: ${s.hw}</span><span>${DATA.profs[s.pf.k].icon} ${s.pf.n}</span>${s.pj.length ? `<span>📂 Projects: ${s.pj.length}</span>` : ''}<span>⚙️ Efficiency ${Math.round(g.stats.efficiency() * 100)}%</span>${s.sick ? '<span>🤒 Sick</span>' : ''}${g.maint.needsAttention() ? '<span>🔧 Gear needs service</span>' : ''}${g.market.status().phase !== 'steady' ? `<span>${g.market.status().text}</span>` : ''}</div></div>
+ <div class="tb">${[['do', '🎮 Do'], ['me', '🧍 Life'], ['mo', '💰 Money'], ['ph', '📱 Phone' + (s.ph.some(x => !x.r) ? ` <span class="bd">${s.ph.filter(x => !x.r).length}</span>` : '')]].map(([k, n]) => `<button data-tab="${k}" class="${tab === k ? 'on' : ''}">${n}</button>`).join('')}</div>`;
+    if (tab === 'do') x += this.doTab(locs);
+    if (tab === 'me') x += this.lifeTab(T);
+    if (tab === 'mo') x += this.moneyTab(tw);
+    if (tab === 'ph') x += this.phoneTab();
+    x += `<div class="cd lg"><h3>Recent events</h3>${s.log.slice(0, 6).map(l => `<div>${l}</div>`).join('')}</div>${tab !== 'do' ? '<button id="nw" style="width:100%">New game</button>' : ''}`;
+    if (ui.fsm.is('MODAL') && ui.modal) x += this.modalHtml(ui.modal);
+    if (ui.fsm.is('GAMEOVER')) x += `<div class="ov"><div class="cd"><h2>Game over</h2><p>${s.over}</p><p>Savings: ${fmt(s.sav)}, debt: ${fmt(s.debt)}, goals reached: ${DATA.goals.filter(q => q.test(s)).length} of ${DATA.goals.length}</p><button id="nw">New game</button></div></div>`;
+    const m = g.hobby.session;
+    if (ui.fsm.is('MINIGAME') && m && s.kit) {
+      x += `<div class="ov"><div class="cd">${m.type === 'asm'
+        ? `<h3>Assemble: ${DATA.gunpla.kits[s.kit.k].name}</h3><small>No rush. Pick the part named in each step.</small><div id="am"></div>`
+        : `<h3>${m.stage.name}</h3><small>${m.stage.timing.text}</small><pre id="rn" class="mdl"></pre><button data-g="h" style="width:100%">${m.stage.timing.btn}</button><br><small id="rr">${m.msg || 'Part 1 of ' + m.n}</small>`}</div></div>`;
+    }
+    this.root.innerHTML = x;
+    if (m && ui.fsm.is('MINIGAME')) { if (m.type === 'asm') this.refreshAssembly(); else this.loop(); }
+  }
+  doTab(locs) {
+    const g = this.g, s = g.state, grp = {};
+    g.actions.build().forEach(a => (grp[a.loc] = grp[a.loc] || []).push(a));
+    return [s.loc, 'go'].map(k => `<div class="cd"><h3>${k === 'go' ? '🚌 Travel by jeepney (1 hour)' : '📍 You are at: ' + locs[k].join(' ')}</h3><div class="gr">${(grp[k] || []).map(a => {
+      const r = a.ok && a.ok(), c = g.economy.dc(a.c);
+      return `<button class="ab${r ? ' off' : ''}" data-a="${a.key}"><b>${a.name}</b><small>${a.sleep ? g.time.sleepHours() : a.h}h${c ? ', ' + fmt(c) : ''}</small>${r ? `<em>${r}</em>` : ''}</button>`;
+    }).join('')}</div></div>`).join('');
+  }
+  lifeTab(T) {
+    const g = this.g, s = g.state, a = g.academics.average(), row = (n, v, c) => `<div class="row"><span>${n}</span>${this.bar(v, c)}<b>${Math.round(v)}</b></div>`;
+    const sk = Object.entries(DATA.skills).map(([k, [e, n]]) => row(`${e} ${n}`, s.K[k], 'var(--ac)')).join('');
+    const rl = Object.entries(DATA.relationships).map(([k, [e, n]]) => row(`${e} ${k === 'prof' ? s.pf.n : n}`, s.R[k])).join('');
+    const tr = s.inv.filter(k => DATA.items[k].maint), pl = s.inv.filter(k => !DATA.items[k].maint);
+    const items = `<div class="cd"><h3>Items</h3>${s.inv.length ? '' : 'None yet. Browse the shops at the mall.'}${tr.map(k => row(DATA.items[k].name + (g.maint.cond(k) <= 0 ? ' ⛔' : ''), g.maint.cond(k))).join('')}${pl.length ? `<div>${pl.map(k => DATA.items[k].name).join(', ')}</div>` : ''}${tr.length ? '<small>Gear wears out with use and over time. Fix it at the repair shop in the mall.</small>' : ''}</div>`;
+    return `<div class="cd"><h3>Persona</h3><b>${T.join(' and ')}</b><br><small>${s.job ? `${DATA.jobs[s.job].n}, ${DATA.ranks[s.rk].name}, reliability ${Math.round(s.rj)}%` : 'No job. Apply from the Do tab.'}</small></div>
+  ${items}
+  <div class="cd"><h3>Skills</h3>${sk}</div>
+  <div class="cd"><h3>Relationships</h3>${rl}<small>${s.buddy ? 'Study buddy: Mika (+10% studying)' : ''}</small></div>
+  ${this.profCard()}${this.projCard()}<div class="cd"><h3>Academics</h3><div>${s.sc.length ? `Average: <b>${Math.round(a)}%</b> (GPA ${g.academics.gpa(a).toFixed(2)}, 1.00 is best)` : 'No quizzes yet this semester'}</div><small>Absences: ${s.abs}. Review progress: ${Math.round(s.prep)}%. Quiz every Friday, midterm in week 8, finals in week 16. Fail twice and you are dismissed.</small>${s.hist.map(z => `<div>Semester ${z.n}: ${z.a}%, GPA ${z.g.toFixed(2)}</div>`).join('')}</div>
+  <div class="cd"><h3>Gunpla bench</h3>${s.kit ? `<div>Building ${DATA.gunpla.kits[s.kit.k].name}: step ${s.kit.st + 1} of ${DATA.gunpla.stages.length} (${DATA.gunpla.stages[s.kit.st].name}), quality so far ${Math.round(s.kit.q)}</div>` : '<small>No kit on the bench.</small>'}<br><small>Unbuilt kits: ${s.stash.length ? s.stash.map(k => DATA.gunpla.kits[k].name).join(', ') : 'none'}. Reputation: ${s.rep}. Meets are held at the mall, school and park on set days.</small>${s.shelf.map(k => `<div>${k.pl === 1 ? '🏆' : '🤖'} ${k.n}, quality ${k.q}, ${k.st}${this.model(k.k, DATA.gunpla.partOrder.slice(0, k.np || 6), k.st, '', 1)}</div>`).join('')}</div>
+  <div class="cd"><h3>People you know</h3>${s.club ? `<small>Club: ${DATA.clubs[s.club].name}</small>` : ''}${s.ppl.length ? s.ppl.map((p, i) => `<div class="row" style="grid-template-columns:1fr 70px auto"><span>${DATA.personTypes[p.t].icon} ${p.n}</span>${this.bar(p.r)}<button data-p="${i}">Hang out</button></div>`).join('') : '<small>Nobody yet. Try "Meet new people" at school, the mall or the park.</small>'}</div>
+  <div class="cd"><h3>Goals</h3>${DATA.goals.map(q => `<div>${q.test(s) ? '✅' : '⬜'} ${q.label}</div>`).join('')}</div>`;
+  }
+  profCard() {
+    const s = this.g.state, P = DATA.profs[s.pf.k], D = DATA.deans[s.dn.k];
+    return `<div class="cd"><h3>This semester</h3><div>${P.icon} <b>${s.pf.n}</b>, ${P.label}</div><small>${P.desc}</small><div style="margin-top:6px">${D.icon} <b>${s.dn.n}</b>, ${D.label}</div><small>${D.desc}${s.warns ? ' Warnings: ' + s.warns + ' of 2.' : ''}</small></div>`;
+  }
+  projCard() {
+    const g = this.g, s = g.state, wk = g.time.week;
+    const act = s.pj.map(p => {
+      const d = DATA.projects[p.id], m = d.ms[p.i], nd = g.projects.need(p), pct = Math.round(100 * p.ef / m.effort), left = p.sw + p.dues[p.i] - wk;
+      return `<div style="margin:6px 0"><b>${d.icon} ${d.name}</b> <small>${d.kind}, milestone ${p.i + 1} of ${d.ms.length}</small><div>${m.name}</div><div class="row" style="grid-template-columns:60px 1fr 40px"><span>Effort</span>${this.bar(pct, 'var(--ac)')}<b>${pct}%</b></div><div class="ch">${Object.entries(nd).map(([k, v]) => `<span style="${s.K[k] >= v ? '' : 'color:var(--bad)'}">${DATA.skills[k][0]} ${Math.floor(s.K[k])}/${v}</span>`).join('')}</div><small>Due in ${left} week${left === 1 ? '' : 's'}${p.st ? ', strikes ' + p.st + ' of ' + d.lives : ''}</small></div>`;
+    }).join('');
+    const done = s.pdone.map(x => `<div><small>${x.fail ? '❌' : '✅'} ${DATA.projects[x.id].name}${x.fail ? '' : ': ' + x.q + '%'}</small></div>`).join('');
+    return `<div class="cd"><h3>Projects</h3>${act || '<small>No active projects. Find one at school (Do tab).</small>'}${done}</div>`;
+  }
+
+  saveFlash(ok) { const e = this.$('#sv'); if (!e) return; e.textContent = ok ? '💾 Saved' : '⚠️ Not saved'; e.className = 's' + (ok ? '' : ' bad'); clearTimeout(this.svT); this.svT = setTimeout(() => { e.className = ''; }, 1400); }
+  av(d, nm, c, z) {
+    const st = `width:${z}px;height:${z}px;border-radius:50%;border:3px solid var(--cd);vertical-align:middle;flex:none`;
+    return d ? `<img src="${d}" alt="" style="${st};object-fit:cover">` : `<span style="${st};display:inline-flex;background:${c};color:#fff;align-items:center;justify-content:center;font-weight:800">${this.esc(String(nm || '?')[0].toUpperCase())}</span>`;
+  }
+  readMe() { const v = i => (this.$(i) || {}).value; return { nm: v('#f-nm'), bio: v('#f-bio'), col: v('#f-col'), chn: v('#f-chn'), chc: v('#f-chc') }; }
+  upload(inp) {
+    const file = inp.files && inp.files[0], av = inp.id === 'up-av';
+    if (!file || !file.type.startsWith('image/')) return this.toast('Pick an image file');
+    const r = new FileReader();
+    r.onload = () => { const im = new Image(); im.onload = () => {
+      const W = av ? 96 : 240, H = av ? 96 : 80, cv = document.createElement('canvas'), k = Math.max(W / im.width, H / im.height);
+      cv.width = W; cv.height = H; cv.getContext('2d').drawImage(im, (W - im.width * k) / 2, (H - im.height * k) / 2, im.width * k, im.height * k);
+      this.g.dispatch({ type: 'ph', x: 'img', k: av ? 'av' : 'bn', d: cv.toDataURL('image/jpeg', .8) });
+    }; im.onerror = () => this.toast('Could not read that image'); im.src = r.result; };
+    r.readAsDataURL(file);
+  }
+  thread(who) {
+    const g = this.g, c = g.state.chats[who] || [], busy = g.phone.busy === who, w = this.esc(who);
+    return `<div class="cd"><div class="rw"><b>${w}</b><button data-x="chat:" style="min-height:36px">← Back</button></div><small>Closeness ${Math.round(g.phone.relOf(who))}. Replies are written live by Claude and depend on your relationship.</small>${c.map(x => `<div style="display:flex;justify-content:${x.f === 'me' ? 'flex-end' : 'flex-start'};margin:6px 0"><span style="max-width:80%;padding:6px 10px;border-radius:14px;background:${x.f === 'me' ? 'var(--ac)' : 'var(--bg)'};color:${x.f === 'me' ? '#fff' : 'var(--ink)'}">${this.esc(x.t)}</span></div>`).join('')}${busy ? '<small>typing…</small>' : ''}<div class="gr" style="grid-template-columns:1fr auto"><input id="cm" maxlength="160" placeholder="Type a message" ${busy ? 'disabled' : ''}><button data-x="send:${w}" ${busy ? 'disabled' : ''}>Send</button></div></div>`;
+  }
+  phoneTab() {
+    const g = this.g, s = g.state, m = g.phone.me, ps = g.ui.ps || 'in', ch = m.ch, e = t => this.esc(t);
+    const sm = 'style="margin-top:4px;min-height:36px;padding:4px 12px"';
+    const hd = (c2, nm, sub) => `<div style="height:70px;border-radius:10px;background:${m.bn ? `url('${m.bn}') center/cover` : `linear-gradient(135deg,${m.col},${c2})`}"></div><div class="rw" style="margin-top:-22px;padding:0 8px;justify-content:flex-start;gap:10px">${this.av(m.av, nm, m.col, 52)}<div style="margin-top:22px"><b class="t">${e(nm)}</b><br><small>${sub}</small></div></div>`;
+    const tabs = [['in', '💬 Inbox'], ['soc', '📱 Kuwento'], ['yt', '▶️ ManilaTube'], ['me', '🎨 Customize']].map(([k, n]) => `<button data-x="sub:${k}" class="${ps === k ? 'on' : ''}">${n}</button>`).join('');
+    let b = '';
+    if (ps === 'in' && g.ui.chat) b = this.thread(g.ui.chat);
+    else if (ps === 'in') b = `<div class="cd"><h3>Inbox, messages and feed</h3>${s.ph.length ? s.ph.slice(0, 15).map((x, i) => `<div class="pi${x.r ? '' : ' nw'}"><b>${x.who}</b> ${x.tx}<br><small>${x.d}${x.rp ? ' · replied' : ''}</small>${x.k === 'msg' ? `<br>${x.rp ? '' : `<button data-x="reply:${i}" ${sm}>↩️ Quick reply</button> `}<button data-x="chat:${x.who}" ${sm}>💬 Chat</button>` : ''}${x.k === 'feed' && !x.lk ? `<br><button data-x="like:${i}" ${sm}>❤️ Like</button>` : ''}</div>`).join('') : '<small>Nothing yet.</small>'}</div>`;
+    if (ps === 'soc') b = `<div class="cd">${hd(ch.col, m.nm, `${m.fol} followers`)}<p><small>${e(m.bio)}</small></p><button data-x="post" style="width:100%">✍️ New post (1h)</button></div><div class="cd"><h3>Your posts</h3>${m.posts.length ? m.posts.map(p => `<div class="pi">${p.l}<br><small>❤️ ${p.likes} · ${p.d}</small>${(p.cm || []).map(c => `<br><small>💬 <b>${e(c.u)}</b> ${e(c.t)}</small>`).join('')}</div>`).join('') : '<small>No posts yet. Higher Design, Charisma and a profile photo get more likes.</small>'}</div>`;
+    if (ps === 'yt') b = `<div class="cd">${hd(m.col, ch.nm, `${ch.subs} subscribers · ${ch.subs >= 50 ? 'monetized, earned ' + fmt(ch.earn) : (50 - ch.subs) + ' more to monetize'}`)}<button data-x="video" style="width:100%;margin-top:8px">🎬 Make a video (3h)</button></div><div class="cd"><h3>Your videos</h3>${ch.vids.length ? ch.vids.map(v => `<div class="pi">${e(v.n)}<br><small>👁 ${v.v} views · quality ${v.q}</small>${(v.cm || []).map(c => `<br><small>💬 <b>${e(c.u)}</b> ${e(c.t)}</small>`).join('')}</div>`).join('') : '<small>No videos yet. Views build over several days.</small>'}</div>`;
+    if (ps === 'me') b = `<div class="cd"><h3>Customize</h3>Display name<input id="f-nm" maxlength="24" value="${e(m.nm)}">Bio<input id="f-bio" maxlength="80" value="${e(m.bio)}">Theme color<input id="f-col" type="color" value="${m.col}">Channel name<input id="f-chn" maxlength="24" value="${e(ch.nm)}">Channel color<input id="f-chc" type="color" value="${ch.col}"><button data-x="save" style="width:100%">💾 Save profile</button></div>
+      <div class="cd"><h3>Photos</h3><small>Photos are resized and stored only in this browser.</small><br>Profile picture<input type="file" accept="image/*" id="up-av">Banner photo<input type="file" accept="image/*" id="up-bn"><div class="gr"><button data-x="rm:av">Remove profile picture</button><button data-x="rm:bn">Remove banner</button></div></div>`;
+    return `<div class="tb" style="position:static;flex-wrap:wrap">${tabs}</div>${b}`;
+  }
+  moneyTab(tw) {
+    const g = this.g, s = g.state, mk = g.market.status();
+    const rets = s.mk.hist.slice(-6).map(r => `<span>${r >= 0 ? '▲' : '▼'} ${Math.abs(r * 100).toFixed(1)}%</span>`).join('');
+    return `<div class="cd"><div class="rw"><div><small>Cash</small><div class="big">${fmt(s.m)}</div></div><div><small>Savings</small><div class="big">${fmt(s.sav)}</div></div><div><small>Debt</small><div class="big" style="color:var(--bad)">${fmt(s.debt)}</div></div></div></div>
+  <div class="cd"><h3>Manage money</h3><small>Invested: ${fmt(s.fund)} in an index fund. It swings every week and market events can move it hard.</small><div style="margin:6px 0"><b>${mk.text}</b></div>${rets ? `<div class="ch" style="margin-bottom:8px">${rets}</div>` : ''}<div class="gr">${DATA.bank.map(b => `<button data-m="${b.id}">${b.label}</button>`).join('')}</div>
+  <p><small>Every Sunday: allowance from Mom, minus about ${fmt(g.economy.weeklyBill())} for bills. Tuition of ${fmt(s.tu)} at ${s.sch} is due every ${DATA.economy.tuitionEveryWeeks}th week (${tw ? `in ${tw} week${tw > 1 ? 's' : ''}` : 'this Sunday'}). Short on cash? The rest goes to debt, which grows 5% a week.</small></p></div>`;
+  }
+  modalHtml(m) {
+    let view = '';
+    if (m.view) {
+      const v = m.view, parts = DATA.gunpla.partOrder.slice(0, v.np);
+      if (v.kind === 'model') view = `<small>${v.caption}</small>${this.model(v.kit, parts, v.style, '')}`;
+      else view = `${this.model(v.kit, parts, v.style, '')}<pre class="mdl">${this.esc(v.rows)}</pre>${v.footer}`;
+    }
+    return `<div class="ov"><div class="cd"><p>${m.text}</p>${view}${m.options.map((o, i) => `<button data-o="${i}">${o.label}</button>`).join('')}</div></div>`;
+  }
+}
+
+/* ---------------------------------------------------------------- BOOTSTRAP */
+const game = new GameEngine();
+const view = new Renderer(game, document.querySelector('#app'));
+game.boot();
+if (typeof window !== 'undefined') window.game = game;
+</script></body></html>
