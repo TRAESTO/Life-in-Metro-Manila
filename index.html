@@ -33,7 +33,7 @@ button.on,#go{background:var(--ac);color:#fff;border-color:var(--ac)}
 #t{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#13203d;color:#fff;padding:8px 14px;border-radius:20px;font-size:13px;opacity:0;transition:.2s;pointer-events:none;z-index:10}#t.s{opacity:1}
 input,select{font:inherit;width:100%;padding:8px;border-radius:8px;border:1px solid var(--ln);background:var(--bg);color:var(--ink);margin:3px 0 8px}
 label.c{display:flex;gap:8px;align-items:flex-start;margin:4px 0;font-size:14px}label.c input{width:auto;margin:3px 0}
-.mdl{font:12px/1.1 ui-monospace,Menlo,Consolas,monospace;white-space:pre;background:var(--bg);padding:8px;border-radius:8px;margin:6px 0;overflow-x:auto;max-width:100%;width:max-content}.ccrow{margin:6px 0}.ccrow b{display:block;font-size:12px}.ccrow button{margin:2px;padding:4px 8px}button.sw{width:26px;height:26px;padding:0;border-radius:50%;border:2px solid #8886}button.sw.on{outline:3px solid var(--ac);outline-offset:1px}.ccp{display:flex;justify-content:center}.ccp svg{width:150px;height:255px;background:radial-gradient(ellipse at 50% 40%,#27304a,var(--bg));border-radius:12px}.mdl3d{width:240px;max-width:100%;display:block;margin:6px 0;border-radius:10px;background:radial-gradient(ellipse at 50% 35%,#27304a,var(--bg))}.mdl3d.sm{width:92px;margin:2px}.pfl{animation:pf .7s}@keyframes pf{from{filter:brightness(2.5)}}.trk{width:100%;max-width:420px;display:block;background:var(--bg);border-radius:10px}.rm3d{width:100%;max-width:440px;display:block;border-radius:10px;margin:6px 0}.mdl.sm{font-size:8px;padding:4px}.fl{animation:fl .6s}@keyframes fl{from{background:var(--wn)}}
+.mdl{font:12px/1.1 ui-monospace,Menlo,Consolas,monospace;white-space:pre;background:var(--bg);padding:8px;border-radius:8px;margin:6px 0;overflow-x:auto;max-width:100%;width:max-content}.ccrow{margin:6px 0}.ccrow b{display:block;font-size:12px}.ccrow button{margin:2px;padding:4px 8px}button.sw{width:26px;height:26px;padding:0;border-radius:50%;border:2px solid #8886}button.sw.on{outline:3px solid var(--ac);outline-offset:1px}.ccp{display:flex;justify-content:center}.ccp svg{width:150px;height:255px;background:#3b5b98;border-radius:12px}.mdl3d{width:240px;max-width:100%;display:block;margin:6px 0;border-radius:10px;background:radial-gradient(ellipse at 50% 35%,#27304a,var(--bg))}.mdl3d.sm{width:92px;margin:2px}.pfl{animation:pf .7s}@keyframes pf{from{filter:brightness(2.5)}}.trk{width:100%;max-width:420px;display:block;background:var(--bg);border-radius:10px}.rm3d{shape-rendering:crispEdges;width:100%;max-width:440px;display:block;border-radius:10px;margin:6px 0}.mdl.sm{font-size:8px;padding:4px}.fl{animation:fl .6s}@keyframes fl{from{background:var(--wn)}}
 .lg div{font-size:13px;padding:3px 0;border-bottom:1px dashed var(--ln)}.big{font-size:20px;font-weight:700}
 button{transition:background .15s,transform .1s,opacity .2s,border-color .15s;min-height:44px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 button:active{transform:scale(.97)}@media(hover:hover){button:hover{border-color:var(--ac)}}
@@ -138,6 +138,26 @@ const DATA = {
     'BS Computer Science': { int: 8, code: 15, des: 3 }, 'BS Nursing': { int: 8, fit: 4 }, 'BS Accountancy': { int: 10 },
     'BS Education': { cha: 10, des: 5 }, 'BS Criminology': { fit: 10 }, 'BS Tourism': { cha: 10, des: 6 }
   },
+  /* The school day is a bell schedule counted from the professor's start hour (6 hours, so the end time is unchanged):
+     offsets 0, 1 = Periods 1-2, 2 = Recess, 3 = Period 3, 4 = Lunch, 5 = Period 4 (quizzes happen in the last period). */
+  school: {
+    span: 6, classOffsets: [0, 1, 3, 5], breaks: { 2: 'Recess', 4: 'Lunch' },
+    subjects: {
+      'BS Computer Science': [['Programming', 'code', 'Variables & Loops|Functions & Recursion|Intro to OOP'], ['Discrete Math', 'int', 'Logic & Proofs|Sets & Relations|Graph Theory'], ['Data Structures', 'code', 'Arrays & Linked Lists|Stacks & Queues|Binary Trees'], ['Web Design', 'des', 'HTML & CSS|Layout & Color|Responsive Design'], ['Networks', 'code', 'The OSI Model|IP Addressing|Routing Basics']],
+      'BS Nursing': [['Anatomy', 'int', 'Bones & Muscles|The Heart & Lungs|The Nervous System'], ['Nursing Skills Lab', 'fit', 'Vital Signs|Handwashing & Asepsis|IV Practice'], ['Pharmacology', 'int', 'Drug Classes|Dosage Computation|Side Effects'], ['Community Health', 'cha', 'Barangay Health Work|Immunization|Health Education'], ['Physiology', 'int', 'Cells & Tissues|Homeostasis|The Digestive System']],
+      'BS Accountancy': [['Financial Accounting', 'int', 'The Accounting Equation|Journal Entries|Financial Statements'], ['Business Math', 'int', 'Interest & Loans|Ratios|Break-even Analysis'], ['Taxation', 'int', 'Income Tax Basics|VAT|Filing Returns'], ['Auditing', 'int', 'Audit Ethics|Internal Controls|Sampling'], ['Economics', 'int', 'Supply & Demand|Inflation|Market Structures']],
+      'BS Education': [['Child Development', 'cha', 'Stages of Growth|Learning Styles|Classroom Behavior'], ['Teaching Methods', 'cha', 'Lesson Planning|Questioning Skills|Assessment'], ['Educational Tech', 'des', 'Slide Design|Online Tools|Digital Safety'], ['Filipino Literature', 'int', 'Noli Me Tangere|Epics & Folklore|Modern Poetry'], ['Practicum Prep', 'cha', 'Classroom Observation|Demo Teaching|Reflective Journals']],
+      'BS Criminology': [['Criminal Law', 'int', 'The Revised Penal Code|Criminal Procedure|Rights of the Accused'], ['Forensics', 'int', 'Fingerprints|Crime Scenes|Evidence Handling'], ['Defense Tactics', 'fit', 'Stances & Blocks|Arrest Techniques|Safe Restraint'], ['Police Patrol', 'fit', 'Patrol Methods|Radio Codes|Community Policing'], ['Ethics', 'int', 'Police Ethics|Integrity|Case Studies']],
+      'BS Tourism': [['Travel Ops', 'int', 'Itinerary Planning|Booking Systems|Airline Ticketing'], ['Hospitality', 'cha', 'Guest Service|Front Office|Handling Complaints'], ['Event Planning', 'des', 'Budgeting Events|Venues & Suppliers|Run of Show'], ['Tour Guiding', 'cha', 'Local History|Public Speaking|Safety Briefing'], ['Intl Cuisine', 'int', 'Filipino Regional Dishes|Asian Cuisine|Table Etiquette']]
+    },
+    modes: [
+      { label: '📝 Listen and take notes', prep: 1, d: { s: 2, f: -2 }, call: .12 },
+      { label: '🙋 Recite and participate (tiring, prof notices)', prep: .8, d: { s: 3, f: -1, e: -3 }, skill: { cha: .4 }, rel: { prof: 1.5 }, call: 0 },
+      { label: '💬 Whisper with {mate} (risky)', prep: .4, d: { s: 10, f: 4 }, risk: 1, bond: 4, call: .3 },
+      { label: '📚 Study together with {mate}', prep: .9, d: { s: 4, f: -1 }, bond: 3, call: .15 },
+      { label: '😴 Doze off at the back', prep: 0, d: { e: 6, f: -1 }, call: .4 }
+    ]
+  },
   traits: {
     Hardworking: { desc: '+20% studying, tires faster', mods: { studyMult: 1.2, energyDrain: 3.3 } },
     Resourceful: { desc: '-15% spending, +25% sideline income', mods: { spendMult: .85, sideMult: 1.25 } },
@@ -147,7 +167,7 @@ const DATA = {
     Saver: { desc: 'Higher savings interest and allowance', mods: { saveRate: .015, allowMult: 1.1 } }
   },
   economy: { baseAllowance: 450, tuitionBonusAt: 1500, tuitionBonus: 200, nanayAllowance: 3, weeklyBill: 250, debtInterest: .05, tuitionEveryWeeks: 4, maxLoan: 3000 },
-  academics: { baseScore: 48, terrorGraceSems: 2, freshmanSupport: [4, 2], quizDay: 4, midtermWeek: 8, finalsWeek: 16, absencePenalty: .8, failLimit: 2, deansListBonus: 2000, gradeBands: [[96, 1], [93, 1.25], [90, 1.5], [87, 1.75], [84, 2], [81, 2.25], [78, 2.5], [75, 3]] },
+  academics: { baseScore: 48, terrorGraceSems: 2, freshmanSupport: [2, 1], quizDay: 4, midtermWeek: 8, finalsWeek: 16, absencePenalty: .8, failLimit: 2, deansListBonus: 2000, gradeBands: [[96, 1], [93, 1.25], [90, 1.5], [87, 1.75], [84, 2], [81, 2.25], [78, 2.5], [75, 3]] },
   locations: {
     home: { icon: '🏠', name: () => 'Home' },
     school: { icon: '🏫', name: s => s.sch },
@@ -203,6 +223,7 @@ const DATA = {
     techie: { icon: '💻', desc: 'tech', bonus: { skill: { code: .8 } } },
     gunpla: { icon: '🤖', desc: 'gunpla', bonus: { skill: { gun: .8 } } }
   },
+  classmates: ['Ella', 'Marco', 'Patricia', 'Luis', 'Hannah', 'Rico', 'Sofia', 'Tomas', 'Ivy', 'Gabriel', 'Camille', 'Jun', 'Andrea', 'Bryan', 'Clarisse', 'Dennis'],
   names: ['Paolo', 'Bea', 'Jerome', 'Kath', 'Migs', 'Aly', 'Dan', 'Trixie', 'Carlo', 'Joy', 'Renz', 'Nina'],
   maxPeople: 8,
   clubs: {
@@ -429,7 +450,7 @@ const DATA = {
     pal: { skin: ['#fbe3cf', '#f1c9a5', '#d9a679', '#b27a4f', '#8a5a3a', '#5e3b25'], hairc: ['#1b1b22', '#4a2f20', '#7b4a2a', '#d9b24a', '#a8321e', '#2f5ea8', '#e86aa0', '#aab0bb'], eyec: ['#2b1a12', '#3a5a8a', '#2f7a4f', '#7a4a8a'],
       topc: ['#d6403a', '#2457d6', '#2f9e5b', '#f2c230', '#7a4aa8', '#222733', '#f4f4f8', '#ee7aa8'], botc: ['#2c4a7a', '#222733', '#6b7280', '#7a5a3a', '#f4f4f8', '#a8321e'], shoe: ['#f4f4f8', '#222733', '#d6403a', '#3a6fd8'] },
     opt: { hair: ['Short', 'Spiky', 'Long', 'Bob', 'Ponytail', 'Curly', 'Bun', 'Buzz cut'], face: ['Smile', 'Grin', 'Calm', 'Wink'], build: ['Slim', 'Average', 'Broad'], top: ['T-shirt', 'Hoodie', 'Polo', 'Uniform', 'Jacket', 'Tank top'], bot: ['Jeans', 'Shorts', 'Skirt', 'Slacks', 'Joggers'], shoe: ['White sneakers', 'Black sneakers', 'Red sneakers', 'Tsinelas'], acc: ['Glasses', 'Cap', 'Headphones', 'Earrings', 'Headband', 'ID lanyard'] },
-    cats: [['skin', 'Skin tone', 'sw'], ['hair', 'Hairstyle', 'tx'], ['hairc', 'Hair color', 'sw'], ['eyec', 'Eye color', 'sw'], ['face', 'Expression', 'tx'], ['build', 'Build', 'tx'], ['top', 'Top', 'tx'], ['topc', 'Top color', 'sw'], ['bot', 'Bottom', 'tx'], ['botc', 'Bottom color', 'sw'], ['shoe', 'Shoes', 'tx'], ['acc', 'Accessories', 'multi']],
+    cats: [['skin', 'Skin tone', 'sw'], ['hair', 'Hairstyle', 'tx'], ['hairc', 'Hair color', 'sw'], ['build', 'Build', 'tx'], ['top', 'Top', 'tx'], ['topc', 'Top color', 'sw'], ['bot', 'Bottom', 'tx'], ['botc', 'Bottom color', 'sw'], ['shoe', 'Shoes', 'tx'], ['acc', 'Accessories', 'multi']],
     def: { skin: 1, hair: 0, hairc: 0, eyec: 0, face: 0, build: 1, top: 0, topc: 1, bot: 0, botc: 0, shoe: 0, acc: [] }
   },
   /* Rooms: rent is weekly (scaled by cost of living). Comfort from furniture gives a small daily fun boost. */
@@ -477,17 +498,20 @@ const DATA = {
   actions: [
     { id: 'sleep', loc: 'home', name: 'Sleep', h: 0, sleep: true },
     { id: 'shower', loc: 'home', name: 'Take a shower', h: 1, d: { y: 65 } },
-    { id: 'cook', loc: 'home', name: 'Cook at home', h: 1, c: g => g.has('cooker') ? 25 : 40, d: g => ({ h: (g.has('cooker') ? 50 : 40) + g.state.K.cook / 4, f: g.state.K.cook / 10 }) },
-    { id: 'study', loc: 'home', name: 'Study', h: 2, d: { e: -8, f: -6 }, run: g => g.academics.study(11) },
-    { id: 'homework', loc: 'home', name: 'Do homework', h: 1, d: { e: -4, f: -3 }, ok: g => g.state.hw ? 0 : 'No pending homework', run: g => { g.state.hw--; g.state.K.int += .15; } },
+    { id: 'cook', loc: 'home', name: 'Cook at home', h: 1, c: g => g.has('cooker') ? 25 : 40, d: g => ({ h: (g.has('cooker') ? 50 : 40) + g.state.K.cook / 4, f: g.state.K.cook / 10 }), mg: 'cook' },
+    { id: 'study', loc: 'home', name: 'Study', h: 2, d: { e: -8, f: -6 }, mg: 'quiz', ctx: { study: 11 } },
+    { id: 'homework', loc: 'home', name: 'Do homework', h: 1, d: { e: -4, f: -3 }, ok: g => g.state.hw ? 0 : 'No pending homework', run: g => g.academics.doHomework() },
     { id: 'social', loc: 'home', name: 'Social media and mobile games', h: 1, c: 5, d: { f: 22, s: 5 } },
     { id: 'crush-chat', loc: 'home', name: 'Chat with your crush', h: 1, c: 5, d: { s: 8, f: 8 }, ok: g => g.state.ucr ? 0 : 'Get close to someone first', fx: { rel: { crush: 3 } } },
     { id: 'help-mom', loc: 'home', name: 'Help Mom at home', h: 1, d: { f: -3 }, fx: { rel: { nanay: 4 } } },
     { id: 'medicine', loc: 'home', name: 'Take medicine', h: 1, c: 90, ok: g => g.state.sick ? 0 : 'You are not sick', fx: { sick: 0, log: '💊 You recovered.' } },
-    { id: 'class', loc: 'school', name: 'Go to class', h: 6, d: { s: 8, f: -8 },
-      ok: g => { const s = g.state, h = g.time.hour, w = g.time.weekday; return s.wx === 'ty' ? 'Classes are suspended' : w > 4 ? 'Weekend, no class' : s.att ? 'Already attended' : h > g.academics.late() + 3 ? `Past ${clock(g.academics.late() + 3)}, you are marked absent` : 0; },
-      run: g => g.academics.attendClass() },
-    { id: 'library', loc: 'school', name: 'Study in the library', h: 2, d: { e: -8, f: -4 }, ok: g => g.time.hour > 17 ? 'Library is closed' : 0, run: g => g.academics.study(12) },
+    { id: 'period', loc: 'school', name: g => { const sl = g.academics.slot(); return sl && sl.type === 'class' ? `Attend Period ${sl.i + 1}: ${sl.subject}` : 'Attend class'; }, h: 0,
+      ok: g => { const s = g.state, w = g.time.weekday, sl = g.academics.slot(); return s.wx === 'ty' ? 'Classes are suspended' : w > 4 ? 'Weekend, no class' : !sl ? `Class runs ${clock(g.academics.late())} to ${clock(g.academics.late() + DATA.school.span)}` : sl.type !== 'class' ? `${sl.label} time. Check the break option` : s.per.includes(sl.i) ? 'Already attended' : 0; },
+      run: g => g.academics.openPeriod() },
+    { id: 'break', loc: 'school', name: g => { const sl = g.academics.slot(); return sl && sl.type === 'break' ? sl.label + ' with classmates' : 'Recess / Lunch'; }, h: 0,
+      ok: g => { const s = g.state, w = g.time.weekday, sl = g.academics.slot(); return s.wx === 'ty' ? 'Classes are suspended' : w > 4 ? 'Weekend, no school' : !sl || sl.type !== 'break' ? 'Only during recess or lunch' : s.brk.includes(g.time.hour) ? 'You already had your break' : 0; },
+      run: g => g.academics.openBreak() },
+    { id: 'library', loc: 'school', name: 'Study in the library', h: 2, d: { e: -8, f: -4 }, ok: g => g.time.hour > 17 ? 'Library is closed' : 0, mg: 'quiz', ctx: { study: 12 } },
     { id: 'ask-prof', loc: 'school', name: g => 'Ask ' + g.state.pf.n + ' for help', h: 1, d: { e: -3 }, ok: g => { const w = g.time.weekday, h = g.time.hour; return w > 4 || h < 8 || h > 16 ? 'Ma’am is not around' : 0; }, run: g => g.academics.askProf() },
     { id: 'classmates', loc: 'school', name: 'Hang out with classmates', h: 1, d: { s: 20, f: 10 } },
     { id: 'canteen', loc: 'school', name: 'Canteen meal', h: 1, c: 60, d: g => ({ h: 50, f: 3 + g.stats.trait('foodFun', 0) }) },
@@ -502,16 +526,16 @@ const DATA = {
     { id: 'apply', loc: 'mall', name: 'Apply for another job', h: 2, c: 50, run: g => g.career.openJobMenu() },
     { id: 'stroll', loc: 'court', name: g => 'Stroll around ' + g.world.locations().court[1], h: 1, d: { f: 16, s: 4, y: -3 } },
     { id: 'court-barkada', loc: 'court', name: 'Hang out with the barkada', h: 2, d: { s: 30, f: 16 }, ok: g => g.state.ubar ? 0 : 'Make more friends first', fx: { rel: { bar: 4 } } },
-    { id: 'basketball', loc: 'court', name: 'Play pickup basketball', h: 1, d: { e: -10, f: 12, h: -8 }, fx: { skill: { fit: .6 } } },
+    { id: 'basketball', loc: 'court', name: 'Play pickup basketball', h: 1, d: { e: -10, f: 12, h: -8 }, mg: 'hoops' },
     { id: 'karinderya', loc: 'court', name: 'Karinderya (viand and rice)', h: 1, c: 70, d: g => ({ h: 58, f: 3 + g.stats.trait('foodFun', 0) }) },
     { id: 'street-food', loc: 'court', name: 'Street food (fishball, isaw)', h: 1, c: 30, d: g => ({ h: 22, f: 6 + g.stats.trait('foodFun', 0) }) },
     { id: 'gig', loc: ['home', 'mall'], name: 'Find a gig', h: 0, run: g => g.career.openGigMenu() },
     { id: 'wait', loc: 'home', name: 'Wait an hour', h: 1 },
     { id: 'read', loc: 'home', name: 'Read a book', h: 2, d: { e: -3, f: -2 }, fx: { skill: { int: .8 } } },
     { id: 'videos', loc: 'home', name: 'Watch videos (data)', h: 2, c: 10, d: { f: 30, e: -2 } },
-    { id: 'guitar', loc: 'home', name: 'Practice guitar', h: 1, d: { f: 15, e: -3 }, ok: g => g.need('guitar', 'You need a guitar'), fx: { skill: { mus: 1 } } },
-    { id: 'code', loc: 'home', name: 'Code a side project', h: 2, d: { e: -8, f: 4 }, fx: { skill: { code: 1.2 } } },
-    { id: 'recipe', loc: 'home', name: 'Try a new recipe', h: 2, c: 80, d: { e: -6, h: 35, f: 12 }, fx: { skill: { cook: 1.5 } } },
+    { id: 'guitar', loc: 'home', name: 'Practice guitar', h: 1, d: { f: 15, e: -3 }, ok: g => g.need('guitar', 'You need a guitar'), mg: 'guitar' },
+    { id: 'code', loc: 'home', name: 'Code a side project', h: 2, d: { e: -8, f: 4 }, mg: 'debug' },
+    { id: 'recipe', loc: 'home', name: 'Try a new recipe', h: 2, c: 80, d: { e: -6, h: 35, f: 12 }, mg: 'recipe' },
     { id: 'call-family', loc: 'home', name: 'Call your family', h: 1, d: { s: 12, f: 6 }, fx: { rel: { nanay: 3 } } },
     { id: 'join-club', loc: 'school', name: 'Join a student org', h: 1, ok: g => g.state.club ? 'You already joined one' : 0, run: g => g.social.openClubMenu() },
     { id: 'club-meet', loc: 'school', name: g => 'Attend club meeting' + (g.state.club ? ': ' + DATA.clubs[g.state.club].name : ''), h: 2, d: { e: -6, s: 15, f: 8 },
@@ -521,8 +545,8 @@ const DATA = {
     { id: 'movie', loc: 'mall', name: 'Watch a movie', h: 3, c: 350, d: { f: 50, s: 8 } },
     { id: 'karaoke', loc: 'mall', name: g => g.state.ubar ? 'Karaoke with the barkada' : 'Karaoke', h: 2, c: 250, d: { f: 40, s: 30 }, fx: { rel: { bar: 4 }, skill: { mus: .3 } } },
     { id: 'lotto', loc: 'mall', name: 'Buy a lotto ticket', h: 0, c: 20, run: g => g.economy.playLotto() },
-    { id: 'jog', loc: 'court', name: 'Go jogging', h: 1, d: { e: -12, f: 10, y: -8 }, fx: { skill: { fit: .8 } } },
-    { id: 'gym', loc: 'court', name: 'Work out at the gym', h: 1, d: { e: -12, f: 6, y: -6 }, ok: g => g.has('gym') ? 0 : 'You need a gym pass', fx: { skill: { fit: 1.4 } } },
+    { id: 'jog', loc: 'court', name: 'Go jogging', h: 1, d: { e: -12, f: 10, y: -8 }, mg: 'jog' },
+    { id: 'gym', loc: 'court', name: 'Work out at the gym', h: 1, d: { e: -12, f: 6, y: -6 }, ok: g => g.has('gym') ? 0 : 'You need a gym pass', mg: 'lift' },
     { id: 'volunteer', loc: 'court', name: 'Volunteer at the barangay', h: 2, d: { e: -8, f: 10, s: 10 }, fx: { skill: { cha: .5 }, rel: { nanay: 2 } } },
     { id: 'mass', loc: 'court', name: 'Attend mass', h: 1, d: { f: 10, s: 8 }, ok: g => g.time.weekday === 6 ? 0 : 'Mass is on Sundays', fx: { rel: { nanay: 2 } } },
     { id: 'hobby-shop', loc: 'mall', name: 'Browse the hobby shop', h: 1, run: g => g.hobby.openShop() },
@@ -532,17 +556,146 @@ const DATA = {
     { id: 'kit-skip', loc: 'home', name: '🤖 Skip current step', h: 0, ok: g => g.state.kit ? 0 : 'No kit on the bench', run: g => g.hobby.skipStep() },
     { id: 'kit-sell', loc: 'home', name: '🤖 Sell a finished model', h: 0, ok: g => g.state.shelf.length ? 0 : 'No finished models', run: g => g.hobby.openSellMenu() },
     { id: 'photo', loc: ['court', 'mall'], name: '📷 Go on a photo walk', h: 2, d: { e: -6, f: 16 }, ok: g => g.need('camera', 'You need a camera (mall)'), fx: { skill: { des: .8, cha: .2 } } },
-    { id: 'skate', loc: 'court', name: '🛹 Skateboard at the park', h: 1, d: { e: -10, f: 14, y: -6 }, ok: g => g.need('skate', 'You need a skateboard (mall)'), fx: { skill: { fit: .8 } } },
-    { id: 'dance', loc: ['home', 'school'], name: '💃 Dance practice', h: 1, d: { e: -8, f: 12 }, fx: { skill: { fit: .4, cha: .5 } } },
-    { id: 'chess', loc: ['home', 'school'], name: '♟️ Play chess online', h: 1, d: { e: -3, f: 8 }, fx: { skill: { int: .6 } } },
+    { id: 'skate', loc: 'court', name: '🛹 Skateboard at the park', h: 1, d: { e: -10, f: 14, y: -6 }, ok: g => g.need('skate', 'You need a skateboard (mall)'), mg: 'skate' },
+    { id: 'dance', loc: ['home', 'school'], name: '💃 Dance practice', h: 1, d: { e: -8, f: 12 }, mg: 'dance' },
+    { id: 'chess', loc: ['home', 'school'], name: '♟️ Play chess online', h: 1, d: { e: -3, f: 8 }, mg: 'puzzle' },
     { id: 'garden', loc: 'home', name: '🪴 Tend your plants', h: 1, c: 30, d: { e: 2, f: 10 }, fx: { skill: { cook: .2 } } },
     { id: 'boardgame', loc: 'home', name: '🎲 Board game night with friends', h: 3, c: 60, d: { f: 28, s: 24 }, ok: g => g.state.ppl.length ? 0 : 'You need a friend first', run: g => g.state.ppl.forEach(q => { q.r = clamp(q.r + 3); }) },
-    { id: 'design', loc: 'home', name: 'Practice design (Canva/Figma)', h: 2, d: { e: -8, f: 4 }, fx: { skill: { des: 1.2 } } },
+    { id: 'design', loc: 'home', name: 'Practice design (Canva/Figma)', h: 2, d: { e: -8, f: 4 }, mg: 'colors' },
     { id: 'pj-work', loc: ['home', 'school'], name: '📂 Work on a project', h: 0, ok: g => !g.state.pj.length ? 'No active project' : g.state.N.e < 15 ? 'Too tired' : 0, run: g => g.projects.openWork() },
     { id: 'pj-consult', loc: ['home', 'school'], name: '🧑‍🏫 Consult adviser / tutor', h: 0, ok: g => !g.state.pj.length ? 'No active project' : 0, run: g => g.projects.openConsult() },
     { id: 'pj-find', loc: 'school', name: '📂 Find a project', h: 0, run: g => g.projects.openOffers() }
   ]
 };
+
+/* ---------------------------------------------------------------- 2b. MINI-GAME DATA
+   Everyday activities now play as short mini-games. Types:
+   meter = stop a moving marker inside a window, simon = repeat a phrase, quiz = multiple choice, order = build a customer's order.
+   Skipping a game always gives an average (0.5) result, so it never feels mandatory. */
+DATA.simonColors = ['#d6403a', '#2457d6', '#1f9d6b', '#e0a100'];
+DATA.mini = {
+  hoops: { type: 'meter', icon: '🏀', title: 'Pickup basketball', text: 'Tap SHOOT when the marker is inside the green window. The window moves every shot.', btn: 'SHOOT!', n: 5, w: .2, sp: .8, move: 1, gain: { fit: .6 }, fun: 14, good: 'Swish!', ok: 'Off the rim.', bad: 'Airball.' },
+  jog: { type: 'meter', icon: '🏃', title: 'Jogging', text: 'Find your rhythm. Tap on the beat when the marker crosses the green window.', btn: 'STEP!', n: 6, w: .24, sp: .7, move: 0, gain: { fit: .8 }, fun: 10, good: 'Right on pace.', ok: 'A little off pace.', bad: 'You tripped over your stride.' },
+  lift: { type: 'meter', icon: '🏋️', title: 'Gym set', text: 'Tap LIFT at the top of each rep. Good form builds more strength.', btn: 'LIFT!', n: 5, w: .15, sp: .9, move: 1, gain: { fit: 1.4 }, fun: 8, good: 'Clean rep!', ok: 'Sloppy form.', bad: 'Failed rep.' },
+  skate: { type: 'meter', icon: '🛹', title: 'Skate tricks', text: 'Pop the trick when the marker is inside the green window.', btn: 'POP!', n: 4, w: .13, sp: 1, move: 1, gain: { fit: .8 }, fun: 16, good: 'Landed it!', ok: 'Sketchy landing.', bad: 'Bailed!' },
+  cook: { type: 'meter', icon: '🍳', title: 'Cooking', text: 'Flip when the food is golden brown (the green window). Too early or too late and it burns.', btn: 'FLIP!', n: 4, w: .2, sp: .6, move: 1, gain: { cook: .5 }, food: 20, fun: 8, good: 'Golden brown!', ok: 'A bit overdone.', bad: 'Burnt!' },
+  recipe: { type: 'meter', icon: '🍲', title: 'New recipe', text: 'Follow the recipe: stir at exactly the right moments.', btn: 'STIR!', n: 6, w: .15, sp: .8, move: 1, gain: { cook: 1.5 }, food: 20, fun: 12, good: 'Perfect stir!', ok: 'Lumpy.', bad: 'It stuck to the pan.' },
+  guitar: { type: 'simon', icon: '🎸', title: 'Guitar practice', text: 'Listen to the phrase, then play it back note by note.', syms: ['C', 'D', 'E', 'G'], tones: [262, 294, 330, 392], len: 3, rounds: 3, gain: { mus: 1 }, fun: 12 },
+  dance: { type: 'simon', icon: '💃', title: 'Dance practice', text: 'Watch the moves, then repeat them in the same order.', syms: ['⬅️', '⬆️', '⬇️', '➡️'], tones: [330, 392, 440, 523], len: 3, rounds: 3, gain: { fit: .4, cha: .5 }, fun: 12 },
+  quiz: { type: 'quiz', icon: '📖', title: 'Study session', text: 'Quick review questions based on your course. Better answers mean better prep.', kind: 'subject', n: 4, gain: {}, fun: 0 },
+  debug: { type: 'quiz', icon: '💻', title: 'Side project: debugging', text: 'Read the code and predict what it prints.', kind: 'code', n: 4, gain: { code: 1.2 }, fun: 8 },
+  colors: { type: 'quiz', icon: '🎨', title: 'Design practice', text: 'Colour theory drills.', kind: 'color', n: 4, gain: { des: 1.2 }, fun: 8 },
+  puzzle: { type: 'quiz', icon: '♟️', title: 'Chess puzzles', text: 'Sharpen your logic.', kind: 'logic', n: 4, gain: { int: .6 }, fun: 10 },
+  order: { type: 'order', icon: '🧾', title: 'Counter rush', text: 'Tap items to build each customer’s order, then press Serve.', n: 5, menus: { fast: ['🍔 Burger', '🍟 Fries', '🥤 Soda', '🍗 Chicken'], cafe: ['☕ Coffee', '🧋 Milk tea', '🥐 Pastry', '🍰 Cake'] } },
+  change: { type: 'quiz', icon: '💵', title: 'Cashier', text: 'Work the register: give the correct change.', kind: 'change', n: 5 },
+  call: { type: 'quiz', icon: '🎧', title: 'Call handling', text: 'Pick the best way to handle each caller.', kind: 'call', n: 4 },
+  math: { type: 'quiz', icon: '📚', title: 'Tutoring', text: 'Solve your student’s problems quickly.', kind: 'math', n: 5 },
+  route: { type: 'quiz', icon: '🚲', title: 'Delivery routes', text: 'Choose the shortest route for each delivery.', kind: 'route', n: 4 },
+  price: { type: 'quiz', icon: '📦', title: 'Online selling', text: 'Work out your profit on each batch.', kind: 'price', n: 4 }
+};
+/* Which mini-game each job plays during a work shift. Good play adds up to 20% bonus, poor play deducts up to 20%. */
+DATA.jobGames = { fast: 'order', cafe: 'order', store: 'change', call: 'call', tutor: 'math', rider: 'route', dev: 'debug', sell: 'price' };
+/* Study quizzes draw from kinds that match the course */
+DATA.courseKinds = { 'BS Computer Science': ['code', 'math', 'logic'], 'BS Nursing': ['math', 'logic', 'seq'], 'BS Accountancy': ['math', 'change', 'price'], 'BS Education': ['logic', 'seq', 'call'], 'BS Criminology': ['logic', 'seq', 'route'], 'BS Tourism': ['route', 'logic', 'call'] };
+/* Static question banks: [question, right answer, ...wrong answers] */
+DATA.qbank = {
+  logic: [
+    ['Which one does not belong?', 'Carrot', 'Apple', 'Mango', 'Banana'],
+    ['Dog is to puppy as cat is to…', 'Kitten', 'Calf', 'Cub'],
+    ['Next prime: 2, 3, 5, 7, 11, ?', '13', '12', '15', '14'],
+    ['A jeepney seats 18. How many jeepneys carry 50 students?', '3', '2', '4'],
+    ['1 kg of rice or 1 kg of feathers: which is heavier?', 'They weigh the same', 'The rice', 'The feathers'],
+    ['Friday is to Saturday as Monday is to…', 'Tuesday', 'Sunday', 'Wednesday'],
+    ['How many sides does a pentagon have?', '5', '6', '4'],
+    ['All barkada members are friends. Ana is in the barkada. So Ana is…', 'A friend', 'A stranger', 'Not sure'],
+    ['If today is Wednesday, what day is it in 10 days?', 'Saturday', 'Friday', 'Sunday'],
+    ['Which is the odd one out: 9, 16, 25, 30, 36?', '30', '16', '25']
+  ],
+  color: [
+    ['Red + Yellow makes…', 'Orange', 'Green', 'Purple'],
+    ['Blue + Yellow makes…', 'Green', 'Orange', 'Purple'],
+    ['Red + Blue makes…', 'Purple', 'Green', 'Brown'],
+    ['The complement of Blue is…', 'Orange', 'Green', 'Purple'],
+    ['The complement of Red is…', 'Green', 'Orange', 'Blue'],
+    ['The complement of Yellow is…', 'Purple', 'Orange', 'Green'],
+    ['Which is a cool colour?', 'Blue', 'Red', 'Orange'],
+    ['Which is a warm colour?', 'Orange', 'Blue', 'Teal'],
+    ['Which pairing is easiest to read?', 'Black text on white', 'Yellow text on white', 'Light gray text on white'],
+    ['Which is a primary colour (red-yellow-blue)?', 'Yellow', 'Green', 'Orange']
+  ],
+  call: [
+    ['Caller: "My internet has been down all day and I am furious!"', 'Apologize, empathize, then start troubleshooting', 'Tell them to calm down', 'Put them on hold forever'],
+    ['Caller: "I was charged twice this month."', 'Verify the account and explain how you will fix it', 'Say it is probably their mistake', 'Transfer them without a word'],
+    ['Caller: "How do I reset my password?"', 'Walk them through the steps patiently', 'Read the whole manual aloud', 'Tell them to Google it'],
+    ['A caller asks for something outside policy.', 'Explain politely and offer the closest option', 'Promise it just to end the call', 'Hang up'],
+    ['A caller is confused by the plan options.', 'Ask what they need, then recommend a plan', 'Pick the priciest plan', 'Rush through the details'],
+    ['You do not know the answer.', 'Say you will check and call back', 'Make something up', 'Change the subject']
+  ]
+};
+
+/* ---------------------------------------------------------------- 2c. TRAVEL DATA
+   Every city has a mall and a park. Home, school and work only exist in your home city, so travelling costs class and shift time.
+   Coordinates are rough city centres; road distance = straight line x road factor. */
+DATA.geo = {
+  'Caloocan': [14.654, 120.984], 'Manila': [14.599, 120.984], 'Quezon City': [14.676, 121.044], 'Makati': [14.554, 121.024],
+  'Pasig': [14.576, 121.085], 'Taguig': [14.520, 121.050], 'Marikina': [14.650, 121.103], 'Mandaluyong': [14.579, 121.035],
+  'Pasay': [14.538, 121.000], 'Parañaque': [14.479, 121.019], 'Las Piñas': [14.450, 120.982], 'Muntinlupa': [14.408, 121.041],
+  'Valenzuela': [14.700, 120.983]
+};
+DATA.transit = {
+  road: 1.3, localKm: 3.5, walk: 8, trikeMax: 7,
+  modes: {
+    walk: { icon: '🚶', name: 'Walk', up: 'Free', down: 'Slow and sweaty, miserable in the rain' },
+    bike: { icon: '🚲', name: 'Your bicycle', up: 'Free, builds fitness, no waiting', down: 'Tiring, and the rain soaks you' },
+    jeep: { icon: '🚐', name: 'Jeepney', up: 'Cheap and goes almost anywhere', down: 'Slow, sweaty and crowded. Mind your wallet' },
+    trike: { icon: '🛺', name: 'Tricycle', up: 'Door to door, dry in the rain, you can haggle with Charisma', down: 'Short trips only. Pricey per km, and outsiders get higher fares' },
+    mc: { icon: '🏍️', name: 'Motorcycle taxi', up: 'Fastest through traffic, available at any hour', down: 'Expensive, rain and night surcharges, crash risk' },
+    rail: { icon: '🚇', name: 'LRT / MRT', up: 'Beats traffic and keeps running in the rain', down: 'Packed at rush hour, breakdowns, closes at 10 PM' },
+    edsa: { icon: '🚌', name: 'EDSA Carousel', up: 'Runs all night, air-con seat when it is not rush hour', down: 'Packed at rush hour, slow when traffic is bad' }
+  },
+  lines: {
+    lrt1: { name: 'LRT-1', icon: '🟨', kind: 'rail', speed: 36, wait: 4, fare: [12, 1.1], fail: .03,
+      stops: [['Fernando Poe Jr.', 'Quezon City', 0], ['Balintawak', 'Quezon City', 1.9], ['Monumento', 'Caloocan', 4.4], ['5th Avenue', 'Caloocan', 5.4], ['Abad Santos', 'Manila', 7.1], ['Doroteo Jose', 'Manila', 10.7], ['Central Terminal', 'Manila', 12.7], ['United Nations', 'Manila', 13.8], ['Vito Cruz', 'Manila', 16.6], ['Gil Puyat', 'Pasay', 17.7], ['EDSA', 'Pasay', 19.5], ['Baclaran', 'Pasay', 20.4], ['Redemption', 'Parañaque', 21.7], ['Asia World', 'Parañaque', 24.4]] },
+    lrt2: { name: 'LRT-2', icon: '🟪', kind: 'rail', speed: 34, wait: 5, fare: [12, 1.1], fail: .03,
+      stops: [['Recto', 'Manila', 0], ['V. Mapa', 'Manila', 4.0], ['Gilmore', 'Quezon City', 6.7], ['Araneta Center-Cubao', 'Quezon City', 9.1], ['Katipunan', 'Quezon City', 11.7], ['Santolan', 'Pasig', 13.4], ['Marikina-Pasig', 'Marikina', 14.4]] },
+    mrt3: { name: 'MRT-3', icon: '🟦', kind: 'rail', speed: 33, wait: 5, fare: [12, 1], fail: .08,
+      stops: [['North Avenue', 'Quezon City', 0], ['Cubao', 'Quezon City', 4.2], ['Ortigas', 'Mandaluyong', 7.4], ['Shaw Boulevard', 'Mandaluyong', 8.6], ['Boni', 'Mandaluyong', 9.6], ['Guadalupe', 'Makati', 10.9], ['Ayala', 'Makati', 13.4], ['Magallanes', 'Makati', 14.6], ['Taft Avenue', 'Pasay', 16.9]] },
+    edsa: { name: 'EDSA Carousel', icon: '🚌', kind: 'bus', speed: 22, wait: 8, fare: [15, 2], fail: .08,
+      stops: [['Monumento', 'Caloocan', 0], ['Balintawak', 'Quezon City', 3.6], ['North Avenue', 'Quezon City', 7.0], ['Cubao', 'Quezon City', 11.0], ['Ortigas', 'Mandaluyong', 14.5], ['Guadalupe', 'Makati', 17.6], ['Ayala', 'Makati', 19.8], ['Taft Avenue', 'Pasay', 22.2], ['PITX', 'Parañaque', 25.5]] }
+  },
+  /* interchanges between rail lines (walkways) */
+  xfer: [['lrt1:Doroteo Jose', 'lrt2:Recto'], ['lrt1:EDSA', 'mrt3:Taft Avenue'], ['lrt2:Araneta Center-Cubao', 'mrt3:Cubao']]
+};
+(() => {
+  const S = {
+    'Caloocan': [['🧥 Hunt for ukay at the Monumento stalls', 'mall', 1, 100, { f: 12 }, { cha: .4 }], ['🍲 Pares at a carinderia by the Monument', 'court', 1, 70, { h: 55, f: 8 }]],
+    'Manila': [['🏰 Walk through Intramuros', 'court', 2, 75, { f: 18, e: -5 }, { int: .6 }], ['🥟 Binondo food crawl', 'court', 2, 250, { h: 60, f: 22 }, { cook: .4 }]],
+    'Quezon City': [['🍢 Eat along Maginhawa Street', 'court', 2, 220, { h: 55, f: 20 }, { cook: .3 }], ['🛍️ Browse the Cubao Expo shops', 'mall', 2, 100, { f: 16, e: -4 }, { cha: .5, des: .3 }]],
+    'Makati': [['🖼️ Visit a museum near Ayala', 'mall', 2, 250, { f: 8, e: -4 }, { int: .8, des: .4 }], ['🌳 Greenbelt people-watching', 'court', 1, 0, { f: 10, s: 8 }, { cha: .3 }]],
+    'Pasig': [['🍔 Kapitolyo food hop', 'court', 2, 200, { h: 50, f: 18 }], ['📷 Photo walk along the Pasig River', 'court', 1, 0, { f: 12, e: -3 }, { des: .4 }]],
+    'Taguig': [['🎨 BGC street art walk', 'court', 2, 0, { f: 14, e: -5 }, { des: .8 }], ['🍱 Food hall in BGC', 'mall', 1, 280, { h: 60, f: 14 }]],
+    'Marikina': [['👟 Visit the Shoe Museum', 'court', 1, 50, { f: 10 }, { int: .4, des: .2 }], ['🚴 Ride along the Riverbanks', 'court', 1, 0, { f: 14, e: -8 }, { fit: .5 }]],
+    'Mandaluyong': [['📱 Window-shop gadgets near Shaw', 'mall', 1, 0, { f: 10 }, { code: .4 }], ['☕ Hang out in Greenfield District', 'court', 1, 0, { f: 10, s: 8 }]],
+    'Pasay': [['🌅 Watch the Manila Bay sunset', 'court', 1, 0, { f: 22, s: 6 }], ['🛼 Roll around the MOA seaside', 'court', 1, 0, { f: 16, e: -6 }, { fit: .4 }]],
+    'Parañaque': [['🛒 Bargain hunt in Baclaran', 'court', 2, 150, { f: 14, e: -5 }, { cha: .6 }], ['🦐 Seafood dampa meal', 'mall', 2, 400, { h: 70, f: 22 }]],
+    'Las Piñas': [['🎶 Hear the Bamboo Organ', 'court', 1, 50, { f: 12 }, { mus: .8 }], ['🍡 Kakanin and puto snack run', 'court', 1, 80, { h: 40, f: 10 }]],
+    'Muntinlupa': [['🌿 Nature walk at the wetland park', 'court', 1, 0, { f: 14, e: -4 }, { fit: .3 }], ['☕ Cafe-hop in Alabang', 'mall', 2, 200, { f: 18, s: 10 }, { cha: .3 }]],
+    'Valenzuela': [['🧺 Weekend market stroll', 'court', 1, 60, { f: 12, s: 6 }], ['🍜 Local panciteria lunch', 'court', 1, 120, { h: 50, f: 10 }]]
+  };
+  DATA.spots = {};
+  for (const c in S) DATA.spots[c] = S[c].map(([n, loc, h, cst, d, sk]) => ({ n, loc, h, c: cst, d, sk }));
+})();
+DATA.goals.push(
+  { label: '🗺️ Visit 6 different cities', test: s => (s.vis || []).length >= 6 },
+  { label: '🚆 Ride LRT-1, LRT-2, MRT-3 and the EDSA Carousel', test: s => ['lrt1', 'lrt2', 'mrt3', 'edsa'].every(k => (s.rode || {})[k]) },
+  { label: '🏙️ Visit all 13 cities', test: s => (s.vis || []).length >= 13 }
+);
+/* Away from home you cannot sleep in your own bed, so there are two options: a capsule hostel, or a bench (free, risky) */
+DATA.actions.push(
+  { id: 'hostel', loc: 'mall', name: '🛏️ Capsule hostel (sleep)', h: 0, c: 480, sleep: true, d: { y: 55, f: 6 }, ok: g => (g.state.at || g.state.city) === g.state.city ? 'You have a bed at home' : 0 },
+  { id: 'bench', loc: 'court', name: '😴 Nap on a park bench (free, risky)', h: 3, d: { e: 22, y: -8, f: -4 }, ok: g => (g.state.at || g.state.city) === g.state.city ? 'Go home to rest properly' : 0,
+    run: g => { if (Math.random() < .25) { const n = Math.min(g.state.m, Math.round(rnd(80, 200))); g.state.m -= n; g.log(`👜 Someone lifted ${fmt(n)} while you napped.`); } } }
+);
 
 /* ---------------------------------------------------------------- 3. INFRASTRUCTURE */
 class StateMachine {
@@ -578,8 +731,8 @@ class GameState {
       name: Util.clean(f.name || 'Juan') || 'Juan', co: f.course, bg: f.bg, city: f.city, sch: f.school,
       tu: C.sc.find(x => x[0] === f.school)[1], col: C.c, tr: [...f.traits], job: f.job,
       t: DATA.start.hour, m: DATA.start.cash, sav: 0, debt: 0,
-      N: { ...DATA.start.needs }, K, prep: 20, hw: 0, sc: [], abs: 0, att: 0, sh: 0, wkSh: 0, xp: 0, rk: 0, rj: DATA.shift.startReliability,
-      R: { ...DATA.start.rel }, loc: 'home', stash: [...DATA.start.stash], shelf: [], kit: null, mj: {}, rep: 0, built: 0, wins: 0,
+      N: { ...DATA.start.needs }, K, prep: 20, hw: 0, sc: [], abs: 0, att: 0, per: [], qd: 0, brk: [], cls: [], clsSem: 0, hwl: [], called: 0, sh: 0, wkSh: 0, xp: 0, rk: 0, rj: DATA.shift.startReliability,
+      R: { ...DATA.start.rel }, loc: 'home', at: f.city, vis: [f.city], rode: {}, tm: 0, stash: [...DATA.start.stash], shelf: [], kit: null, mj: {}, rep: 0, built: 0, wins: 0,
       ppl: [], club: null, fund: 0, wx: 'sun', tyLast: -99, badRun: 0, rm: { t: 'family', items: [], wall: null }, look: f.look || { ...DATA.chr.def, acc: [] }, inv: f.job === 'rider' ? ['bike'] : [], buddy: 0, fails: 0, hist: [], log: [], sick: 0,
       cond: {}, pf: { k: 'fair', n: 'Ma’am Reyes' }, dn: { k: 'fair', n: 'Dean Mercado' }, pj: [], pdone: [], ph: [], me: null, chats: {}, warns: 0, thesis: null, mk: { ev: null, phase: null, left: 0, fake: false, hist: [] }
     };
@@ -588,12 +741,13 @@ class GameState {
   static migrate(S) {
     S.loc = S.loc || 'home'; S.inv = S.inv || []; S.R.prof = S.R.prof ?? 20; S.buddy = S.buddy || 0;
     if (!DATA.cities[S.city]) S.city = 'Caloocan';
+    S.at = DATA.cities[S.at] ? S.at : S.city; S.vis = S.vis || [S.city]; S.rode = S.rode || {}; S.tm = S.tm || 0;
     const C0 = DATA.cities[S.city];
     S.sch = S.sch || C0.sc[0][0]; S.tu = S.tu ?? C0.sc[0][1]; S.col = S.col ?? C0.c;
     S.ppl = S.ppl || []; S.club = S.club || null; S.fund = S.fund || 0; S.wx = S.wx || 'sun'; S.tyLast = S.tyLast ?? -99; S.rm = S.rm || { t: 'family', items: [], wall: null }; S.look = S.look || { ...DATA.chr.def, acc: [] }; S.badRun = S.badRun || 0;
     for (const k of ['cook', 'code', 'mus', 'gun', 'des']) S.K[k] = S.K[k] ?? 5;
     S.stash = S.stash || ['zk']; S.shelf = S.shelf || []; S.kit = S.kit || null; S.mj = S.mj || {};
-    S.wkSh = S.wkSh || 0; S.rep = S.rep || 0; S.built = S.built || 0; S.wins = S.wins || 0;
+    S.wkSh = S.wkSh || 0; S.per = S.per || []; S.cls = S.cls || []; S.hwl = S.hwl || []; S.called = S.called || 0; S.clsSem = S.clsSem || 0; S.brk = S.brk || []; S.qd = S.qd || 0; S.rep = S.rep || 0; S.built = S.built || 0; S.wins = S.wins || 0;
     S.hist = S.hist || []; S.log = S.log || []; S.sc = S.sc || []; S.fails = S.fails || 0;
     S.cond = S.cond || {}; S.pf = S.pf || { k: 'fair', n: 'Ma’am Reyes' }; S.dn = S.dn || { k: 'fair', n: 'Dean Mercado' }; S.pj = S.pj || []; S.ph = S.ph || []; S.me = S.me || null; S.chats = S.chats || {}; S.pdone = S.pdone || []; S.warns = S.warns || 0; S.thesis = S.thesis || null; S.mk = S.mk || { ev: null, phase: null, left: 0, fake: false, hist: [] };
     return S;
@@ -634,9 +788,13 @@ class Manager { constructor(g) { this.g = g; } get s() { return this.g.state; } 
 
 class WorldManager extends Manager {
   get city() { return DATA.cities[this.s.city]; }
-  locations() {
-    const out = {};
-    for (const k in DATA.locations) out[k] = [DATA.locations[k].icon, DATA.locations[k].name(this.s, this.city)];
+  at() { return this.s.at || this.s.city; }
+  atHome() { return this.at() === this.s.city; }
+  avail(k) { return this.atHome() || k === 'mall' || k === 'court'; }
+  col() { return this.atHome() ? (this.s.col || 1) : DATA.cities[this.at()].c; }
+  locations(home) {
+    const out = {}, c = home ? this.city : DATA.cities[this.at()];
+    for (const k in DATA.locations) out[k] = [DATA.locations[k].icon, DATA.locations[k].name(this.s, c)];
     return out;
   }
   rollWeather() {
@@ -667,6 +825,7 @@ class TimeManager extends Manager {
     this.g.bus.emit('hour', { sleeping, h: this.hour, w: this.weekday });
     if (this.hour === 0) this.newDay();
   }
+  advance(mins) { const s = this.s; s.tm = (s.tm || 0) + Math.round(mins); while (s.tm >= 60) { s.tm -= 60; this.tick(); } }
   newDay() {
     const d = this.dayIndex, ctx = { d, w: d % 7, wk: Math.floor(d / 7) + 1 };
     this.g.world.rollWeather();
@@ -722,7 +881,7 @@ class PlayerStats extends Manager {
 
 class EconomyManager extends Manager {
   constructor(g) { super(g); g.bus.on('day:close', c => { if (c.w === 6) this.weekly(c.wk); }); }
-  dc(c) { return c ? Math.round(c * (this.s.col || 1) * this.g.stats.trait('spendMult', 1) * this.g.market.priceMult()) : c; }
+  dc(c) { return c ? Math.round(c * this.g.world.col() * this.g.stats.trait('spendMult', 1) * this.g.market.priceMult()) : c; }
   weeklyBill() { return Math.round(DATA.economy.weeklyBill * (this.s.col || 1) * this.g.market.priceMult()); }
   spend(n) { this.s.m -= Math.min(this.s.m, n); }
   bill(n) { const s = this.s; if (s.m >= n) s.m -= n; else { s.debt += n - s.m; s.m = 0; } }
@@ -866,7 +1025,7 @@ class AcademicsManager extends Manager {
   constructor(g) {
     super(g);
     g.bus.on('hour', e => this.checkMissedClass(e));
-    g.bus.on('day:begin', () => { this.s.att = 0; });
+    g.bus.on('day:begin', () => { const s = this.s; s.att = 0; s.per = []; s.brk = []; s.qd = 0; s.called = 0; });
     g.bus.on('day:close', c => { if (c.w === 0 && c.wk > 1 && (c.wk - 1) % DATA.weeksPerSemester === 0) this.endSemester(); });
   }
   get P() { return DATA.profs[this.s.pf.k]; }
@@ -882,11 +1041,15 @@ class AcademicsManager extends Manager {
   }
   checkMissedClass(e) {
     const s = this.s, g = this.g;
-    if (e.h !== this.late() + 4 || e.w > 4 || s.wx === 'ty') return;
+    if (e.h !== this.late() + DATA.school.span || e.w > 4 || s.wx === 'ty') return; /* the last bell */
     if (!s.att) {
       s.abs++; g.log('❌ You missed class.');
       if (e.w === DATA.academics.quizDay) s.sc.push(45);
       else if (Math.random() < this.P.pop * .6) { s.sc.push(40); g.log('📝 You missed a pop quiz: 40%.'); }
+    } else {
+      const n = DATA.school.classOffsets.length;
+      if (e.w === DATA.academics.quizDay && !s.qd) { s.sc.push(45); g.log('📝 You skipped the last period and missed the quiz: 45%.'); }
+      if (s.att < n) g.log(`🚪 You cut ${n - s.att} of ${n} periods today.`);
     }
     if (Math.random() < this.D.sweep) this.sweep(!!s.att);
   }
@@ -899,28 +1062,123 @@ class AcademicsManager extends Manager {
       { label: 'Write an apology letter (Charisma check)', run: () => { if (Math.random() < chance) g.log('✉️ The dean accepted your apology.'); else { g.economy.spend(D.fine); s.abs++; g.log('✉️ Letter rejected: fine plus another absence.'); } } },
       { label: 'Ignore it', run: () => { s.R.prof -= 4; s.abs++; g.log('😬 You ignored the dean. Another absence.'); } }] });
   }
-  attendClass() {
-    const s = this.s, g = this.g, E = g.stats.efficiency(), A = DATA.academics, P = this.P;
-    s.att = 1; const lt = g.time.hour > P.late;
-    if (lt) { s.R.prof -= 1; g.log('⏰ You were late to class. Small penalty.'); }
-    s.prep = clamp(s.prep + 9 * P.prep * E * (lt ? .75 : 1) * (1 + s.K.int / 150) * g.stats.trait('studyMult', 1));
-    s.K.int += .25 * E * P.prep; s.hw++;
-    if (g.time.weekday === A.quizDay) {
-      const sw = Math.floor(s.t / 168) % DATA.weeksPerSemester + 1, big = sw === A.midtermWeek || sw === A.finalsWeek;
-      const sc = this.score() - (lt ? 5 : 0);
-      s.sc.push(sc); if (big) s.sc.push(sc);
-      s.hw = 0; s.prep *= .35;
+  /* What is the bell doing at this hour? null = outside school hours. */
+  slot(h = this.g.time.hour) {
+    const s = this.s, A = DATA.school, o = h - this.late();
+    if (o < 0 || o >= A.span) return null;
+    const i = A.classOffsets.indexOf(o);
+    if (i < 0) return { type: 'break', label: A.breaks[o] };
+    const subs = A.subjects[s.co] || A.subjects['BS Accountancy'], si = (this.g.time.weekday + i) % subs.length, sub = subs[si];
+    const unit = Math.floor((Math.floor(s.t / 168) % DATA.weeksPerSemester) / 5) % 3; /* each subject runs 3 lesson units a semester */
+    return { type: 'class', i, si, subject: sub[0], skill: sub[1], topic: sub[2].split('|')[unit], last: i === A.classOffsets.length - 1 };
+  }
+  /* Each subject has its own teacher (same teaching style as this semester's faculty). */
+  teacher(sl) { const nm = DATA.profs[this.s.pf.k].names; return nm[sl.si % nm.length]; }
+  /* Your section: 8 classmates per semester. Your seatmate is always roster[0]. Close classmates become real friends (s.ppl). */
+  roster() {
+    const s = this.s, sem = this.g.time.semester;
+    if (s.clsSem !== sem || !s.cls.length) {
+      const types = Object.keys(DATA.personTypes), taken = s.ppl.map(p => p.n);
+      s.cls = DATA.classmates.filter(n => !taken.includes(n)).sort(() => Math.random() - .5).slice(0, 8).map(n => ({ n, t: pick(types), r: 0 }));
+      s.clsSem = sem;
+    }
+    return s.cls;
+  }
+  person(n) { return this.s.ppl.find(p => p.n === n) || this.s.cls.find(p => p.n === n); }
+  rel(n) { const p = this.person(n); return p ? p.r : 0; }
+  bond(n, d) {
+    const s = this.s, p = this.person(n); if (!p) return;
+    p.r = clamp(p.r + d, 0, 100);
+    if (!s.ppl.some(q => q.n === n) && p.r >= 20) { s.ppl.push({ n: p.n, t: p.t, r: p.r }); this.g.log(`🤝 ${n} (${DATA.personTypes[p.t].desc}) is now your friend!`); }
+  }
+  /* A tiny seeded classroom so the same people sit in the same seats during one period. */
+  classroom(i, teacher) {
+    const s = this.s, ros = this.roster(); let r = (Math.floor(s.t / 24) * 31 + i * 7 + 13) % 233280; const rn = () => (r = (r * 9301 + 49297) % 233280) / 233280;
+    const ic = p => DATA.personTypes[p.t].icon, mate = ros[0];
+    const others = ros.slice(1).filter(() => rn() < .9).map(p => ({ e: ic(p), n: p.n }));
+    s.ppl.filter(p => !ros.some(c => c.n === p.n) && rn() < .5).forEach(p => others.push({ e: ic(p), n: p.n }));
+    if (s.R.crush >= 10 && rn() < .9) others.unshift({ e: '💘', n: 'your crush' });
+    const fill = ['🙂', '😎', '🤓', '😴', '🧑‍🎓', '😊']; while (others.length < 6) others.push({ e: fill[Math.floor(rn() * fill.length)], n: 'a classmate' });
+    const o = others.slice(0, 6), row = a => a.map(x => x.e).join('  ');
+    const nearby = o.filter(x => x.n !== 'a classmate').slice(0, 3).map(x => x.n).join(', ');
+    return `<div style="text-align:center;font-size:24px;line-height:1.8"><div style="font-size:13px">📋 ${teacher || s.pf.n}</div>${row(o.slice(0, 4))}<br>${row([{ e: ic(mate) }, { e: '⭐' }, o[4], o[5]])}</div><div style="font-size:12px;opacity:.75;text-align:center">Seatmate: ${mate.n} ${ic(mate)} (${Math.round(this.rel(mate.n))}% close)${nearby ? ' · Nearby: ' + nearby : ''}</div>`;
+  }
+  openPeriod() {
+    const g = this.g, s = this.s, sl = this.slot(); if (!sl || sl.type !== 'class') return;
+    const mate = this.roster()[0];
+    g.ui.showModal({ text: `🔔 <b>Period ${sl.i + 1} of ${DATA.school.classOffsets.length}: ${sl.subject}</b><br>${this.teacher(sl)} · ${clock(g.time.hour)}<br>📖 Lesson: ${sl.topic}<br>${this.classroom(sl.i, this.teacher(sl))}<br>How do you spend this class?`,
+      options: [...DATA.school.modes.map(m => ({ label: m.label.replace('{mate}', mate.n), run: () => this.attendPeriod(sl, m) })), { label: 'Never mind' }] });
+  }
+  /* The teacher calls on you. Odds of a good answer depend on how prepared you are. Dozing or whispering makes it more likely. */
+  callOut(sl) {
+    const g = this.g, s = this.s, mate = this.roster()[0], T = this.teacher(sl); s.called = 1;
+    const p = clamp(.2 + s.prep / 130 + s.K.int / 250, .1, .9);
+    g.ui.showModal({ text: `🙋 <b>${T}</b> calls on you: “${s.name}, please explain <i>${sl.topic}</i> to the class.”<br><small>(You feel ready about ${Math.round(p * 100)}%)</small>`, options: [
+      { label: 'Answer confidently', run: () => this.recite(Math.random() < p, 1) },
+      { label: 'Answer carefully with your notes (tiring)', run: () => { s.N.e -= 2; this.recite(Math.random() < Math.min(.95, p + .15), .6); } },
+      { label: `Whisper to ${mate.n} for a hint (risky)`, run: () => { this.bond(mate.n, 3); if (Math.random() < .3) { s.R.prof -= 2; g.log(`😬 ${T} caught the whispering.`); } this.recite(Math.random() < .65, .5); } },
+      { label: 'Admit you don’t know', run: () => { s.N.f -= 4; s.R.prof -= 1; s.prep = clamp(s.prep + 1); g.log(`😳 You admitted you didn’t know. ${T} explained it instead.`); } }] });
+  }
+  recite(ok, k) {
+    const s = this.s, g = this.g;
+    if (ok) { s.R.prof += 2 * k; s.prep = clamp(s.prep + 3 * k); s.K.cha += .3 * k; s.N.f += 4; g.log('🌟 You answered correctly. The class was impressed!'); }
+    else { s.N.f -= 8; s.R.prof -= 1.5; g.log('😅 Wrong answer, and a few classmates giggled.'); }
+  }
+  doHomework() {
+    const s = this.s, g = this.g, h = s.hwl.shift(); s.hw--; s.K.int += .15;
+    if (h) { if (h.k !== 'int') s.K[h.k] += .2; g.log(`📝 Finished your ${h.s} homework (${h.t}).`); }
+  }
+  /* A classmate asks to copy your homework (about once every couple of weeks). */
+  copyRequest() {
+    const g = this.g, s = this.s, n = this.roster()[0].n;
+    g.ui.showModal({ text: `📒 ${n} whispers: “Uy, pwede ba ako maki-kopya ng assignment? Please?”`, options: [
+      { label: `Let ${n} copy (risky)`, run: () => { this.bond(n, 6); if (Math.random() < .2) { s.R.prof -= 2; g.log(`😬 ${s.pf.n} noticed the copied homework. Prof relationship dropped.`); } else g.log(`🤝 ${n} copied your homework. You owe each other one now.`); } },
+      { label: `Tutor ${n} instead (tiring, good for you too)`, run: () => { s.N.e -= 4; s.prep = clamp(s.prep + 3); s.K.int += .15; this.bond(n, 5); g.log(`📚 You tutored ${n}. Teaching helped you learn too.`); } },
+      { label: 'Say no', run: () => { this.bond(n, -3); g.log(`😐 ${n} looked disappointed.`); } }] });
+  }
+  attendPeriod(sl, m) {
+    const s = this.s, g = this.g, E = g.stats.efficiency(), A = DATA.academics, P = this.P, n = DATA.school.classOffsets.length, first = !s.per.length;
+    if (first) { s.hw++; s.hwl.push({ s: sl.subject, t: sl.topic, k: sl.skill }); if (sl.i > 0) { s.R.prof -= 1; g.log('⏰ You came in late. Small penalty.'); } }
+    s.per.push(sl.i); s.att = s.per.length;
+    s.prep = clamp(s.prep + 9 * P.prep * E * (1 + s.K.int / 150) * g.stats.trait('studyMult', 1) * m.prep / n);
+    s.K.int += .25 * E * P.prep * m.prep / n; if (m.prep && sl.skill !== 'int') s.K[sl.skill] += .15 * m.prep;
+    g.effects.apply({ need: m.d, skill: m.skill, rel: m.rel });
+    if (m.bond) this.bond(this.roster()[0].n, m.bond);
+    if (m.risk) { if (Math.random() < .25) { s.R.prof -= 2; g.log(`😬 ${s.pf.n} caught you whispering in class.`); } else g.log('🤫 You whispered with your seatmate without getting caught.'); }
+    if (sl.last && g.time.weekday === A.quizDay) {
+      const sw = Math.floor(s.t / 168) % DATA.weeksPerSemester + 1, big = sw === A.midtermWeek || sw === A.finalsWeek, sc = this.score();
+      s.sc.push(sc); if (big) s.sc.push(sc); s.qd = 1;
+      s.hw = 0; s.hwl = []; s.prep *= .35;
       g.log(`📝 ${big ? (sw === A.midtermWeek ? 'MIDTERM' : 'FINALS') : 'Quiz'}: ${Math.round(sc)}%`);
-    } else if (Math.random() < P.pop) {
+    } else if (first && g.time.weekday !== A.quizDay && Math.random() < P.pop) {
       const sc = this.score(P.popMod); s.sc.push(sc); s.prep *= .7;
       g.log(`📝 POP QUIZ: ${Math.round(sc)}%`);
       g.ui.showModal({ text: `📝 POP QUIZ! ${s.pf.n} hands out a surprise quiz. You scored <b>${Math.round(sc)}%</b>.`, options: [{ label: sc >= 75 ? 'Nice!' : 'Ouch' }] });
-    } else g.log('📚 You attended class.');
+    }
+    const callP = Math.min(.9, (m.call || 0) * ({ chill: .4, fair: 1, terror: 1.8, mentor: 1 }[s.pf.k] || 1));
+    if (!s.called && Math.random() < callP) this.callOut(sl);
+    else if (first && g.time.weekday < 4 && s.hw > 0 && Math.random() < .12) this.copyRequest();
+    g.time.tick();
   }
-  study(base) {
+  openBreak() {
+    const g = this.g, s = this.s, sl = this.slot(); if (!sl || sl.type !== 'break') return;
+    const lunch = sl.label === 'Lunch', c = g.economy.dc(lunch ? 60 : 30), o = [];
+    const add = (label, fx, cost = 0, after) => { if (s.m >= cost) o.push({ label, run: () => { g.effects.apply({ ...fx, spend: cost }); if (after) after(); s.brk.push(g.time.hour); g.log(`🍎 ${sl.label}: ${label.replace(/\s*\(.*\)$/, '')}`); g.time.tick(); } }); };
+    if (lunch) add(`🍱 Canteen lunch with friends (${fmt(c)})`, { need: { h: 45, s: 8, f: 4 } }, c);
+    else add(`🍢 Snack at the canteen (${fmt(c)})`, { need: { h: 18, s: 5, f: 2 } }, c);
+    add('🤝 Hang out with classmates', { need: { s: 14, f: 6 } });
+    const ros = this.roster(); [ros[0], ros[1 + (s.t % 24) % (ros.length - 1)]].forEach(p => add(`${DATA.personTypes[p.t].icon} Hang out with ${p.n} (${Math.round(this.rel(p.n))}% close)`, { need: { s: 14, f: 6 } }, 0, () => { this.bond(p.n, 6); if (this.rel(p.n) >= 40) g.effects.apply(DATA.personTypes[p.t].bonus); }));
+    if (s.R.crush >= 10) add('💘 Sit with your crush', { need: { s: 8, f: 6 }, rel: { crush: 4 } });
+    if (lunch) add(`📖 Eat fast and review notes (${fmt(c)})`, { need: { h: 45, s: 3 }, prep: 4, skill: { int: .1 } }, c);
+    else add('📖 Review notes with a seatmate', { need: { s: 5 }, prep: 4, skill: { int: .1 } });
+    if (!lunch) add('⚽ Play in the quadrangle', { need: { e: -5, f: 10, s: 8 }, skill: { fit: .4 } });
+    add(lunch ? '😪 Skip lunch and nap' : '😪 Rest your head on the desk', { need: { e: lunch ? 10 : 6 } });
+    g.ui.showModal({ text: `🍎 <b>${sl.label}</b> · ${clock(g.time.hour)}<br>${this.classroom(9)}<br>The bell rang. What do you do?`, options: [...o, { label: 'Never mind' }] });
+  }
+  study(base, k = 1) {
     const s = this.s, g = this.g;
     s.prep = clamp(s.prep + base * g.stats.efficiency() * (1 + s.K.int / 150) * g.stats.studyMult() * this.P.study);
-    s.K.int += .3;
+    s.K.int += .3 * k;
   }
   askProf() {
     const s = this.s, P = this.P;
@@ -944,7 +1202,7 @@ class AcademicsManager extends Manager {
     if (gp <= 2) s.warns = 0;
     else if (gp !== 5 && gp >= D.warn && ++s.warns >= 2) { s.fails++; s.warns = 0; g.log(`🚨 ${s.dn.n}: two warnings on record. It counts as a failure.`); }
     else if (gp !== 5 && gp >= D.warn) g.log(`⚠️ ${s.dn.n} issued a warning (${s.warns} of 2).`);
-    s.sc = []; s.abs = 0; s.prep = 20; s.hw = 0;
+    s.sc = []; s.abs = 0; s.prep = 20; s.hw = 0; s.hwl = [];
     this.dismissCheck();
     if (!s.over && n >= DATA.totalSemesters) { const t = s.thesis; s.over = 'You graduated, ' + s.name + '!' + (t && !t.fail ? (t.q >= 85 ? ' With thesis honors!' : ' Thesis defended.') : '') + ' 🎓 Thanks for all the late nights and hard work.'; }
     if (!s.over) { this.rollFaculty(); g.bus.emit('semester:start'); }
@@ -1195,6 +1453,7 @@ class CareerManager extends Manager {
     g.maint.wearMany(J.wear);
     const nr = DATA.ranks.filter(r => s.xp >= r.xp).length - 1;
     if (nr > s.rk) { s.rk = nr; g.log('🎉 Promoted to ' + DATA.ranks[nr].name + '!'); }
+    g.mini.start('shift', null, { pay: p });
   }
   openJobMenu() {
     const s = this.s, g = this.g;
@@ -1320,6 +1579,7 @@ class PhoneManager extends Manager {
     else if (k === 'live') {
       if (!g.has('laptop')) return g.ui.toast('You need a working laptop to livestream.');
       g.time.tick(); g.time.tick();
+      const ch = m.ch;
       const v = Math.round((ch.subs + 5) * rnd(.5, 1.5) * (1 + s.K.cha / 60)), dn = ch.subs >= 50 ? Math.round(v * rnd(2, 6)) : 0;
       ch.subs += Math.round(v / 8); s.m += dn; ch.earn += dn; s.N.e -= 12; s.N.f += 6; s.K.cha += .3; g.maint.wearMany({ laptop: 1 });
       g.log(`🔴 Livestream: ${v} viewers${dn ? ', +' + fmt(dn) + ' in donations' : ''}`); this.act(`🔴 Live: ${v} viewers`);
@@ -1448,7 +1708,7 @@ class HobbySystem extends Manager {
   meetDay(l, d) { const m = DATA.gunpla.meets[l]; return d % 7 === m.w && Math.floor(d / 7) % m.k === m.o; }
   meetNow(l, d, h) { const m = DATA.gunpla.meets[l]; return this.meetDay(l, d) && this.s.wx !== 'ty' && h >= m.h[0] && h < m.h[1]; }
   announceMeets(c) {
-    const locs = this.g.world.locations();
+    const locs = this.g.world.locations(true);
     for (const l in DATA.gunpla.meets) {
       const m = DATA.gunpla.meets[l];
       if (this.meetDay(l, c.d) && this.s.wx !== 'ty') this.g.log(`🤖 Today: ${m.n} at ${locs[l][1]}, ${clock(m.h[0])} to ${clock(m.h[1])}.`);
@@ -1601,6 +1861,331 @@ class HobbySystem extends Manager {
   }
 }
 
+/* Everyday activities as short mini-games. A game starts from an action (def.mg) or a work shift. Base effects are applied up front
+   (40% of skill gains), and the result adds the rest (up to 120% at a perfect score), so a skipped game (0.5) equals the old flat result
+   and reloading mid-game never loses the base reward. */
+class MiniGameSystem extends Manager {
+  constructor(g) {
+    super(g);
+    this.fsm = new StateMachine('mini', 'IDLE', { IDLE: ['ON'], ON: ['IDLE'] });
+    this.ses = null;
+  }
+  get idle() { return this.fsm.is('IDLE'); }
+  abort() { this.ses = null; this.fsm.force('IDLE'); }
+  skillOf(M) { const k = Object.keys(M.gain || {})[0]; return k ? this.s.K[k] : this.s.K.cha; }
+  start(id, def, ctx) {
+    const g = this.g, s = this.s, shift = id === 'shift', gid = shift ? DATA.jobGames[s.job] : id, M = DATA.mini[gid];
+    if (!M || !this.idle || !g.ui.fsm.is('PLAY')) return;
+    ctx = ctx || (def && def.ctx) || {};
+    const ses = { id: gid, M, shift, ctx, pay: ctx.pay || 0, round: 0, sc: 0, hist: [], msg: '', title: shift ? 'Work shift: ' + DATA.jobs[s.job].n : M.title, sk: this.skillOf(M) };
+    ses.tier = clamp(Math.floor(ses.sk / 25), 0, 3);
+    this.ses = ses;
+    if (M.type === 'meter') this.zone(ses);
+    else if (M.type === 'simon') this.phrase(ses);
+    else if (M.type === 'quiz') { ses.qs = Array.from({ length: M.n }, () => this.makeQ(M.kind, ses.tier)); ses.i = 0; ses.ok = 0; }
+    else { ses.menu = M.menus[s.job] || M.menus.fast; ses.i = 0; this.nextOrder(ses); }
+    if (!shift) {
+      for (const k in M.gain) s.K[k] += M.gain[k] * .4;
+      if (ctx.study) g.academics.study(ctx.study * .4, .4);
+    }
+    this.fsm.go('ON'); g.bus.emit('minigame:start');
+  }
+  /* ---- meter ---- */
+  zone(ses) {
+    const M = ses.M;
+    ses.w = clamp(M.w + ses.sk / 500, .08, .4); ses.sp = M.sp + ses.round * .07;
+    ses.c = M.move ? rnd(ses.w / 2 + .05, .95 - ses.w / 2) : .5; ses.t0 = performance.now();
+  }
+  cursor(now) { const m = this.ses; return Math.abs(((now - m.t0) * m.sp / 1000) % 2 - 1); }
+  /* ---- simon ---- */
+  phrase(ses) {
+    const n = ses.M.len + ses.round + Math.min(2, Math.floor(ses.sk / 30));
+    ses.seq = Array.from({ length: n }, () => Math.floor(Math.random() * 4));
+    ses.phase = 'show'; ses.t0 = performance.now(); ses.pos = 0; ses.mis = 0; ses.cur = -1;
+  }
+  tone(ses, i) { const f = this.g.fx; if (f && ses.M.tones) f.tone(ses.M.tones[i], .3, 'triangle', .14); }
+  update(now) {
+    const ses = this.ses;
+    if (!ses || ses.M.type !== 'simon' || ses.phase !== 'show') return;
+    const el = now - ses.t0 - 300, idx = el < 0 ? -1 : Math.floor(el / 650), cur = idx >= 0 && idx < ses.seq.length && el % 650 < 480 ? ses.seq[idx] : -1;
+    if (cur !== ses.cur) { ses.cur = cur; if (cur >= 0) this.tone(ses, cur); }
+    if (idx >= ses.seq.length) { ses.phase = 'input'; ses.cur = -1; ses.pos = 0; }
+  }
+  /* ---- order ---- */
+  nextOrder(ses) {
+    const n = ses.menu.length, units = 2 + Math.floor(Math.random() * (1 + Math.min(2, ses.tier))), w = ses.menu.map(() => 0);
+    for (let u = 0; u < units; u++) w[Math.floor(Math.random() * n)]++;
+    ses.want = w; ses.cur = ses.menu.map(() => 0);
+  }
+  /* ---- questions ---- */
+  mc(ans, near, f = String) {
+    const set = [...new Set(near.filter(x => x !== ans && x >= 0))];
+    for (let d = 1; set.length < 3; d++) if (!set.includes(ans + d)) set.push(ans + d);
+    const o = shuffle([ans, ...shuffle(set).slice(0, 3)]);
+    return { opts: o.map(f), a: o.indexOf(ans) };
+  }
+  txt(q, right, wrong) { const o = shuffle([right, ...wrong]); return { q, opts: o, a: o.indexOf(right) }; }
+  makeQ(kind, tier) {
+    const R = (a, b) => Math.floor(rnd(a, b + 1));
+    if (kind === 'subject') kind = pick(DATA.courseKinds[this.s.co] || ['math', 'logic']);
+    let q, ans, near, f, code;
+    if (kind === 'logic' || kind === 'color' || kind === 'call') { const e = pick(DATA.qbank[kind]); return this.txt(e[0], e[1], e.slice(2)); }
+    switch (kind) {
+      case 'seq': {
+        const t = R(0, tier ? 2 : 1), a = R(1, 9), d = R(2, 6); let sq;
+        if (t === 0) { sq = [0, 1, 2, 3].map(i => a + d * i); ans = a + 4 * d; }
+        else if (t === 1) { const r = R(2, 3); sq = [0, 1, 2, 3].map(i => a * r ** i); ans = a * r ** 4; }
+        else { sq = [1, 2, 3, 4].map(i => i * i + a); ans = 25 + a; }
+        q = 'Which number comes next? ' + sq.join(', ') + ', ?'; near = [ans + 1, ans - 1, ans + d, ans - d, ans + 2]; break;
+      }
+      case 'code': {
+        const t = R(0, 2 + (tier ? 2 : 0));
+        if (t === 0) { const a = R(1, 9), b = R(2, 5), c = R(2, 6); code = `x = ${a}\nfor i in 1..${b}:\n  x = x + ${c}\nprint(x)`; ans = a + b * c; }
+        else if (t === 1) { const a = R(2, 20), b = R(2, 20); code = `a = ${a}\nb = ${b}\nif a > b:\n  print(a - b)\nelse:\n  print(b - a)`; ans = Math.abs(a - b); }
+        else if (t === 2) { const l = [R(1, 9), R(1, 9), R(1, 9)]; code = `nums = [${l}]\nprint(nums[1] + nums[2])`; ans = l[1] + l[2]; }
+        else if (t === 3) { const w = pick(['jeepney', 'barkada', 'laptop', 'sinigang', 'typhoon']), k = R(2, 4); code = `s = "${w}"\nprint(len(s) * ${k})`; ans = w.length * k; }
+        else { const l = Array.from({ length: 5 }, () => R(1, 12)); code = `total = 0\nfor n in [${l}]:\n  if n % 2 == 0:\n    total += n\nprint(total)`; ans = l.filter(n => n % 2 === 0).reduce((x, y) => x + y, 0); }
+        q = 'What does this program print?'; near = [ans + 1, ans - 1, ans + 2, ans - 2, ans + 5, ans * 2]; break;
+      }
+      case 'change': {
+        const tot = R(8, 76 + tier * 30) * 5, pay = [100, 200, 500, 1000].find(x => x >= tot) || 2000;
+        q = `Total ${fmt(tot)}. The customer pays ${fmt(pay)}. How much change?`; ans = pay - tot; near = [ans + 5, ans - 5, ans + 10, ans - 10, ans + 20, ans - 20]; f = fmt; break;
+      }
+      case 'route': {
+        const t = shuffle([...Array(14).keys()].map(x => x + 5)).slice(0, 3), legs = t.map(v => { const a = R(1, v - 1); return [a, v - a]; });
+        const L = 'ABC';
+        return { q: 'Which delivery route is the shortest?', code: legs.map((l, i) => `Route ${L[i]}: ${l[0]} km + ${l[1]} km`).join('\n'), opts: ['Route A', 'Route B', 'Route C'], a: t.indexOf(Math.min(...t)) };
+      }
+      case 'price': {
+        const n = R(3, 8 + tier * 3), buy = R(4, 20) * 5, sell = buy + R(2, 8) * 5, pr = sell - buy;
+        q = `You buy ${n} items at ${fmt(buy)} each and resell them at ${fmt(sell)} each. Total profit?`; ans = n * pr; near = [ans + pr, ans - pr, n * sell, ans + 50, Math.abs(ans - 50)]; f = fmt; break;
+      }
+      default: { /* math */
+        const m = R(0, tier ? 2 : 1), a = R(4 + tier * 4, 16 + tier * 10), b = R(2, 8 + tier * 3);
+        if (m === 0) { q = `${a} + ${b} = ?`; ans = a + b; }
+        else if (m === 1) { const x = R(20, 60 + tier * 30), y = R(5, x - 3); q = `${x} − ${y} = ?`; ans = x - y; }
+        else { const c = R(3, 9 + tier), d = R(3, 9 + tier); q = `${c} × ${d} = ?`; ans = c * d; }
+        near = [ans + 1, ans - 1, ans + 10, ans - 10, ans + 2, ans - 2];
+      }
+    }
+    return { q, code, ...this.mc(ans, near, f) };
+  }
+  /* ---- input ---- */
+  input(c) {
+    const ses = this.ses;
+    if (!ses || !this.fsm.is('ON')) return null;
+    if (c.v === 'skip') { this.finish(.5); return { done: true }; }
+    return this['in_' + ses.M.type](ses, c.v);
+  }
+  in_meter(ses) {
+    const M = ses.M, f = this.g.fx, d = Math.abs(this.cursor(performance.now()) - ses.c), sc = d <= ses.w / 2 ? 1 : Math.max(0, 1 - (d - ses.w / 2) / .15);
+    ses.hist.push(sc); ses.sc += sc;
+    const msg = sc >= 1 ? (d <= ses.w / 6 ? '✨ Perfect! ' : '') + M.good : sc > .5 ? M.ok : M.bad;
+    if (f) { if (sc >= 1) f.perfect(); else if (sc < .5) f.miss(); else f.pop(); }
+    ses.round++;
+    if (ses.round >= M.n) { this.finish(ses.sc / M.n); return { done: true }; }
+    this.zone(ses); ses.msg = msg; return { done: false, msg };
+  }
+  in_simon(ses, v) {
+    const M = ses.M, f = this.g.fx;
+    if (ses.phase !== 'input') return { done: false, msg: 'Wait for the phrase to finish…' };
+    const sym = +v; this.tone(ses, sym);
+    if (sym === ses.seq[ses.pos]) {
+      ses.pos++;
+      if (ses.pos < ses.seq.length) return { done: false, msg: '' };
+      ses.sc += Math.max(0, 1 - ses.mis * .34); ses.round++;
+      if (f) f.perfect();
+      if (ses.round >= M.rounds) { this.finish(ses.sc / M.rounds); return { done: true }; }
+      this.phrase(ses); ses.msg = '🎶 Nice! Next phrase…'; return { done: false, msg: ses.msg };
+    }
+    ses.mis++; if (f) f.miss();
+    if (ses.mis >= 3) {
+      ses.round++;
+      if (ses.round >= M.rounds) { this.finish(ses.sc / M.rounds); return { done: true }; }
+      this.phrase(ses); ses.msg = '😵 Lost the rhythm. New phrase…'; return { done: false, msg: ses.msg };
+    }
+    return { done: false, msg: '❌ Wrong one. Try that note again.' };
+  }
+  in_quiz(ses, v) {
+    const q = ses.qs[ses.i], ok = +v === q.a, f = this.g.fx;
+    if (ok) { ses.ok++; if (f) f.perfect(); } else if (f) f.miss();
+    const msg = ok ? '✅ Correct!' : '❌ It was: ' + q.opts[q.a];
+    ses.i++;
+    if (ses.i >= ses.M.n) { this.finish(ses.ok / ses.M.n); return { done: true }; }
+    ses.msg = msg; return { done: false, msg };
+  }
+  in_order(ses, v) {
+    if (v === 'clear') { ses.cur = ses.menu.map(() => 0); return { done: false, msg: '' }; }
+    if (v !== 'serve') { const i = +v; if (ses.cur[i] < 6) ses.cur[i]++; return { done: false, msg: '' }; }
+    const diff = ses.want.reduce((a, w, i) => a + Math.abs(w - ses.cur[i]), 0), sc = diff === 0 ? 1 : diff === 1 ? .5 : 0, f = this.g.fx;
+    ses.sc += sc; ses.i++;
+    if (f) { if (sc >= 1) f.perfect(); else f.miss(); }
+    if (ses.i >= ses.M.n) { this.finish(ses.sc / ses.M.n); return { done: true }; }
+    this.nextOrder(ses); ses.msg = sc >= 1 ? '✅ Order correct!' : sc > 0 ? '😅 Off by one item.' : '❌ Wrong order.';
+    return { done: false, msg: ses.msg };
+  }
+  /* ---- result ---- */
+  finish(q) {
+    const ses = this.ses, g = this.g, s = this.s, M = ses.M;
+    q = clamp(q, 0, 1); this.ses = null; this.fsm.go('IDLE');
+    const tag = q >= .85 ? 'Excellent' : q >= .6 ? 'Good' : q >= .35 ? 'Okay' : 'Rough', pct = Math.round(q * 100);
+    if (ses.shift) {
+      const extra = Math.round(ses.pay * (.4 * q - .2));
+      s.m = Math.max(0, s.m + extra); s.xp += Math.round(4 * q); if (q >= .8) s.rj = Math.min(100, s.rj + 2);
+      g.log(`${M.icon} ${tag} work (${pct}%): ${extra >= 0 ? '+' + fmt(extra) + ' in tips and bonus' : '-' + fmt(-extra) + ' for mistakes'}.`);
+    } else {
+      for (const k in M.gain) s.K[k] += M.gain[k] * 1.2 * q;
+      if (ses.ctx.study) g.academics.study(ses.ctx.study * 1.2 * q, 1.2 * q);
+      s.N.f += Math.round((q - .5) * (M.fun ?? 10));
+      if (M.food) s.N.h += Math.round((q - .5) * M.food);
+      g.log(`${M.icon} ${M.title}: ${tag} (${pct}%).`);
+    }
+    if (g.fx) { if (q >= .85) g.fx.fanfare(); else if (q < .35) g.fx.miss(); else g.fx.ding(); }
+    g.bus.emit('minigame:end');
+  }
+}
+
+/* Travel: every trip is a choice of ride. Local hops stay inside your current city; trips between cities use jeepneys, tricycles,
+   motorcycle taxis, your bike, the rail lines (with transfers) or the EDSA Carousel. Rides cost money and minutes, change your needs,
+   and carry their own risks. Service hours and weather decide what is running. */
+class TravelManager extends Manager {
+  at() { return this.g.world.at(); }
+  km(a, b) {
+    const A = DATA.geo[a], B = DATA.geo[b], R = Math.PI / 180, dl = (B[0] - A[0]) * R, dn = (B[1] - A[1]) * R;
+    const h = Math.sin(dl / 2) ** 2 + Math.cos(A[0] * R) * Math.cos(B[0] * R) * Math.sin(dn / 2) ** 2;
+    return Math.max(1, Math.round(2 * 6371 * Math.asin(Math.sqrt(h)) * DATA.transit.road * 10) / 10);
+  }
+  rush() { const t = this.g.time, h = t.hour; return t.weekday < 5 && ((h >= 6 && h < 9) || (h >= 17 && h < 20)); }
+  fm(m) { return m >= 60 ? `${Math.floor(m / 60)}h${m % 60 ? ' ' + String(m % 60).padStart(2, '0') + 'm' : ''}` : `${m} min`; }
+  /* Fastest path over the given lines between any station in `from` and any station in `to` (Dijkstra in minutes, with transfers) */
+  route(ids, from, to) {
+    const T = DATA.transit, N = {}, L = id => T.lines[id];
+    ids.forEach(id => L(id).stops.forEach(([n, c, km]) => { N[id + ':' + n] = { id, n, c, km, e: [], d: Infinity, p: null, done: false }; }));
+    ids.forEach(id => {
+      const st = L(id).stops;
+      for (let i = 0; i < st.length - 1; i++) {
+        const a = N[id + ':' + st[i][0]], b = N[id + ':' + st[i + 1][0]], m = (b.km - a.km) / L(id).speed * 60;
+        a.e.push([b, m, 0]); b.e.push([a, m, 0]);
+      }
+    });
+    T.xfer.forEach(([x, y]) => {
+      if (N[x] && N[y]) { N[x].e.push([N[y], T.walk + L(N[y].id).wait, 1]); N[y].e.push([N[x], T.walk + L(N[x].id).wait, 1]); }
+    });
+    const q = [];
+    Object.values(N).forEach(n => { if (n.c === from) { n.d = T.walk + L(n.id).wait; q.push(n); } });
+    while (q.length) {
+      q.sort((a, b) => a.d - b.d);
+      const u = q.shift(); if (u.done) continue; u.done = true;
+      u.e.forEach(([v, w, x]) => { if (u.d + w < v.d) { v.d = u.d + w; v.p = [u, x]; q.push(v); } });
+    }
+    let best = null;
+    Object.values(N).forEach(n => { if (n.c === to && n.d < Infinity && (!best || n.d < best.d)) best = n; });
+    if (!best) return null;
+    const legs = []; let n = best;
+    while (n.p) {
+      const [u, x] = n.p;
+      if (!x) {
+        const lg = legs[0];
+        if (lg && lg.id === n.id && lg.open) { lg.from = u.n; lg.km += Math.abs(n.km - u.km); }
+        else legs.unshift({ id: n.id, from: u.n, to: n.n, km: Math.abs(n.km - u.km), open: true });
+      } else if (legs[0]) legs[0].open = false;
+      n = u;
+    }
+    const fare = legs.reduce((a, l) => a + Math.round(L(l.id).fare[0] + L(l.id).fare[1] * l.km), 0);
+    return { mins: Math.round(best.d + T.walk), legs, fare };
+  }
+  /* Every way to get from city `from` to city `to` right now (same city = a local hop) */
+  quotes(from, to) {
+    const g = this.g, s = this.s, T = DATA.transit, rain = s.wx === 'rain', ty = s.wx === 'ty', h = g.time.hour, rush = this.rush();
+    const away = from !== s.city, local = from === to, cha = s.K.cha, km = local ? T.localKm : this.km(from, to), out = [];
+    const add = (id, o) => out.push({ id, ...T.modes[id], km, pk: 0, ...o });
+    const hrs = m => m / 60;
+    if (local) {
+      const m = Math.round(km / 4.5 * 60 * (rain ? 1.1 : 1));
+      add('walk', { mins: m, fare: 0, eff: { e: -4, y: rain ? -10 : -4, f: 1 }, why: ty ? 'Too dangerous in a typhoon' : 0, sick: rain ? .1 : 0 });
+    }
+    if (g.has('bike') && km <= 12) {
+      const m = Math.round(km / 13 * 60 * (rain ? 1.1 : 1));
+      add('bike', { mins: m, fare: 0, eff: { e: -(1.5 + km * 1.6), y: rain ? -10 : -3, f: 2 }, fit: .1 * km, why: ty ? 'Too dangerous in a typhoon' : 0, sick: rain ? .12 : 0 });
+    }
+    {
+      let m = Math.round((local ? 8 : 10) + km / 14 * 60 * (rain ? 1.3 : 1)), f = local ? 13 : Math.round(13 + 1.9 * Math.max(0, km - 4));
+      if (ty) { m = Math.round(m * 1.6); f *= 2; }
+      add('jeep', { mins: m, fare: f, eff: { y: -(2 + hrs(m) * 2) - (rain ? 3 : 0), e: -1.5 * hrs(m) - 1, f: -hrs(m) }, pk: local ? .02 : .03, why: h < 4 || h >= 22 ? 'Jeepneys rarely run at night' : 0 });
+    }
+    if (km <= T.trikeMax) {
+      const m = Math.round(5 + km / 18 * 60), f = Math.round((35 + 7 * km) * (rain ? 1.2 : 1) * (away && cha < 30 ? 1.3 : 1) * (1 - clamp(cha, 0, 60) / 300));
+      add('trike', { mins: m, fare: f, eff: { f: 1 }, why: ty ? 'Not running in a typhoon' : h < 5 || h >= 23 ? 'Tricycles are off the road' : 0 });
+    }
+    if (km <= 40) {
+      const m = Math.round(3 + km / 32 * 60), f = Math.round((50 + 12 * km) * (rain ? 1.4 : 1) * (h >= 21 || h < 5 ? 1.3 : 1));
+      add('mc', { mins: m, fare: f, eff: { y: -4, f: 4, e: -1 }, crash: rain ? .05 : .02, why: ty ? 'Riders will not go out in a typhoon' : 0 });
+    }
+    if (!local) {
+      const r = this.route(['lrt1', 'lrt2', 'mrt3'], from, to);
+      if (r) add('rail', { mins: r.mins + (rain ? 6 : 0), fare: r.fare, legs: r.legs, eff: rush ? { e: -6, y: -6, f: -3 } : { e: -1, y: -1 }, pk: rush ? .06 : .03,
+        delay: r.legs.reduce((a, l) => a + DATA.transit.lines[l.id].fail, 0), delayMin: 60, delayMsg: 'A train broke down and you waited for the next one. +1 hour.',
+        why: ty ? 'Rail is suspended in the typhoon' : h < 5 || h >= 22 ? 'Trains run 5 AM to 10 PM' : 0 });
+      const b = this.route(['edsa'], from, to);
+      if (b) add('edsa', { mins: Math.round((b.mins + (rush ? 7 : h < 5 ? 22 : 0)) * (rain ? 1.12 : 1)), fare: b.fare, legs: b.legs, eff: rush ? { e: -8, y: -6, f: -3 } : { e: 1, y: -1 },
+        delay: .08, delayMin: 30, delayMsg: 'EDSA traffic crawled. +30 minutes.', pk: rush ? .04 : .01, why: ty ? 'The Carousel is suspended in the typhoon' : 0 });
+    }
+    return out;
+  }
+  label(q, tag) {
+    const L = DATA.transit.lines, route = q.legs ? '<br><small>' + q.legs.map(l => `${L[l.id].icon} ${L[l.id].name}: ${l.from} → ${l.to}`).join(' ➜ ') + '</small>' : '';
+    return `<b>${q.icon} ${q.name}</b>${tag ? ' ' + tag : ''} · ${q.fare ? fmt(q.fare) : 'free'} · ${this.fm(q.mins)}${q.why ? ' 🔒 ' + q.why : ''}${route}<br><small>👍 ${q.up}<br>👎 ${q.down}</small>`;
+  }
+  rides(from, to, loc, back) {
+    const g = this.g, qs = this.quotes(from, to), ok = qs.filter(q => !q.why);
+    const fast = ok.length ? ok.reduce((a, q) => q.mins < a.mins ? q : a) : null, cheap = ok.length ? ok.reduce((a, q) => q.fare < a.fare ? q : a) : null;
+    const sorted = [...ok.sort((a, b) => a.mins - b.mins), ...qs.filter(q => q.why)];
+    const options = sorted.map(q => ({ label: this.label(q, [q === fast ? '⚡' : '', q === cheap ? '💰' : ''].join('')), run: () => this.ride(q, to, loc) }));
+    options.push({ label: 'Back', run: back });
+    const rn = this.rush() ? ' <small>(rush hour)</small>' : '', wx = DATA.weather.label[this.s.wx || 'sun'];
+    return { text: `${from === to ? 'Pick a ride' : `Heading to <b>${to}</b> (~${this.km(from, to)} km)`}. ${wx}${rn}<br><small>⚡ fastest · 💰 cheapest. Prices here are quoted for right now.</small>`, options };
+  }
+  openLocal(k) {
+    const g = this.g, at = this.at(), loc = g.world.locations()[k];
+    const spec = this.rides(at, at, k, () => {});
+    spec.text = `Going to <b>${loc[0]} ${loc[1]}</b>. ` + spec.text.replace(/^Pick a ride\. /, '');
+    g.ui.showModal(spec);
+  }
+  openCities() {
+    const g = this.g, s = this.s, at = this.at(), vis = s.vis || [], L = DATA.transit.lines;
+    const has = c => Object.entries(L).filter(([, l]) => l.stops.some(x => x[1] === c)).map(([k]) => L[k].icon).join('');
+    const list = Object.keys(DATA.cities).filter(c => c !== at).sort((a, b) => this.km(at, a) - this.km(at, b));
+    const options = list.map(c => ({ label: `${c === s.city ? '🏠' : '🏙️'} <b>${c}</b> · ${this.km(at, c)} km ${has(c)}${vis.includes(c) ? '' : ' ✨ new'}`, run: () => this.openRides(c) }));
+    options.push({ label: 'Never mind' });
+    g.ui.showModal({ text: `Where to? You are in <b>${at}</b>.<br><small>Home, school and work only exist in ${s.city}. Time away means missed classes and shifts. ✨ = first visit. Icons show which lines serve the city.</small>`, options });
+  }
+  openRides(to) {
+    const g = this.g, s = this.s, at = this.at();
+    g.ui.showModal(this.rides(at, to, to === s.city ? 'home' : 'mall', () => this.openCities()));
+  }
+  ride(q, to, loc) {
+    const g = this.g, s = this.s, R = s.rode = s.rode || {};
+    if (q.why) return g.ui.toast(q.why);
+    if (s.m < q.fare) return g.ui.toast('Not enough money for the fare!');
+    s.m -= q.fare;
+    let mins = q.mins; const notes = [];
+    g.stats.applyNeedDeltas(q.eff || {});
+    if (q.fit) s.K.fit += q.fit;
+    if (Math.random() < q.pk) { const n = Math.min(s.m, Math.round(rnd(80, 250))); if (n > 0) { s.m -= n; notes.push(`👜 A pickpocket lifted ${fmt(n)}.`); } }
+    if (q.delay && Math.random() < q.delay) { mins += q.delayMin; notes.push('⚠️ ' + q.delayMsg); }
+    if (q.crash && Math.random() < q.crash) { s.sick = Math.max(s.sick, 2); s.N.e -= 15; const n = Math.min(s.m, 300); s.m -= n; notes.push(`🏍️ Wipeout! Scraped up and ${fmt(n)} for the clinic. You feel sick.`); mins += 20; }
+    if (q.sick && Math.random() < q.sick) { s.sick = Math.max(s.sick, 3); notes.push('🌧️ You got soaked and caught a cold.'); }
+    (q.legs ? q.legs.map(l => l.id) : [q.id]).forEach(k => { R[k] = (R[k] || 0) + 1; });
+    g.log(`${q.icon} ${q.name} to ${to === this.at() ? DATA.locations[loc].name(s, to === s.city ? g.world.city : DATA.cities[to]) : to}: ${this.fm(mins)}, ${q.fare ? fmt(q.fare) : 'free'}.`);
+    notes.forEach(n => g.log(n));
+    g.time.advance(mins);
+    const was = this.at();
+    s.at = to; s.loc = loc;
+    if (!(s.vis || (s.vis = [s.city])).includes(to)) { s.vis.push(to); s.N.f += 20; s.K.cha += .4; g.log(`🗺️ First time in ${to}! Explore its mall and park.`); }
+    else if (was !== to) g.log(`📍 You arrived in ${to}.`);
+  }
+}
+
 class EventManager extends Manager {
   constructor(g) {
     super(g);
@@ -1629,16 +2214,18 @@ class ActionRegistry {
   build() {
     const g = this.g, s = g.state, locs = g.world.locations(), out = [];
     const make = (def, loc) => ({
-      key: `${def.id}@${loc}`, loc, sleep: !!def.sleep,
+      key: `${def.id}@${loc}`, loc, sleep: !!def.sleep, mg: !!def.mg || def.id === 'shift',
       name: val(def.name, g), h: val(def.h, g), c: val(def.c, g) || 0, d: val(def.d, g) || {},
       ok: def.ok ? () => def.ok(g) : null,
-      run: () => { if (def.fx) g.effects.apply(def.fx); if (def.run) def.run(g, loc); }
+      run: () => { if (def.fx) g.effects.apply(def.fx); if (def.run) def.run(g, loc); if (def.mg) g.mini.start(def.mg, def); }
     });
     Object.keys(locs).forEach(k => {
-      if (k === s.loc) return;
-      out.push({ key: 'go@' + k, loc: 'go', name: 'Go to ' + locs[k][1], h: 1, c: g.world.travelCost(), d: {}, sleep: false, ok: null, run: () => { s.loc = k; } });
+      if (k === s.loc || !g.world.avail(k)) return;
+      out.push({ key: 'go@' + k, loc: 'go', go: true, name: 'Go to ' + locs[k][1], h: 0, c: 0, d: {}, sleep: false, ok: null, run: () => g.travel.openLocal(k) });
     });
+    out.push({ key: 'trip@go', loc: 'go', go: true, name: '🗺️ Travel to another city', h: 0, c: 0, d: {}, sleep: false, ok: null, run: () => g.travel.openCities() });
     DATA.actions.forEach(def => (Array.isArray(def.loc) ? def.loc : [def.loc]).forEach(l => out.push(make(def, l))));
+    (DATA.spots[g.world.at()] || []).forEach((p, i) => out.push(make({ id: 'spot' + i, name: p.n, h: p.h, c: p.c, d: p.d, fx: p.sk ? { skill: p.sk } : null }, p.loc)));
     const st = g.hobby.currentStage();
     if (st) {
       out.push({
@@ -1649,7 +2236,7 @@ class ActionRegistry {
     const dd = g.time.dayIndex, h = g.time.hour;
     ['mall', 'school', 'court'].forEach(l => {
       const m = DATA.gunpla.meets[l];
-      if (g.hobby.meetNow(l, dd, h)) {
+      if (g.world.atHome() && g.hobby.meetNow(l, dd, h)) {
         out.push({
           key: 'meet@' + l, loc: l, sleep: false, name: '🤖 Join: ' + m.n, h: 3, c: m.fee, d: { s: 15, f: 20 },
           ok: () => s.mj[l + ':' + dd] ? 'You already joined this meet' : h > m.h[1] - 3 ? 'The meet is closing soon' : 0,
@@ -1709,6 +2296,8 @@ class GameEngine {
     this.social = new SocialManager(this);
     this.shop = new ShopSystem(this);
     this.hobby = new HobbySystem(this);
+    this.mini = new MiniGameSystem(this);
+    this.travel = new TravelManager(this);
     this.events = new EventManager(this);
     this.actions = new ActionRegistry(this);
     this.phone = new PhoneManager(this);
@@ -1737,7 +2326,7 @@ class GameEngine {
   commit() {
     if (!this.state) return;
     this.stats.normalize();
-    if (this.state.over && !this.ui.fsm.is('GAMEOVER')) { this.hobby.abort(); this.ui.fsm.go('GAMEOVER'); }
+    if (this.state.over && !this.ui.fsm.is('GAMEOVER')) { this.hobby.abort(); this.mini.abort(); this.ui.fsm.go('GAMEOVER'); }
     this.bus.emit('saved', this.storage.save(this.state));
     this.bus.emit('render');
   }
@@ -1748,13 +2337,13 @@ class GameEngine {
     const J = DATA.jobs[f.job], K = { ...DATA.start.skills };
     for (const k in DATA.courses[f.course]) K[k] += DATA.courses[f.course][k];
     if (J.req && J.req.skill && K[J.req.skill] < J.req.min) return this.ui.toast('Your course skills are too low for that job');
-    this.hobby.abort(); this.ui.reset();
+    this.hobby.abort(); this.mini.abort(); this.ui.reset();
     this.state = GameState.create(f);
     this.log('Your student life begins in ' + this.state.city + '! 🎒');
     this.commit();
   }
   resetGame() {
-    this.hobby.abort(); this.ui.reset(); this.state = null; this.storage.clear(); this.bus.emit('render');
+    this.hobby.abort(); this.mini.abort(); this.ui.reset(); this.state = null; this.storage.clear(); this.bus.emit('render');
   }
   runAction(key) {
     const s = this.state;
@@ -1769,7 +2358,7 @@ class GameEngine {
     const eBefore = s.N.e;
     a.run();
     this.maint.onAction(a.key);
-    if (a.sleep) { const n = this.time.sleepHours(); for (let i = 0; i < n; i++) this.time.tick(true); }
+    if (a.sleep) { s.tm = 0; const n = this.time.sleepHours(); for (let i = 0; i < n; i++) this.time.tick(true); }
     else for (let i = 0; i < a.h; i++) this.time.tick();
     this.stats.applyNeedDeltas(a.d);
     if (!a.sleep && s.N.e > 0 && s.N.e < 20 && eBefore >= 20) this.ui.toast('😮‍💨 Energy is low. Go home and sleep before you pass out!');
@@ -1794,6 +2383,7 @@ class GameEngine {
       case 'hang': if (this.ui.fsm.is('PLAY')) { this.social.hang(c.i); this.commit(); } return;
       case 'strike': { const r = this.hobby.strike(); if (r && r.done) this.commit(); return r; }
       case 'tap': return this.hobby.tap(c.part);
+      case 'mg': { const r = this.mini.input(c); if (r && r.done) this.commit(); return r; }
       case 'asm-finish': this.hobby.finishAssembly(); return this.commit();
     }
   }
@@ -1832,6 +2422,7 @@ class Renderer {
       if (r && r.ok) this.refreshAssembly();
       else { t.style.outline = '2px solid var(--bad)'; setTimeout(() => { t.style.outline = ''; }, 300); }
     }
+    else if (D.g === 'mg') { const r = g.dispatch({ type: 'mg', v: D.v }); if (r && !r.done) this.refreshMini(r); }
     else if (t.id === 'go') g.dispatch({ type: 'start', form: this.readForm() });
     else if (t.id === 'nw') { if ((g.state && g.state.over) || confirm('Restart the game?')) g.dispatch({ type: 'reset' }); }
   }
@@ -1940,39 +2531,66 @@ class Renderer {
     else cc[k] = +a;
     this.$('#ccw').innerHTML = this.ccInner();
   }
-  charSvg(l, head) { return `<svg viewBox="${head ? '20 2 60 62' : '0 0 100 170'}" xmlns="http://www.w3.org/2000/svg">${this.charInner(l)}</svg>`; }
+  /* Pixel-art people: faceless, flat-colour sprites on a 20x34 grid (1 cell = 5 units), drawn from the same look data as before. */
+  charSvg(l, head) { return `<svg viewBox="${head ? '22 -3 56 56' : '0 0 100 170'}" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">${this.charInner(l)}</svg>`; }
   charInner(l) {
-    const C = DATA.chr, P = C.pal, sk = P.skin[l.skin], sd = hexMix(sk, '#000', .16), hc = P.hairc[l.hairc], ec = P.eyec[l.eyec], tc = P.topc[l.topc], bc = P.botc[l.botc], shc = P.shoe[l.shoe];
-    const top = C.opt.top[l.top], bot = C.opt.bot[l.bot], hs = C.opt.hair[l.hair], fc = C.opt.face[l.face], ac = l.acc || [], has = n => ac.includes(C.opt.acc.indexOf(n));
-    const st = 'stroke="#1a1420" stroke-opacity=".55" stroke-width="1" stroke-linejoin="round"', Mr = g => `<g transform="translate(100 0) scale(-1 1)">${g}</g>`, S = g => g + Mr(g), bw = [.9, 1, 1.12][l.build ?? 1];
-    const sl = { 'T-shirt': .45, Hoodie: 1, Polo: .45, Uniform: .45, Jacket: 1, 'Tank top': 0 }[top], tcol = top === 'Uniform' ? '#f4f4f8' : tc, sleeve = t => t > 0 ? `<path d="M31 70 L${31 - 9 * t} ${70 + 36 * t} L${38 - 8 * t} ${74 + 34 * t} L38 74Z" fill="${tcol}" ${st}/>` : '';
-    let back = '', front = '';
-    if (hs === 'Long') { back = `<path d="M25 40 Q21 86 29 110 L71 110 Q79 86 75 40Z" fill="${hc}" ${st}/>`; front = `M28 40 Q27 14 50 14 Q73 14 72 40 Q62 26 50 30 Q38 26 28 40Z`; }
-    else if (hs === 'Bob') { back = `<path d="M25 40 Q22 66 30 70 L70 70 Q78 66 75 40Z" fill="${hc}" ${st}/>`; front = `M28 40 Q27 14 50 14 Q73 14 72 40 Q62 26 50 30 Q38 26 28 40Z`; }
-    else if (hs === 'Ponytail') { back = `<path d="M68 24 Q94 30 88 74 Q80 56 66 38Z" fill="${hc}" ${st}/>`; front = `M28 40 Q27 14 50 14 Q73 14 72 40 Q66 28 50 28 Q42 28 38 34 Q32 32 28 40Z`; }
-    else if (hs === 'Curly') { back = `<circle cx="50" cy="31" r="28" fill="${hc}" ${st}/>`; front = `M28 38 Q30 16 50 16 Q70 16 72 38 Q62 27 50 29 Q38 27 28 38Z`; }
-    else if (hs === 'Bun') { back = `<circle cx="50" cy="9" r="9" fill="${hc}" ${st}/>`; front = `M28 40 Q27 14 50 14 Q73 14 72 40 Q66 28 50 28 Q42 28 38 34 Q32 32 28 40Z`; }
-    else if (hs === 'Spiky') front = `M27 40 L30 18 L38 26 L44 8 L52 24 L60 8 L64 26 L72 18 L73 40 Q64 28 50 28 Q36 28 27 40Z`;
-    else if (hs === 'Buzz cut') front = `M29 38 Q29 18 50 18 Q71 18 71 38 Q62 30 50 30 Q38 30 29 38Z`;
-    else front = `M28 40 Q27 14 50 14 Q73 14 72 40 Q66 28 50 28 Q42 28 38 34 Q32 32 28 40Z`;
-    const legs = S(`<path d="M31 112 L48 112 L47 152 L33 152Z" fill="${sk}" ${st}/>`) + (bot === 'Shorts' ? S(`<path d="M30 110 L48 110 L48 130 L29 130Z" fill="${bc}" ${st}/>`) : bot === 'Skirt' ? `<path d="M29 108 L71 108 L78 134 L22 134Z" fill="${bc}" ${st}/><path d="M24 130 h52" stroke="#0003"/>` : S(`<path d="M30 110 L48 110 L47 152 L32 152Z" fill="${bc}" ${st}/>` + (bot === 'Joggers' ? `<path d="M32 145 L47 145 L47 152 L32 152Z" fill="${hexMix(bc, '#000', .3)}"/>` : bot === 'Jeans' ? '<path d="M39 112 v38" stroke="#fff3" stroke-dasharray="2 2"/>' : '<path d="M39 112 v38" stroke="#0004"/>')));
-    const shoes = S(l.shoe === 3 ? `<path d="M26 158 L50 158 L50 162 L25 162Z" fill="${shc}"/><path d="M34 152 L40 158 M46 152 L40 158" stroke="${shc}" stroke-width="2"/>` : `<path d="M30 152 L48 152 L50 162 L26 162 Q26 156 30 152Z" fill="${shc}" ${st}/><path d="M26 160 h24" stroke="#0004"/>`);
-    let t = `<path d="M33 68 Q50 62 67 68 L70 112 L30 112Z" fill="${tcol}" ${st}/>`;
-    if (top === 'Jacket') t += `<path d="M42 64 L58 64 L57 112 L43 112Z" fill="#f4f4f8" ${st}/><path d="M50 64 v48" stroke="#0005"/>`;
-    if (top === 'Hoodie') t += `<path d="M36 62 Q50 80 64 62 L68 70 Q50 88 32 70Z" fill="${hexMix(tc, '#000', .2)}" ${st}/><path d="M37 98 L63 98 L65 110 L35 110Z" fill="none" ${st}/><path d="M45 76 v10 M55 76 v10" stroke="#fff8" stroke-width="1.4"/>`;
-    if (top === 'Polo') t += `<path d="M40 63 L50 74 L44 76Z M60 63 L50 74 L56 76Z" fill="${hexMix(tc, '#fff', .55)}" ${st}/><path d="M50 74 v14" stroke="#0005"/>`;
-    if (top === 'Uniform') t += `<path d="M40 63 L50 74 L44 76Z M60 63 L50 74 L56 76Z" fill="#fff" ${st}/><path d="M48 72 L52 72 L53 92 L50 96 L47 92Z" fill="${tc}" ${st}/>`;
-    if (top === 'Tank top') t += `<path d="M40 64 Q50 80 60 64Z" fill="${sk}"/>`;
-    const body = S(`<path d="M31 70 L22 106 L30 108 L38 74Z" fill="${sk}" ${st}/>`) + legs + shoes + t + S(sleeve(sl)) + S(`<circle cx="26" cy="111" r="4.6" fill="${sk}" ${st}/>`) + (has('ID lanyard') ? `<path d="M42 64 L50 98 L58 64" stroke="#d6403a" stroke-width="2" fill="none"/><rect x="45" y="96" width="10" height="13" rx="1.5" fill="#fff" ${st}/><rect x="47" y="98" width="6" height="5" fill="#2457d6"/>` : '');
-    const eyes = `<ellipse cx="42" cy="44" rx="3.2" ry="4.2" fill="${ec}"/><circle cx="43" cy="42.6" r="1.2" fill="#fff"/>` + (fc === 'Wink' ? `<path d="M54 44 Q58 40.5 62 44" stroke="#2a1a14" stroke-width="1.7" fill="none"/>` : `<ellipse cx="58" cy="44" rx="3.2" ry="4.2" fill="${ec}"/><circle cx="59" cy="42.6" r="1.2" fill="#fff"/>`);
-    const mouth = fc === 'Grin' ? `<path d="M43 52 Q50 63 57 52Z" fill="#fff" stroke="#7a2a2a" stroke-width="1.2"/>` : fc === 'Calm' ? `<path d="M46 55 H54" stroke="#7a2a2a" stroke-width="1.6"/>` : `<path d="M44 54 Q50 60 56 54" stroke="#7a2a2a" stroke-width="1.7" fill="none"/>`;
-    let hd = `<rect x="44" y="60" width="12" height="10" fill="${sd}"/>` + S(`<circle cx="29" cy="45" r="4.2" fill="${sk}" ${st}/>`) + `<ellipse cx="50" cy="42" rx="21" ry="22" fill="${sk}" ${st}/><circle cx="37" cy="50" r="4" fill="#ff7a8a" opacity=".3"/><circle cx="63" cy="50" r="4" fill="#ff7a8a" opacity=".3"/>${eyes}<path d="M37 37 Q42 ${fc === 'Calm' ? 37 : 34} 47 37 M53 37 Q58 ${fc === 'Calm' ? 37 : 34} 63 37" stroke="${hc}" stroke-width="1.8" fill="none"/><path d="M50 47 q2.4 3 0 4.4" stroke="${sd}" stroke-width="1.3" fill="none"/>${mouth}<path d="${front}" fill="${hc}" ${st}/>`;
-    if (has('Headband')) hd += `<path d="M29 29 Q50 19 71 29" stroke="${tc}" stroke-width="4.5" fill="none"/>`;
-    if (has('Cap')) hd += `<path d="M28 34 Q50 2 72 34Z" fill="${tc}" ${st}/><path d="M28 33 Q50 40 74 33 L72 29 Q50 34 30 29Z" fill="${hexMix(tc, '#000', .25)}" ${st}/>`;
-    if (has('Headphones')) hd += `<path d="M26 46 Q26 10 50 10 Q74 10 74 46" stroke="#222733" stroke-width="4" fill="none"/><rect x="21" y="38" width="8" height="16" rx="3" fill="#2f3a54" ${st}/><rect x="71" y="38" width="8" height="16" rx="3" fill="#2f3a54" ${st}/>`;
-    if (has('Glasses')) hd += `<circle cx="42" cy="44" r="6.5" fill="#bfe8ff" fill-opacity=".25" stroke="#222733" stroke-width="1.6"/><circle cx="58" cy="44" r="6.5" fill="#bfe8ff" fill-opacity=".25" stroke="#222733" stroke-width="1.6"/><path d="M48.5 44 h3 M35.5 43 L30 41 M64.5 43 L70 41" stroke="#222733" stroke-width="1.5"/>`;
-    if (has('Earrings')) hd += S(`<circle cx="28.5" cy="52" r="2.2" fill="#e8b630" ${st}/>`);
-    return `<ellipse cx="50" cy="164" rx="30" ry="4" fill="#000" opacity=".25"/>${back}<g transform="translate(50 0) scale(${bw} 1) translate(-50 0)">${body}</g>${hd}`;
+    const C = DATA.chr, P = C.pal, W = 20, H = 34, U = 5, buf = new Array(W * H).fill(null);
+    const put = (c, r, col) => { if (col && c >= 0 && c < W && r >= 0 && r < H) buf[r * W + c] = col; };
+    const box = (c0, r0, c1, r1, col) => { for (let r = r0; r <= r1; r++) for (let c = c0; c <= c1; c++) put(c, r, col); };
+    const sk = P.skin[l.skin], sd = hexMix(sk, '#000000', .14), hc = P.hairc[l.hairc], tc = P.topc[l.topc], bc = P.botc[l.botc], shc = P.shoe[l.shoe];
+    const top = C.opt.top[l.top], bot = C.opt.bot[l.bot], hs = C.opt.hair[l.hair], ac = l.acc || [], has = n => ac.includes(C.opt.acc.indexOf(n));
+    const b = l.build ?? 1, tl = [7, 6, 5][b], tr = 19 - tl, al = tl - 1, ar = tr + 1, lw = [2, 3, 4][b];
+    const dk = (c, t) => hexMix(c, '#000000', t), lt = (c, t) => hexMix(c, '#ffffff', t);
+    const tcol = top === 'Uniform' ? '#f4f4f8' : tc, sleeve = { 'T-shirt': 3, Hoodie: 9, Polo: 3, Uniform: 3, Jacket: 9, 'Tank top': 0 }[top];
+    /* legs, then shoes */
+    box(tl, 20, tl + lw - 1, 29, sk); box(tr - lw + 1, 20, tr, 29, sk);
+    const lL = [tl, tl + lw - 1], rL = [tr - lw + 1, tr];
+    if (bot === 'Shorts') { box(lL[0], 20, lL[1], 23, bc); box(rL[0], 20, rL[1], 23, bc); }
+    else if (bot === 'Skirt') { box(tl, 19, tr, 20, bc); box(tl - 1, 21, tr + 1, 24, bc); box(tl - 1, 24, tr + 1, 24, dk(bc, .2)); }
+    else { box(lL[0], 20, lL[1], 29, bc); box(rL[0], 20, rL[1], 29, bc); if (bot === 'Joggers') { box(lL[0], 28, lL[1], 29, dk(bc, .3)); box(rL[0], 28, rL[1], 29, dk(bc, .3)); } }
+    if (bot !== 'Skirt') box(rL[1], 20, rL[1], bot === 'Shorts' ? 23 : 29, dk(bot === 'Shorts' ? bc : bc, .12));
+    const sole = l.shoe === 3 ? shc : dk(shc, .3);
+    if (l.shoe === 3) { box(lL[0], 30, lL[1], 30, sk); box(rL[0], 30, rL[1], 30, sk); put(lL[0] + 1, 30, shc); put(rL[1] - 1, 30, shc); box(lL[0] - 1, 31, lL[1], 31, shc); box(rL[0], 31, rL[1] + 1, 31, shc); }
+    else { box(lL[0], 30, lL[1], 30, shc); box(rL[0], 30, rL[1], 30, shc); box(lL[0] - 1, 31, lL[1], 31, sole); box(rL[0], 31, rL[1] + 1, 31, sole); }
+    /* torso, arms */
+    put(9, 9, sd); put(10, 9, sd);
+    box(al, 10, al, 20, sk); box(ar, 10, ar, 20, sk);
+    if (sleeve) { box(al, 10, al, 9 + sleeve, tcol); box(ar, 10, ar, 9 + sleeve, tcol); if (sleeve > 3) { put(al, 19, dk(tcol, .2)); put(ar, 19, dk(tcol, .2)); } }
+    box(tl, 10, tr, 19, tcol); box(tr, 10, tr, 19, dk(tcol, .1));
+    if (top === 'Hoodie') { put(8, 9, dk(tc, .2)); put(11, 9, dk(tc, .2)); box(8, 10, 11, 10, dk(tc, .2)); box(8, 11, 8, 13, '#f4f4f8'); box(11, 11, 11, 13, '#f4f4f8'); box(tl + 1, 16, tr - 1, 18, dk(tc, .15)); box(tl, 19, tr, 19, dk(tc, .2)); }
+    else if (top === 'Jacket') { const iw = b === 0 ? [9, 10] : [8, 11]; box(iw[0], 10, iw[1], 19, '#f4f4f8'); box(al, 19, al, 19, dk(tc, .25)); box(ar, 19, ar, 19, dk(tc, .25)); }
+    else if (top === 'Polo') { put(8, 10, lt(tc, .55)); put(11, 10, lt(tc, .55)); put(9, 10, sk); put(10, 10, sk); put(9, 11, dk(tc, .25)); put(10, 11, dk(tc, .25)); }
+    else if (top === 'Uniform') { put(8, 10, '#d4d8e2'); put(11, 10, '#d4d8e2'); put(9, 10, sk); put(10, 10, sk); box(9, 11, 10, 16, tc); box(9, 10, 10, 10, dk(tc, .25)); }
+    else if (top === 'T-shirt') { put(9, 10, sk); put(10, 10, sk); }
+    else if (top === 'Tank top') { box(tl, 10, tr, 10, sk); put(tl + 1, 10, tc); put(tr - 1, 10, tc); box(9, 11, 10, 11, sk); box(al, 10, al, 20, sk); box(ar, 10, ar, 20, sk); }
+    if (bot !== 'Skirt') box(tl, 19, tr, 19, bot === 'Slacks' ? '#1c1c22' : dk(bc, .35));
+    if (has('ID lanyard')) { box(9, 11, 9, 14, '#d6403a'); box(10, 11, 10, 14, '#d6403a'); box(9, 15, 10, 16, '#fff'); put(10, 16, '#2457d6'); }
+    /* head and hair (faceless) */
+    box(7, 1, 12, 8, sk); put(12, 8, sd);
+    const H1 = c => box(8, 1, 11, 1, c), H2 = c => box(7, 2, 12, 2, c);
+    if (hs === 'Spiky') { put(8, 0, hc); put(11, 0, hc); H1(hc); H2(hc); put(7, 3, hc); put(12, 3, hc); }
+    else if (hs === 'Buzz cut') { const bz = hexMix(hc, sk, .35); H1(bz); H2(bz); }
+    else if (hs === 'Curly') { box(8, 0, 11, 0, hc); box(6, 1, 13, 2, hc); box(6, 3, 6, 5, hc); box(13, 3, 13, 5, hc); put(7, 3, hc); put(12, 3, hc); }
+    else {
+      H1(hc); H2(hc); box(7, 3, 8, 3, hc); put(12, 3, hc);
+      if (hs === 'Long' || hs === 'Bob') { box(6, 2, 6, hs === 'Bob' ? 8 : 9, hc); box(13, 2, 13, hs === 'Bob' ? 8 : 9, hc); box(7, 3, 7, hs === 'Bob' ? 7 : 8, hc); box(12, 3, 12, hs === 'Bob' ? 7 : 8, hc); if (hs === 'Long') { const sw = b === 0 ? 1 : 2; box(tl, 10, tl + sw - 1, 14, hc); box(tr - sw + 1, 10, tr, 14, hc); } }
+      if (hs === 'Ponytail') { put(13, 2, hc); put(13, 3, hc); box(14, 3, 14, 8, hc); put(14, 9, dk(hc, .2)); }
+      if (hs === 'Bun') box(9, 0, 10, 0, hc);
+    }
+    /* accessories */
+    if (has('Earrings')) { put(6, 6, '#e8b630'); put(13, 6, '#e8b630'); }
+    if (has('Headband')) box(7, 2, 12, 2, tc);
+    if (has('Cap')) { box(8, 0, 11, 0, tc); box(7, 1, 12, 2, tc); box(6, 3, 13, 3, dk(tc, .25)); }
+    if (has('Headphones')) { box(8, 0, 11, 0, '#222733'); put(7, 1, '#222733'); put(12, 1, '#222733'); put(6, 2, '#222733'); put(13, 2, '#222733'); box(6, 3, 6, 6, '#2f3a54'); box(13, 3, 13, 6, '#2f3a54'); }
+    if (has('Glasses')) { box(7, 5, 12, 5, '#222733'); put(8, 5, '#bfe8ff'); put(11, 5, '#bfe8ff'); }
+    /* emit: merge horizontal runs, slight overlap so scaled sprites keep no hairline gaps */
+    let o = `<rect x="${(tl - 1) * U}" y="${32 * U}" width="${(tr - tl + 3) * U}" height="${U}" fill="#000" opacity=".18"/>`;
+    for (let r = 0; r < H; r++) for (let c = 0; c < W;) {
+      const col = buf[r * W + c]; if (!col) { c++; continue; }
+      let e = c + 1; while (e < W && buf[r * W + e] === col) e++;
+      o += `<rect x="${c * U}" y="${r * U}" width="${(e - c) * U + .3}" height="${U + .3}" fill="${col}"/>`; c = e;
+    }
+    return o;
   }
   /* The real Gunpla cut-and-line stage: a runner with gates and a hit zone */
   track(m, p) {
@@ -2005,6 +2623,57 @@ class Renderer {
     if (has('plant')) o += `<path d="M130 100 L146 100 L143 114 L133 114Z" fill="#b5653a" ${ln}/><path d="M138 100 q-14 -14 -8 -28 q8 10 8 28 q10 -16 18 -22 q0 16 -18 22 q-2 -18 4 -30" fill="#4aa866" ${ln}/>`;
     o += `<g transform="translate(114 52) scale(.43)">${this.charInner(s.look)}</g>`;
     return o + `</svg>`;
+  }
+  /* ---- everyday mini-games ---- */
+  miniShell() {
+    const ses = this.g.mini.ses, M = ses.M;
+    return `<div class="ov" role="dialog" aria-modal="true"><div class="cd"><h3>${M.icon} ${this.esc(ses.title)}</h3><small>${this.esc(M.text)}</small><div id="mga"></div><div id="mgc"></div><small id="mgm"></small><button data-g="mg" data-v="skip">⏭️ Skip (average result)</button></div></div>`;
+  }
+  refreshMini(r) {
+    const m = this.g.mini.ses; if (!m) return;
+    const a = this.$('#mga'), c = this.$('#mgc'), t = this.$('#mgm');
+    if (a) a.innerHTML = this.mgDisplay(performance.now());
+    if (c) c.innerHTML = this.mgControls();
+    if (t) t.textContent = (r && r.msg) || m.msg || '';
+  }
+  mgDisplay(now) {
+    const g = this.g, m = g.mini.ses; if (!m) return '';
+    const M = m.M, e = t => this.esc(t);
+    if (M.type === 'meter') {
+      const cur = g.mini.cursor(now), dots = m.hist.map(v => v >= 1 ? '🟢' : v > .5 ? '🟡' : '🔴').join('') + '⚪'.repeat(Math.max(0, M.n - m.hist.length));
+      return `<div style="margin:6px 0">Attempt ${Math.min(m.round + 1, M.n)} of ${M.n} &nbsp; ${dots}</div><div style="position:relative;height:36px;background:var(--bg);border:1px solid var(--ln);border-radius:8px;margin:10px 0"><div style="position:absolute;top:0;bottom:0;left:${(m.c - m.w / 2) * 100}%;width:${m.w * 100}%;background:rgba(61,220,132,.3);border:1px solid #3ddc84;border-radius:4px"></div><div style="position:absolute;top:-4px;bottom:-4px;left:calc(${cur * 100}% - 2px);width:4px;background:#ffd24a;border-radius:2px"></div></div>`;
+    }
+    if (M.type === 'simon') {
+      const show = m.phase === 'show';
+      return `<div style="margin:6px 0">Phrase ${Math.min(m.round + 1, M.rounds)} of ${M.rounds}${m.mis ? ' · mistakes ' + m.mis : ''}</div><div class="big" style="text-align:center;font-size:44px;height:64px;color:${m.cur >= 0 ? DATA.simonColors[m.cur] : 'var(--mu)'}">${show ? (m.cur >= 0 ? M.syms[m.cur] : '·') : '🎶'}</div><div style="text-align:center"><small>${show ? 'Watch and listen…' : `Your turn: note ${m.pos + 1} of ${m.seq.length}`}</small></div>`;
+    }
+    if (M.type === 'quiz') {
+      const q = m.qs[m.i];
+      return `<small>Question ${m.i + 1} of ${M.n}</small><div class="big" style="margin:8px 0">${e(q.q)}</div>${q.code ? `<div class="mdl">${e(q.code)}</div>` : ''}`;
+    }
+    const want = m.menu.map((n, i) => m.want[i] ? `${m.want[i]}× ${n}` : '').filter(Boolean).join(', ');
+    return `<small>Customer ${m.i + 1} of ${M.n}</small><div class="big" style="margin:8px 0">🗣️ ${e(want)}</div>`;
+  }
+  mgControls() {
+    const m = this.g.mini.ses; if (!m) return '';
+    const M = m.M, e = t => this.esc(t);
+    if (M.type === 'meter') return `<button data-g="mg" data-v="hit" style="background:var(--ac);color:#fff;font-weight:700">${M.btn}</button>`;
+    if (M.type === 'simon') return `<div class="gr" style="grid-template-columns:repeat(4,1fr)">${M.syms.map((s, i) => `<button data-g="mg" data-v="${i}" style="background:${DATA.simonColors[i]};color:#fff;font-size:20px;font-weight:700">${s}</button>`).join('')}</div>`;
+    if (M.type === 'quiz') return m.qs[m.i].opts.map((o, i) => `<button data-g="mg" data-v="${i}">${e(o)}</button>`).join('');
+    return `<div class="gr">${m.menu.map((n, i) => `<button data-g="mg" data-v="${i}">${e(n)}${m.cur[i] ? ' ×' + m.cur[i] : ''}</button>`).join('')}</div><div class="gr"><button data-g="mg" data-v="serve" style="background:var(--ok);color:#fff">✅ Serve</button><button data-g="mg" data-v="clear">↺ Clear</button></div>`;
+  }
+  mloop() {
+    cancelAnimationFrame(this.raf);
+    const step = () => {
+      const g = this.g, m = g.mini;
+      if (!m.ses || !g.ui.fsm.is('MINIGAME')) return;
+      if (m.ses.M.type === 'meter' || m.ses.M.type === 'simon') {
+        const t = performance.now(); m.update(t);
+        const el = this.$('#mga'); if (el) el.innerHTML = this.mgDisplay(t);
+      }
+      this.raf = requestAnimationFrame(step);
+    };
+    this.raf = requestAnimationFrame(step);
   }
   refreshAssembly() {
     const e = this.$('#am'), h = this.g.hobby, m = h.session;
@@ -2051,8 +2720,11 @@ class Renderer {
     this.fillCity();
   }
   objectives() {
-    const g = this.g, s = g.state, h = g.time.hour, w = g.time.weekday, ob = [], locs = g.world.locations();
-    if (w < 5 && s.wx !== 'ty') { const late = g.academics.late(); ob.push(s.att ? '✅ Class done' : h <= late ? '🎒 Be at school by ' + clock(late) : h <= late + 3 ? `⏰ Late! Attend by ${clock(late + 3)} or be marked absent` : '❌ Absent today'); }
+    const g = this.g, s = g.state, h = g.time.hour, w = g.time.weekday, ob = [], locs = g.world.locations(true);
+    if (w < 5 && s.wx !== 'ty') {
+      const A = g.academics, late = A.late(), sl = A.slot(), n = DATA.school.classOffsets.length;
+      ob.push(h < late ? '🎒 Be at school by ' + clock(late) : sl ? (sl.type === 'class' ? `🔔 Period ${sl.i + 1}: ${sl.subject}${s.per.includes(sl.i) ? ' ✅' : ''}` : `🍎 ${sl.label} time`) + ` (${s.att}/${n} periods)` : s.att ? `✅ School done (${s.att}/${n} periods)` : '❌ Absent today');
+    }
     if (s.kit) ob.push(`🤖 Building: ${DATA.gunpla.kits[s.kit.k].name}`);
     for (const l of ['mall', 'school', 'court']) if (g.hobby.meetDay(l, g.time.dayIndex) && s.wx !== 'ty') ob.push(`🤖 ${DATA.gunpla.meets[l].n} at ${locs[l][1]}, ${clock(DATA.gunpla.meets[l].h[0])} to ${clock(DATA.gunpla.meets[l].h[1])}`);
     if (s.job && s.wx !== 'ty') { const W = g.career.window(w), q = ` (this week ${s.wkSh || 0}/${DATA.shift.weeklyQuota})`; ob.push(s.sh ? '✅ Shift done' + q : `💼 ${W.hours}h shift, start ${clock(W.startHour)} to ${clock(W.lastStartHour)}` + q); }
@@ -2062,9 +2734,9 @@ class Renderer {
     const g = this.g, s = g.state, ui = g.ui, T = s.tr, h = g.time.hour, w = g.time.weekday, wk = g.time.week, sn = g.time.semester;
     const tw = (DATA.economy.tuitionEveryWeeks - wk % DATA.economy.tuitionEveryWeeks) % DATA.economy.tuitionEveryWeeks, locs = g.world.locations(), tab = ui.tab;
     let x = `<div class="cd"><div class="rw"><div>${this.av(g.phone.me.av, s.name, g.phone.me.col, 30)} <b class="t">${s.name}</b><br><small>${s.co} at ${s.sch}, ${s.bg}, ${s.city}</small></div><div class="mn">${fmt(s.m)}</div></div>
- <div class="rw" style="margin-top:6px"><b>${h >= 6 && h < 17 ? '☀️' : h < 19 && h >= 17 ? '🌇' : '🌙'} ${DATA.days[w].slice(0, 3)}, ${g.time.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}, ${clock(h)}</b><small>Week ${wk}, semester ${sn} of ${DATA.totalSemesters}</small></div>
+ <div class="rw" style="margin-top:6px"><b>${h >= 6 && h < 17 ? '☀️' : h < 19 && h >= 17 ? '🌇' : '🌙'} ${DATA.days[w].slice(0, 3)}, ${g.time.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}, ${clock(h).replace(':00', ':' + String(s.tm || 0).padStart(2, '0'))}</b><small>Week ${wk}, semester ${sn} of ${DATA.totalSemesters}</small></div>
  <div class="nd">${Object.entries(DATA.needs).map(([k, [e, n]]) => `<div title="${n}">${e} <b>${Math.round(s.N[k])}</b>${this.bar(s.N[k])}</div>`).join('')}</div>
- <div class="ch">${this.objectives().map(o => `<span>${o}</span>`).join('')}<span>📍 ${locs[s.loc][1]}</span><span>${DATA.weather.label[s.wx || 'sun']}</span><span>📌 Homework: ${s.hw}</span><span>${DATA.profs[s.pf.k].icon} ${s.pf.n}</span>${s.pj.length ? `<span>📂 Projects: ${s.pj.length}</span>` : ''}<span>⚙️ Efficiency ${Math.round(g.stats.efficiency() * 100)}%</span>${s.sick ? '<span>🤒 Sick</span>' : ''}${g.maint.needsAttention() ? '<span>🔧 Gear needs service</span>' : ''}${g.market.status().phase !== 'steady' ? `<span>${g.market.status().text}</span>` : ''}</div></div>
+ <div class="ch">${this.objectives().map(o => `<span>${o}</span>`).join('')}<span>📍 ${locs[s.loc][1]}${g.world.atHome() ? '' : ' (' + g.world.at() + ')'}</span><span>${DATA.weather.label[s.wx || 'sun']}</span><span>📌 Homework: ${s.hw}${s.hwl.length ? ' · ' + [...new Set(s.hwl.map(x => x.s))].slice(0, 2).join(', ') + (s.hwl.length > 2 ? '…' : '') : ''}</span><span>${DATA.profs[s.pf.k].icon} ${s.pf.n}</span>${s.pj.length ? `<span>📂 Projects: ${s.pj.length}</span>` : ''}<span>⚙️ Efficiency ${Math.round(g.stats.efficiency() * 100)}%</span>${s.sick ? '<span>🤒 Sick</span>' : ''}${g.maint.needsAttention() ? '<span>🔧 Gear needs service</span>' : ''}${g.market.status().phase !== 'steady' ? `<span>${g.market.status().text}</span>` : ''}</div></div>
  <div class="tb" role="navigation" aria-label="Game sections">${[['do', '🎮 Do'], ['me', '🧍 Life'], ['mo', '💰 Money'], ['ph', '📱 Phone' + (s.ph.some(x => !x.r) ? ` <span class="bd">${s.ph.filter(x => !x.r).length}</span>` : '')]].map(([k, n]) => `<button data-tab="${k}" class="${tab === k ? 'on' : ''}">${n}</button>`).join('')}</div>`;
     if (tab === 'do') x += this.doTab(locs);
     if (tab === 'me') x += this.lifeTab(T);
@@ -2079,15 +2751,17 @@ class Renderer {
         ? `<h3>Assemble: ${DATA.gunpla.kits[s.kit.k].name}</h3><small>No rush. Pick the part named in each step.</small><div id="am"></div>`
         : `<h3>${m.stage.name}</h3><small>${m.stage.timing.text}</small><div id="rn"></div><button data-g="h" style="width:100%">${m.stage.timing.btn}</button><br><small id="rr">${m.msg || 'Part 1 of ' + m.n}</small>`}</div></div>`;
     }
+    if (ui.fsm.is('MINIGAME') && g.mini.ses) x += this.miniShell();
     this.root.innerHTML = x;
+    if (g.mini.ses && ui.fsm.is('MINIGAME')) { this.refreshMini(); this.mloop(); }
     if (m && ui.fsm.is('MINIGAME')) { if (m.type === 'asm') this.refreshAssembly(); else this.loop(); }
   }
   doTab(locs) {
     const g = this.g, s = g.state, grp = {};
     g.actions.build().forEach(a => (grp[a.loc] = grp[a.loc] || []).push(a));
-    return [s.loc, 'go'].map(k => `<div class="cd"><h3>${k === 'go' ? '🚌 Travel by jeepney (1 hour)' : '📍 You are at: ' + locs[k].join(' ')}</h3><div class="gr">${(grp[k] || []).map(a => {
+    return [s.loc, 'go'].map(k => `<div class="cd"><h3>${k === 'go' ? '🚌 Travel (choose your ride)' : '📍 You are at: ' + locs[k].join(' ')}</h3><div class="gr">${(grp[k] || []).map(a => {
       const r = a.ok && a.ok(), c = g.economy.dc(a.c);
-      return `<button class="ab${r ? ' off' : ''}" data-a="${a.key}"><b>${a.name}</b><small>${a.sleep ? g.time.sleepHours() : a.h}h${c ? ', ' + fmt(c) : ''}</small>${r ? `<em>${r}</em>` : ''}</button>`;
+      return `<button class="ab${r ? ' off' : ''}" data-a="${a.key}"><b>${a.name}</b><small>${a.go ? 'pick a ride' : (a.sleep ? g.time.sleepHours() : a.h) + 'h' + (c ? ', ' + fmt(c) : '') + (a.mg ? ' · 🎮 mini-game' : '')}</small>${r ? `<em>${r}</em>` : ''}</button>`;
     }).join('')}</div></div>`).join('');
   }
   lifeTab(T) {
@@ -2100,11 +2774,15 @@ class Renderer {
   ${items}
   <div class="cd"><h3>Skills</h3>${sk}</div>
   <div class="cd"><h3>Relationships</h3>${rl}<small>${s.buddy ? 'Study buddy: Mika (+10% studying)' : ''}</small></div>
-  ${this.profCard()}${this.projCard()}<div class="cd"><h3>Academics</h3><div>${s.sc.length ? `Average: <b>${Math.round(a)}%</b> (GPA ${g.academics.gpa(a).toFixed(2)}, 1.00 is best)` : 'No quizzes yet this semester'}</div><small>Absences: ${s.abs}. Review progress: ${Math.round(s.prep)}%. Quiz every Friday, midterm in week 8, finals in week 16. Fail twice and you are dismissed.</small>${s.hist.map(z => `<div>Semester ${z.n}: ${z.a}%, GPA ${z.g.toFixed(2)}</div>`).join('')}</div>
+  ${this.profCard()}${this.projCard()}${this.travelCard()}<div class="cd"><h3>Academics</h3><div>${s.sc.length ? `Average: <b>${Math.round(a)}%</b> (GPA ${g.academics.gpa(a).toFixed(2)}, 1.00 is best)` : 'No quizzes yet this semester'}</div><small>Absences: ${s.abs}. Review progress: ${Math.round(s.prep)}%. Quiz every Friday, midterm in week 8, finals in week 16. Fail twice and you are dismissed.</small>${s.hist.map(z => `<div>Semester ${z.n}: ${z.a}%, GPA ${z.g.toFixed(2)}</div>`).join('')}</div>
   <div class="cd"><h3>My room</h3>${this.room()}<small>${DATA.rooms[s.rm.t].name}. Furnish it from the Do tab at home (My room).</small></div>
   <div class="cd"><h3>Gunpla bench</h3>${s.kit ? `<div>Building ${DATA.gunpla.kits[s.kit.k].name}: step ${s.kit.st + 1} of ${DATA.gunpla.stages.length} (${DATA.gunpla.stages[s.kit.st].name}), quality so far ${Math.round(s.kit.q)}</div>` : '<small>No kit on the bench.</small>'}<br><small>Unbuilt kits: ${s.stash.length ? s.stash.map(k => DATA.gunpla.kits[k].name).join(', ') : 'none'}. Reputation: ${s.rep}. Meets are held at the mall, school and park on set days.</small>${s.shelf.map(k => `<div>${k.pl === 1 ? '🏆' : '🤖'} ${k.n}, quality ${k.q}, ${k.st}${this.model(k.k, DATA.gunpla.partOrder.slice(0, k.np || 6), k.st, '', 1)}</div>`).join('')}</div>
   <div class="cd"><h3>People you know</h3>${s.club ? `<small>Club: ${DATA.clubs[s.club].name}</small>` : ''}${s.ppl.length ? s.ppl.map((p, i) => `<div class="row" style="grid-template-columns:1fr 70px auto"><span>${DATA.personTypes[p.t].icon} ${p.n}</span>${this.bar(p.r)}<button data-p="${i}">Hang out</button></div>`).join('') : '<small>Nobody yet. Try "Meet new people" at school, the mall or the park.</small>'}</div>
   <div class="cd"><h3>Goals</h3>${DATA.goals.map(q => `<div>${q.test(s) ? '✅' : '⬜'} ${q.label}</div>`).join('')}</div>`;
+  }
+  travelCard() {
+    const s = this.g.state, v = s.vis || [], r = s.rode || {}, M = DATA.transit.modes;
+    return `<div class="cd"><h3>Commute log</h3><div>🗺️ Cities visited: <b>${v.length}</b> of ${Object.keys(DATA.cities).length}</div><small>${v.join(', ')}</small><div style="margin-top:6px"><small>${Object.entries(DATA.transit.lines).map(([k, L]) => `${L.icon} ${L.name}: ${r[k] || 0}`).join(' · ')}<br>${['jeep', 'trike', 'mc', 'bike', 'walk'].map(k => `${M[k].icon} ${r[k] || 0}`).join(' · ')}</small></div></div>`;
   }
   profCard() {
     const s = this.g.state, P = DATA.profs[s.pf.k], D = DATA.deans[s.dn.k];
@@ -2268,7 +2946,7 @@ class AudioFX {
   /* City ambience: traffic hum and crowd murmur follow the crowd size; birds by day, crickets at night, the odd jeepney horn */
   ambTick() {
     if (!this.mode || !this.ctx || !this.g || !this.g.state) return;
-    const s = this.g.state, h = this.g.time.hour, w = s.wx || 'sun', day = h >= 6 && h < 18, wet = w === 'rain' || w === 'ty', t = this.ctx.currentTime, lv = crowdN(h, w, s.loc === 'court' && s.city === 'Caloocan' ? 'monu' : s.loc) / 28;
+    const s = this.g.state, h = this.g.time.hour, w = s.wx || 'sun', day = h >= 6 && h < 18, wet = w === 'rain' || w === 'ty', t = this.ctx.currentTime, lv = crowdN(h, w, s.loc === 'court' && (s.at || s.city) === 'Caloocan' ? 'monu' : s.loc) / 28;
     this.hum.gain.setTargetAtTime(.02 + .02 * lv, t, 1); this.cg.gain.setTargetAtTime(.035 * lv, t, 1);
     if (day && !wet && Math.random() < (s.loc === 'court' ? .7 : .35)) { const f = 2200 + Math.random() * 1500; for (let k = 0; k < 3; k++) this.tone(f + k * 150, .07, 'sine', .035, k * .09, 500); }
     if (!day && !wet && Math.random() < .5) for (let k = 0; k < 5; k++) this.tone(4300, .03, 'sine', .015, k * .06);
@@ -2287,19 +2965,35 @@ const SKY = [[0, '#0b1030', '#1c2750'], [5, '#1a1f4a', '#e8896b'], [7, '#5aa6e8'
 /* Skyline banner: sky colours follow the game hour, clouds and rain follow the weather, a jeepney drives by */
 class Scene {
   constructor(cv, g) {
-    this.g = g; this.x = cv.getContext('2d'); const d = Math.min(2, window.devicePixelRatio || 1), R = Math.random;
-    cv.width = 640 * d; cv.height = 120 * d; this.x.scale(d, d);
+    this.g = g; this.v = cv.getContext('2d'); const d = Math.min(2, window.devicePixelRatio || 1), R = Math.random;
+    cv.width = 640 * d; cv.height = 120 * d; this.v.scale(d, d);
+    const lo = document.createElement('canvas'); lo.width = 320; lo.height = 60; this.lo = lo; const x = this.x = lo.getContext('2d'); x.scale(.5, .5); this.tq = [];
+    const fr = x.fillRect.bind(x), sn = n => Math.round(n / 2) * 2;
+    x.fillRect = (p, q, w, h) => { const l = sn(p), t = sn(q); fr(l, t, Math.max(2, sn(p + w) - l), Math.max(2, sn(q + h) - t)); };
     this.st = Array.from({ length: 40 }, () => [R() * 640, R() * 55, R()]);
     this.rn = Array.from({ length: 60 }, () => [R() * 640, R() * 120]);
     this.cl = [[70, 20, 1], [280, 12, .8], [470, 28, 1.2]];
     this.bl = [0, 1].map(l => { const a = []; for (let x = -10; x < 660;) { const w = 20 + R() * 30; a.push([x, w, 22 + R() * (l ? 36 : 52), R()]); x += w + (l ? 3 : 1); } return a; });
     this.car = 100; this.last = 0; this.fl = 0; this.tr = -300; this.tc = 500;
-    this.pp = Array.from({ length: 28 }, (_, i) => ({ x: R() * 640, v: (R() < .5 ? -1 : 1) * (6 + R() * 9), c: PAL[i % PAL.length], ph: R() * 6 }));
+    this.pp = Array.from({ length: 28 }, (_, i) => ({ x: R() * 640, v: (R() < .5 ? -1 : 1) * (6 + R() * 9), c: PAL[i % PAL.length], ph: R() * 6, sk: hex(['#fbe3cf', '#f1c9a5', '#d9a679', '#b27a4f', '#8a5a3a'][i * 3 % 5]), hc: hex(['#1b1b22', '#4a2f20', '#7b4a2a', '#d9b24a', '#a8321e'][i * 7 % 5]), pc: hex(['#2c4a7a', '#222733', '#6b7280', '#7a5a3a', '#f4f4f8'][i * 2 % 5]), f: i % 3 === 1 }));
     this.bd = Array.from({ length: 5 }, () => [R() * 640, 8 + R() * 26, 12 + R() * 10, R() * 6]);
     this.hs = Array.from({ length: 10 }, (_, i) => [i * 66 - 8, 54 + R() * 8, 28 + R() * 18, Math.floor(R() * HC.length), R() < .6 ? 1 : 0]); this.loc = null; this.fd = 0;
     this.still = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
     this.draw(0);
     if (!this.still) { const f = ts => { if (!document.hidden && ts - this.last > 33) this.draw(ts); requestAnimationFrame(f); }; requestAnimationFrame(f); }
+  }
+  disc(x, cx, cy, r) { for (let dy = -r; dy < r; dy += 2) { const m = dy + 1, hw = Math.sqrt(Math.max(0, r * r - m * m)); x.fillRect(cx - hw, cy + dy, hw * 2, 2); } }
+  roofT(x, x0, y, w, h) { const n = Math.max(1, Math.round(h / 2)); for (let i = 0; i < n; i++) { const ins = (w / 2) * (i / n); x.fillRect(x0 + ins, y - (i + 1) * 2, w - ins * 2, 2); } }
+  /* A tiny pixel person: 5x10 low-res cells, faceless, flat colours; legs alternate while walking */
+  mini(x, px, fy, p, k, ts, wet) {
+    const m = c => rgba(mixc(c, [10, 14, 30], k)), bx = Math.round(px / 2) * 2 - 4, by = Math.round(fy / 2) * 2 - 20, cell = (c, r, col) => { x.fillStyle = col; x.fillRect(bx + c * 2, by + r * 2, 2, 2); };
+    const sh = m(p.c), sk = m(p.sk), hr = m(p.hc), pn = m(p.pc), step = Math.floor(ts / 160 * Math.abs(p.v) / 8 + p.ph) % 2;
+    for (let c = 1; c <= 3; c++) { cell(c, 0, hr); cell(c, 1, sk); }
+    if (p.f) cell(0, 1, hr), cell(4, 1, hr);
+    for (let r = 2; r <= 5; r++) { for (let c = 1; c <= 3; c++) cell(c, r, sh); cell(0, r, r < 4 ? sh : sk); cell(4, r, r < 4 ? sh : sk); }
+    if (p.f) { for (let r = 6; r <= 7; r++) for (let c = 0; c <= 4; c++) cell(c, r, sh); cell(1, 8, sk); cell(3, 8, sk); cell(1, 9, m([34, 39, 51])); cell(3, 9, m([34, 39, 51])); }
+    else { const l = step ? 2 : 1, rr = step ? 2 : 3; for (let r = 6; r <= 8; r++) { cell(l, r, pn); cell(rr, r, pn); } cell(l, 9, m([34, 39, 51])); cell(rr, 9, m([34, 39, 51])); }
+    if (wet) { x.fillStyle = sh; x.fillRect(bx - 2, by - 4, 14, 2); x.fillRect(bx, by - 2, 10, 2); }
   }
   /* Location backdrops: home, school and park replace the skyline; mall and work add a landmark in front of it */
   scenery(x, loc, e) {
@@ -2308,40 +3002,40 @@ class Scene {
       x.fillStyle = rgba(mixc(e.bot, [8, 12, 28], .45)); this.bl[0].forEach(([bx, bw, bh]) => x.fillRect(bx, 108 - bh * .6, bw, bh * .6));
       this.hs.forEach(([hx, hw, hh, ci, rf]) => {
         x.fillStyle = T(HC[ci]); x.fillRect(hx, 108 - hh, hw, hh); x.fillStyle = T(rf ? '#b5503c' : '#6b7280');
-        if (rf) { x.beginPath(); x.moveTo(hx - 3, 108 - hh); x.lineTo(hx + hw / 2, 96 - hh); x.lineTo(hx + hw + 3, 108 - hh); x.fill(); } else x.fillRect(hx - 2, 105 - hh, hw + 4, 3);
+        if (rf) this.roofT(x, hx - 3, 108 - hh, hw + 6, 12); else x.fillRect(hx - 2, 105 - hh, hw + 4, 3);
         x.fillStyle = win; x.fillRect(hx + 6, 116 - hh, 9, 8); x.fillRect(hx + hw - 15, 116 - hh, 9, 8); x.fillStyle = T('#5b3a29'); x.fillRect(hx + hw / 2 - 4, 98, 8, 10);
       });
       x.fillStyle = T('#e8c34a'); x.fillRect(266, 78, 78, 30); for (let k = 0; k < 6; k++) { x.fillStyle = k % 2 ? '#fff' : T('#d6403a'); x.fillRect(262 + k * 14, 78, 14, 7); }
-      x.fillStyle = T('#7a2e22'); x.fillRect(286, 62, 40, 11); x.fillStyle = '#fff'; x.font = '700 6px system-ui,sans-serif'; x.fillText('SARI-SARI', 289, 70); x.fillStyle = win; x.fillRect(274, 90, 24, 12);
-      x.strokeStyle = 'rgba(255,255,255,.5)'; x.beginPath(); x.moveTo(70, 80); x.quadraticCurveTo(105, 90, 140, 80); x.stroke();
+      x.fillStyle = T('#7a2e22'); x.fillRect(286, 62, 40, 11); this.tq.push(['SARI-SARI', 288, 70, '800 7px system-ui,sans-serif', '#fff']); x.fillStyle = win; x.fillRect(274, 90, 24, 12);
+      x.fillStyle = 'rgba(255,255,255,.5)'; x.fillRect(70, 80, 70, 2);
       ['#e04a3a', '#2457d6', '#f2b632'].forEach((c, i) => { x.fillStyle = T(c); x.fillRect(82 + i * 14, 83 + (i === 1 ? 3 : 0), 7, 8); });
-      x.fillStyle = T('#3a3f55'); [200, 480].forEach(px => x.fillRect(px, 62, 2, 46)); x.strokeStyle = 'rgba(20,25,40,.7)'; x.beginPath(); x.moveTo(201, 64); x.quadraticCurveTo(340, 80, 481, 64); x.stroke();
+      x.fillStyle = T('#3a3f55'); [200, 480].forEach(px => x.fillRect(px, 62, 2, 46)); x.fillStyle = 'rgba(20,25,40,.7)'; for (let k = 0; k <= 14; k++) x.fillRect(201 + k * 20, 64 + Math.round(Math.sin(k / 14 * Math.PI) * 5) * 2, 2, 2);
     } else if (loc === 'school') {
       x.fillStyle = T('#d9c9a3'); x.fillRect(130, 48, 380, 60); x.fillStyle = T('#a3402f'); x.fillRect(128, 44, 384, 5);
       for (let r = 0; r < 3; r++) for (let c = 0; c < 14; c++) if (c !== 6 && c !== 7) { x.fillStyle = win; x.fillRect(138 + c * 26, 54 + r * 16, 14, 9); }
-      x.fillStyle = T('#c2b184'); x.fillRect(300, 26, 40, 22); x.fillStyle = T('#a3402f'); x.beginPath(); x.moveTo(296, 26); x.lineTo(320, 12); x.lineTo(344, 26); x.fill();
-      x.fillStyle = '#fff'; x.beginPath(); x.arc(320, 35, 6, 0, 7); x.fill(); x.strokeStyle = '#222'; x.beginPath(); const a = e.h / 12 * Math.PI * 2 - Math.PI / 2; x.moveTo(320, 35); x.lineTo(320 + Math.cos(a) * 4, 35 + Math.sin(a) * 4); x.moveTo(320, 35); x.lineTo(320, 30); x.stroke();
+      x.fillStyle = T('#c2b184'); x.fillRect(300, 26, 40, 22); x.fillStyle = T('#a3402f'); this.roofT(x, 296, 26, 48, 14);
+      x.fillStyle = '#fff'; this.disc(x, 320, 35, 6); x.fillStyle = '#222'; const a = e.h / 12 * Math.PI * 2 - Math.PI / 2; x.fillRect(319, 30, 2, 6); x.fillRect(320 + Math.round(Math.cos(a) * 4) - 1, 35 + Math.round(Math.sin(a) * 4) - 1, 2, 2);
       x.fillStyle = T('#6b5a3a'); x.fillRect(306, 88, 28, 20); x.fillStyle = win; x.fillRect(309, 91, 10, 17); x.fillRect(321, 91, 10, 17); x.fillStyle = T('#8a7a5a'); x.fillRect(300, 105, 40, 3);
       x.fillStyle = '#ccc'; x.fillRect(94, 48, 1.5, 60);
       for (let k = 0; k < 12; k++) { const wy = Math.sin(ts / 200 + k * .5) * 1.2; x.fillStyle = '#2457d6'; x.fillRect(96 + k * 1.6, 49 + wy, 1.8, 5); x.fillStyle = '#d6403a'; x.fillRect(96 + k * 1.6, 54 + wy, 1.8, 5); }
-      [50, 575, 610].forEach(tx => { x.fillStyle = T('#6b4a2e'); x.fillRect(tx - 1.5, 90, 3, 18); x.fillStyle = T('#2f8f4e'); x.beginPath(); x.arc(tx, 86, 12, 0, 7); x.arc(tx + 7, 91, 9, 0, 7); x.fill(); });
+      [50, 575, 610].forEach(tx => { x.fillStyle = T('#6b4a2e'); x.fillRect(tx - 1.5, 90, 3, 18); x.fillStyle = T('#2f8f4e'); this.disc(x, tx, 86, 12); this.disc(x, tx + 7, 91, 9); });
     } else if (loc === 'court') {
       if (e.city === 'Caloocan') return this.monumento(x, e);
-      x.fillStyle = T('#79b86a'); x.beginPath(); x.moveTo(0, 108); x.quadraticCurveTo(160, 62, 330, 90); x.quadraticCurveTo(500, 66, 640, 100); x.lineTo(640, 108); x.fill();
-      [40, 120, 220, 410, 500, 600].forEach((tx, i) => { const ty = 84 + (i % 3) * 4; x.fillStyle = T('#6b4a2e'); x.fillRect(tx - 1.5, ty, 3, 108 - ty); x.fillStyle = T('#2f8f4e'); x.beginPath(); x.arc(tx, ty - 2, 11 + (i % 2) * 3, 0, 7); x.arc(tx + 6, ty + 3, 8, 0, 7); x.fill(); });
-      x.fillStyle = T('#8a6a4a'); x.fillRect(303, 74, 3, 22); x.fillRect(354, 74, 3, 22); x.fillRect(298, 96, 64, 3); x.fillStyle = T('#b5503c'); x.beginPath(); x.moveTo(296, 74); x.lineTo(330, 58); x.lineTo(364, 74); x.fill();
-      x.globalAlpha = .7; x.fillStyle = T('#5aa6e8'); x.beginPath(); x.ellipse(480, 106, 50, 4, 0, 0, 7); x.fill(); x.globalAlpha = 1;
-      if (!e.night && !e.wet) { const kx = 200 + Math.sin(ts / 1500) * 30, ky = 24 + Math.sin(ts / 700) * 4; x.fillStyle = '#e04a3a'; x.beginPath(); x.moveTo(kx, ky - 6); x.lineTo(kx + 5, ky); x.lineTo(kx, ky + 6); x.lineTo(kx - 5, ky); x.fill(); x.strokeStyle = 'rgba(255,255,255,.5)'; x.beginPath(); x.moveTo(kx, ky + 6); x.quadraticCurveTo(kx - 20, 70, 150, 98); x.stroke(); }
+      x.fillStyle = T('#79b86a'); for (let k = 0; k < 32; k++) { const hh = 16 + 10 * Math.sin(k / 4.5) + 6 * Math.sin(k / 2); x.fillRect(k * 20, 108 - hh, 20, hh); }
+      [40, 120, 220, 410, 500, 600].forEach((tx, i) => { const ty = 84 + (i % 3) * 4; x.fillStyle = T('#6b4a2e'); x.fillRect(tx - 1.5, ty, 3, 108 - ty); x.fillStyle = T('#2f8f4e'); this.disc(x, tx, ty - 2, 11 + (i % 2) * 3); this.disc(x, tx + 6, ty + 3, 8); });
+      x.fillStyle = T('#8a6a4a'); x.fillRect(303, 74, 3, 22); x.fillRect(354, 74, 3, 22); x.fillRect(298, 96, 64, 3); x.fillStyle = T('#b5503c'); this.roofT(x, 296, 74, 68, 16);
+      x.globalAlpha = .7; x.fillStyle = T('#5aa6e8'); x.fillRect(430, 104, 100, 4); x.globalAlpha = 1;
+      if (!e.night && !e.wet) { const kx = 200 + Math.sin(ts / 1500) * 30, ky = 24 + Math.sin(ts / 700) * 4; x.fillStyle = '#e04a3a'; x.fillRect(kx - 3, ky - 3, 6, 6); x.fillStyle = 'rgba(255,255,255,.5)'; for (let q = 1; q < 6; q++) x.fillRect(kx - q * 9, ky + 6 + q * 11, 2, 2); }
     } else if (loc === 'mall') {
       x.fillStyle = T('#e7e2f2'); x.fillRect(150, 50, 340, 58); x.fillStyle = T('#3a2f6b'); x.fillRect(150, 46, 340, 6);
       for (let r = 0; r < 2; r++) for (let c = 0; c < 12; c++) { x.fillStyle = lit ? '#ffd479' : '#9ec5f0'; x.fillRect(158 + c * 27, 58 + r * 16, 18, 10); }
       x.fillStyle = T('#2a2f45'); x.fillRect(298, 84, 44, 24); x.fillStyle = lit ? '#ffe9a8' : '#bcd8f2'; x.fillRect(301, 87, 18, 21); x.fillRect(322, 87, 17, 21);
-      x.save(); x.font = '800 15px system-ui,sans-serif'; if (lit) { x.shadowColor = '#ff5a8c'; x.shadowBlur = 8; } x.fillStyle = lit ? `rgba(255,120,160,${.85 + .15 * Math.sin(ts / 300)})` : '#d6407a'; x.fillText('MALL', 298, 44); x.restore();
+      this.tq.push(['MALL', 298, 44, '800 15px system-ui,sans-serif', lit ? '#ff78a0' : '#d6407a']);
       [[170, '#2457d6'], [440, '#e0a100'], [468, '#d6403a']].forEach(([cx, c]) => { x.fillStyle = T(c); x.fillRect(cx, 99, 22, 8); x.fillRect(cx + 4, 94, 13, 6); x.fillStyle = '#111'; x.fillRect(cx + 3, 106, 4, 3); x.fillRect(cx + 15, 106, 4, 3); });
     } else if (loc === 'work') {
       [[30, 34, 92], [80, 28, 78], [500, 32, 88], [548, 38, 100]].forEach(([tx, tw, th]) => { x.fillStyle = T('#6b7a99'); x.fillRect(tx, 108 - th, tw, th); for (let wy = 112 - th; wy < 102; wy += 8) for (let wx = tx + 4; wx < tx + tw - 4; wx += 7) { x.fillStyle = lit && (Math.sin(wx * 12.9 + wy * 7.1) * 43758) % 1 > .35 ? '#ffd479' : '#8fb4e3'; x.fillRect(wx, wy, 4, 4); } });
       x.fillStyle = T('#fff3d6'); x.fillRect(200, 72, 240, 36); for (let k = 0; k < 12; k++) { x.fillStyle = k % 2 ? '#fff' : T('#d6403a'); x.fillRect(196 + k * 20, 72, 20, 8); }
-      x.fillStyle = T('#7a2e22'); x.fillRect(250, 56, 140, 14); x.fillStyle = '#fff'; x.font = '800 9px system-ui,sans-serif'; x.fillText(e.sign, 320 - e.sign.length * 2.6, 66); x.fillStyle = win; x.fillRect(214, 86, 212, 14);
+      x.fillStyle = T('#7a2e22'); x.fillRect(250, 56, 140, 14); this.tq.push([e.sign, 320 - e.sign.length * 2.6, 66, '800 9px system-ui,sans-serif', '#fff']); x.fillStyle = win; x.fillRect(214, 86, 212, 14);
     }
   }
   /* Bonifacio Monument (Monumento, Caloocan; Guillermo Tolentino, 1933): five-part obelisk topped by a winged figure,
@@ -2349,23 +3043,23 @@ class Scene {
   monumento(x, e) {
     const { lit, night, wet, ts } = e, cx = 320, B = '#3d3226', Tm = c => rgba(mixc(hex(c), [8, 12, 28], night ? .25 : lit ? .15 : wet ? .1 : 0));
     x.fillStyle = rgba(mixc(e.bot, [8, 12, 28], .45)); this.bl[0].forEach(([bx, bw, bh]) => x.fillRect(bx, 108 - bh * .6, bw, bh * .6));
-    x.fillStyle = Tm('#c9ccd6'); x.fillRect(60, 28, 110, 12); x.fillStyle = Tm('#2457d6'); x.fillRect(60, 28, 110, 3); x.fillStyle = '#fff'; x.font = '700 7px system-ui,sans-serif'; x.fillText('MONUMENTO', 82, 37);
+    x.fillStyle = Tm('#c9ccd6'); x.fillRect(60, 28, 110, 12); x.fillStyle = Tm('#2457d6'); x.fillRect(60, 28, 110, 3); this.tq.push(['MONUMENTO', 82, 37, '700 7px system-ui,sans-serif', '#fff']);
     this.lrt(x, e.bot, lit, e.dt);
-    [[30, 82], [600, 84], [570, 88]].forEach(([tx, ty]) => { x.fillStyle = Tm('#6b4a2e'); x.fillRect(tx - 1.5, ty, 3, 108 - ty); x.fillStyle = Tm('#2f8f4e'); x.beginPath(); x.arc(tx, ty - 2, 12, 0, 7); x.arc(tx + 7, ty + 3, 9, 0, 7); x.fill(); });
-    if (lit) { const g = x.createRadialGradient(cx, 50, 4, cx, 50, 75); g.addColorStop(0, 'rgba(255,225,140,.3)'); g.addColorStop(1, 'rgba(255,225,140,0)'); x.fillStyle = g; x.fillRect(cx - 80, 0, 160, 110); }
-    x.fillStyle = Tm('#4f8fb8'); x.beginPath(); x.ellipse(cx, 103, 92, 4, 0, 0, 7); x.fill();
+    [[30, 82], [600, 84], [570, 88]].forEach(([tx, ty]) => { x.fillStyle = Tm('#6b4a2e'); x.fillRect(tx - 1.5, ty, 3, 108 - ty); x.fillStyle = Tm('#2f8f4e'); this.disc(x, tx, ty - 2, 12); this.disc(x, tx + 7, ty + 3, 9); });
+    if (lit) { x.fillStyle = 'rgba(255,225,140,.1)'; x.fillRect(cx - 80, 0, 160, 110); x.fillRect(cx - 50, 10, 100, 100); }
+    x.fillStyle = Tm('#4f8fb8'); x.fillRect(cx - 92, 101, 184, 6);
     x.fillStyle = 'rgba(255,255,255,.28)'; for (let k = 0; k < 8; k++) x.fillRect(cx - 80 + k * 22 + Math.sin(ts / 600 + k) * 3, 102 + (k % 2), 8, 1);
     x.fillStyle = Tm('#a9a395'); x.fillRect(cx - 52, 94, 104, 6); x.fillStyle = Tm('#b9b3a4'); x.fillRect(cx - 44, 88, 88, 6);
     x.fillStyle = Tm('#a39d8f'); x.fillRect(cx - 32, 65, 16, 23); x.fillRect(cx + 16, 65, 16, 23); x.fillStyle = Tm('#c7c1b1'); x.fillRect(cx - 16, 65, 32, 23); x.fillStyle = Tm('#d2ccbc'); x.fillRect(cx - 35, 60, 70, 5);
-    for (let k = 0; k < 5; k++) { const y0 = 60 - k * 7, y1 = y0 - 7, w0 = 9 + 11 * (y0 - 25) / 35, w1 = 9 + 11 * (y1 - 25) / 35; x.fillStyle = Tm(k % 2 ? '#d9d3c3' : '#cfc9b9'); x.beginPath(); x.moveTo(cx - w0 / 2, y0); x.lineTo(cx + w0 / 2, y0); x.lineTo(cx + w1 / 2, y1); x.lineTo(cx - w1 / 2, y1); x.fill(); x.fillStyle = Tm('#a39d8f'); x.fillRect(cx - w1 / 2 - .5, y1 - .5, w1 + 1, 1.2); }
-    x.fillStyle = Tm('#d9d3c3'); x.beginPath(); x.moveTo(cx - 4.5, 25); x.lineTo(cx + 4.5, 25); x.lineTo(cx, 19); x.fill();
-    x.fillStyle = B; [-1, 1].forEach(d => { x.beginPath(); x.moveTo(cx + d, 12); x.quadraticCurveTo(cx + d * 9, 4, cx + d * 12, 6); x.quadraticCurveTo(cx + d * 8, 12, cx + d * 2, 18); x.fill(); });
-    x.fillRect(cx - 1.2, 10, 2.4, 9); x.beginPath(); x.arc(cx, 8.4, 1.5, 0, 7); x.fill(); x.strokeStyle = B; x.beginPath(); x.moveTo(cx - 1, 11); x.lineTo(cx - 4, 6); x.moveTo(cx + 1, 11); x.lineTo(cx + 4, 6); x.stroke();
-    const fig = (px, by, s) => { x.fillStyle = B; x.fillRect(px - 1.5 * s, by - 6 * s, 3 * s, 5.5 * s); x.beginPath(); x.arc(px, by - 7.4 * s, 1.4 * s, 0, 7); x.fill(); };
+    for (let k = 0; k < 5; k++) { const y0 = 60 - k * 7, y1 = y0 - 7, w0 = 9 + 11 * (y0 - 25) / 35, w1 = 9 + 11 * (y1 - 25) / 35; x.fillStyle = Tm(k % 2 ? '#d9d3c3' : '#cfc9b9'); x.fillRect(cx - (w0 + w1) / 4, y1, (w0 + w1) / 2, 7); x.fillStyle = Tm('#a39d8f'); x.fillRect(cx - w1 / 2 - 1, y1, w1 + 2, 2); }
+    x.fillStyle = Tm('#d9d3c3'); this.roofT(x, cx - 4.5, 25, 9, 6);
+    x.fillStyle = B; [-1, 1].forEach(d => { x.fillRect(cx + (d > 0 ? 2 : -8), 12, 6, 6); x.fillRect(cx + (d > 0 ? 8 : -14), 8, 6, 4); });
+    x.fillRect(cx - 2, 10, 4, 9); x.fillRect(cx - 2, 6, 4, 4);
+    const fig = (px, by, s) => { x.fillStyle = B; x.fillRect(px - 2, by - 6 * s, 4, 5.5 * s); x.fillRect(px - 1, by - 8 * s, 2, 2); };
     for (let k = 0; k < 13; k++) if (k !== 6) fig(cx - 48 + k * 8, 94, .9 + (k * 7 % 3) * .1);
     for (let k = 0; k < 11; k++) if (k !== 5) fig(cx - 40 + k * 8, 88, .9 + (k * 5 % 3) * .1);
     fig(cx, 88, 2.1); x.strokeStyle = B; x.lineWidth = 1.4; x.beginPath(); x.moveTo(cx + 2, 80); x.lineTo(cx + 6, 73); x.stroke(); x.lineWidth = 1;
-    if (lit) [-45, 45].forEach(d => { const g = x.createRadialGradient(cx + d, 100, 1, cx + d, 100, 22); g.addColorStop(0, 'rgba(255,230,160,.45)'); g.addColorStop(1, 'rgba(255,230,160,0)'); x.fillStyle = g; x.fillRect(cx + d - 22, 78, 44, 30); });
+    if (lit) [-45, 45].forEach(d => { x.fillStyle = 'rgba(255,230,160,.25)'; x.fillRect(cx + d - 16, 84, 32, 24); });
   }
   /* Elevated LRT line behind the near buildings */
   lrt(x, bot, lit, dt) {
@@ -2375,45 +3069,43 @@ class Scene {
   }
   /* Street life: lamps, a walking crowd (umbrellas in the rain), a tricycle, birds */
   street(x, h, w, night, wet, lit, dt, ts, loc) {
-    if (lit) [60, 200, 340, 480, 620].forEach(lx => { const g = x.createRadialGradient(lx, 96, 1, lx, 96, 20); g.addColorStop(0, 'rgba(255,225,140,.55)'); g.addColorStop(1, 'rgba(255,225,140,0)'); x.fillStyle = g; x.fillRect(lx - 20, 76, 40, 40); x.fillStyle = '#222'; x.fillRect(lx, 96, 1.5, 12); });
+    if (lit) [60, 200, 340, 480, 620].forEach(lx => { x.fillStyle = 'rgba(255,225,140,.18)'; x.fillRect(lx - 14, 82, 28, 26); x.fillStyle = 'rgba(255,225,140,.28)'; x.fillRect(lx - 8, 90, 16, 18); x.fillStyle = '#222'; x.fillRect(lx, 96, 2, 12); x.fillStyle = '#ffe9a8'; x.fillRect(lx - 2, 94, 4, 2); });
     const fy = 107.5, k = lit ? .35 : 0;
     this.pp.slice(0, crowdN(h, w, loc)).forEach(p => {
       p.x += p.v * dt * (wet ? 1.4 : 1); if (p.x > 650) p.x = -10; if (p.x < -10) p.x = 650;
-      const c = rgba(mixc(p.c, [10, 14, 30], k)), sw = Math.sin(ts / 110 * Math.abs(p.v) / 8 + p.ph) * 1.3, px = p.x;
-      x.fillStyle = c; x.fillRect(px - 1.6, fy - 7, 3.2, 4.2); x.fillRect(px - 1.2 + sw, fy - 3, 1, 3); x.fillRect(px + .2 - sw, fy - 3, 1, 3);
-      x.fillStyle = rgba(mixc([224, 180, 138], [10, 14, 30], k)); x.beginPath(); x.arc(px, fy - 8.6, 1.7, 0, 7); x.fill();
-      if (wet) { x.fillStyle = c; x.beginPath(); x.arc(px, fy - 9.5, 4.5, Math.PI, 0); x.fill(); }
+      this.mini(x, p.x, fy + .5, p, k, ts, wet);
     });
     this.tc -= dt * 24; if (this.tc < -60) this.tc = 720;
-    x.fillStyle = '#2a6fdb'; x.fillRect(this.tc, 108, 15, 8); x.fillStyle = '#e04a3a'; x.fillRect(this.tc - 12, 111, 12, 5); x.fillStyle = '#111';
-    [this.tc + 3, this.tc + 12, this.tc - 6].forEach(wx => { x.beginPath(); x.arc(wx, 117, 2.2, 0, 7); x.fill(); });
-    if (!night && !wet) this.bd.forEach(b => { b[0] = (b[0] + dt * b[2]) % 680; x.strokeStyle = 'rgba(20,30,50,.6)'; x.beginPath(); const f = Math.sin(ts / 90 + b[3]) * 2; x.moveTo(b[0] - 3, b[1] + f); x.lineTo(b[0], b[1]); x.lineTo(b[0] + 3, b[1] + f); x.stroke(); });
+    x.fillStyle = '#2a6fdb'; x.fillRect(this.tc, 108, 16, 8); x.fillStyle = '#e04a3a'; x.fillRect(this.tc - 12, 111, 12, 5); x.fillStyle = '#111';
+    [this.tc + 3, this.tc + 12, this.tc - 6].forEach(wx => this.disc(x, wx, 116, 3));
+    if (!night && !wet) this.bd.forEach(b => { b[0] = (b[0] + dt * b[2]) % 680; const f = Math.sin(ts / 90 + b[3]) > 0 ? 2 : 0; x.fillStyle = 'rgba(20,30,50,.7)'; x.fillRect(b[0] - 4, b[1] - f, 4, 2); x.fillRect(b[0], b[1] - f, 4, 2); });
   }
   draw(ts) {
-    const g = this.g, s = g.state, x = this.x, h = s ? g.time.hour : 9, w = (s && s.wx) || 'sun', dt = Math.min(.1, (ts - this.last) / 1000) || 0;
+    const g = this.g, s = g.state; let x = this.x; const h = s ? g.time.hour : 9, w = (s && s.wx) || 'sun', dt = Math.min(.1, (ts - this.last) / 1000) || 0;
     this.last = ts;
     let i = 0; while (SKY[i + 1][0] <= h) i++;
     const f = (h - SKY[i][0]) / (SKY[i + 1][0] - SKY[i][0]), top = mixc(SKY[i][1], SKY[i + 1][1], f), bot = mixc(SKY[i][2], SKY[i + 1][2], f), night = h < 5 || h >= 20, wet = w === 'rain' || w === 'ty';
-    const gr = x.createLinearGradient(0, 0, 0, 120); gr.addColorStop(0, rgba(top)); gr.addColorStop(1, rgba(bot)); x.fillStyle = gr; x.fillRect(0, 0, 640, 120);
+    for (let q = 0; q < 10; q++) { x.fillStyle = rgba(mixc(top, bot, q / 9)); x.fillRect(0, q * 12, 640, 12); }
     if (night) this.st.forEach(([a, b, c]) => { x.globalAlpha = (.3 + .7 * Math.abs(Math.sin(ts / 700 + c * 9))) * (w === 'sun' ? 1 : .3); x.fillStyle = '#fff'; x.fillRect(a, b, 1.5, 1.5); });
     x.globalAlpha = 1;
     const p = ((h + 6) % 12) / 12, sx = 40 + 560 * p, sy = 95 - 80 * Math.sin(Math.PI * p);
-    if (w !== 'ty') { x.globalAlpha = w === 'sun' ? 1 : .45; x.fillStyle = h >= 6 && h < 18 ? '#fff3b0' : '#f4f1de'; x.beginPath(); x.arc(sx, sy, h >= 6 && h < 18 ? 13 : 9, 0, 7); x.fill(); x.globalAlpha = 1; }
-    this.cl.forEach(c => { c[0] = (c[0] + dt * 8 * c[2]) % 760; x.fillStyle = wet ? 'rgba(120,130,150,.9)' : w === 'cloud' ? 'rgba(200,205,215,.85)' : night ? 'rgba(150,160,190,.3)' : 'rgba(255,255,255,.4)'; [[0, 0, 26, 9], [18, 4, 22, 8], [-18, 4, 20, 7]].forEach(([a, b, rx, ry]) => { x.beginPath(); x.ellipse(c[0] - 60 + a, c[1] + b, rx * c[2], ry * c[2], 0, 0, 7); x.fill(); }); });
+    if (w !== 'ty') { x.globalAlpha = w === 'sun' ? 1 : .45; x.fillStyle = h >= 6 && h < 18 ? '#fff3b0' : '#f4f1de'; this.disc(x, sx, sy, h >= 6 && h < 18 ? 12 : 8); x.globalAlpha = 1; }
+    this.cl.forEach(c => { c[0] = (c[0] + dt * 8 * c[2]) % 760; x.fillStyle = wet ? 'rgba(120,130,150,.9)' : w === 'cloud' ? 'rgba(200,205,215,.85)' : night ? 'rgba(150,160,190,.3)' : 'rgba(255,255,255,.4)'; [[0, 0, 26, 9], [18, 4, 22, 8], [-18, 4, 20, 7]].forEach(([a, b, rx, ry]) => { x.fillRect(c[0] - 60 + a - rx * c[2], c[1] + b - ry * c[2] * .6, rx * 2 * c[2], ry * 1.2 * c[2]); }); });
     if (wet) { x.fillStyle = `rgba(25,35,55,${w === 'ty' ? .45 : .25})`; x.fillRect(0, 0, 640, 120); }
     const lit = night || h >= 18 || wet;
     const loc = (s && s.loc) || 'home', alt = loc === 'home' || loc === 'school' || loc === 'court', T = c => rgba(mixc(hex(c), [8, 12, 28], night ? .55 : lit ? .35 : wet ? .15 : 0)), win = lit ? '#ffd479' : '#8fb4e3';
     if (loc !== this.loc) { this.loc = loc; this.fd = this.still ? 0 : 1; }
     if (!alt) this.bl.forEach((a, l) => { if (l) this.lrt(x, bot, lit, dt); x.fillStyle = rgba(mixc(bot, [8, 12, 28], l ? .8 : .55)); a.forEach(([bx, bw, bh, r]) => { x.fillRect(bx, 108 - bh, bw, bh); if (l && lit) { x.fillStyle = '#ffd479'; for (let wy = 108 - bh + 5; wy < 102; wy += 7) for (let wx = bx + 3; wx < bx + bw - 3; wx += 6) if ((Math.sin(wx * 12.9 + wy * 7.1 + r * 99) * 43758) % 1 > .45) x.fillRect(wx, wy, 3, 3); x.fillStyle = rgba(mixc(bot, [8, 12, 28], .8)); } }); });
-    this.scenery(x, loc, { T, win, lit, night, wet, ts, bot, h, dt, city: s && s.city, sign: JOBSIGN[s && s.job] || 'WORKPLACE' });
-    x.fillStyle = loc === 'court' ? (s && s.city === 'Caloocan' ? '#222a38' : '#6a8f55') : loc === 'school' ? '#2d3b33' : '#1b2232'; x.fillRect(0, 108, 640, 12); x.fillStyle = '#e8d56b'; for (let d = 0; d < 640; d += 40) x.fillRect(d, 114, 18, 1.5);
-    this.street(x, h, w, night, wet, lit, dt, ts, loc === 'court' && s && s.city === 'Caloocan' ? 'monu' : loc);
+    this.scenery(x, loc, { T, win, lit, night, wet, ts, bot, h, dt, city: s && (s.at || s.city), sign: JOBSIGN[s && s.job] || 'WORKPLACE' });
+    x.fillStyle = loc === 'court' ? (s && (s.at || s.city) === 'Caloocan' ? '#222a38' : '#6a8f55') : loc === 'school' ? '#2d3b33' : '#1b2232'; x.fillRect(0, 108, 640, 12); x.fillStyle = '#e8d56b'; for (let d = 0; d < 640; d += 40) x.fillRect(d, 114, 18, 1.5);
+    this.street(x, h, w, night, wet, lit, dt, ts, loc === 'court' && s && (s.at || s.city) === 'Caloocan' ? 'monu' : loc);
     this.car = (this.car + dt * 16) % 760; const cx = this.car - 60;
     x.fillStyle = '#e04a3a'; x.fillRect(cx, 91, 40, 4); x.fillStyle = '#ffd24a'; x.fillRect(cx - 2, 95, 46, 13); x.fillStyle = '#bfe3ff'; for (let k = 0; k < 3; k++) x.fillRect(cx + 4 + k * 12, 97, 8, 5);
-    x.fillStyle = '#111'; x.beginPath(); x.arc(cx + 8, 109, 4, 0, 7); x.arc(cx + 34, 109, 4, 0, 7); x.fill();
-    if (night) { x.fillStyle = 'rgba(255,240,170,.35)'; x.beginPath(); x.moveTo(cx + 44, 100); x.lineTo(cx + 74, 94); x.lineTo(cx + 74, 110); x.fill(); }
-    if (wet) { x.strokeStyle = 'rgba(200,220,255,.5)'; x.beginPath(); this.rn.slice(0, w === 'ty' ? 60 : 35).forEach(r => { r[1] += dt * 260; r[0] -= dt * (w === 'ty' ? 90 : 30); if (r[1] > 120) { r[1] = -6; r[0] = Math.random() * 700; } x.moveTo(r[0], r[1]); x.lineTo(r[0] - 2, r[1] + 6); }); x.stroke(); }
-    if (s) { x.font = '600 11px system-ui,sans-serif'; x.fillStyle = 'rgba(0,0,0,.45)'; x.fillRect(8, 8, 104, 18); x.fillStyle = '#fff'; x.fillText(`${DATA.days[g.time.weekday].slice(0, 3)} ${clock(h)} ${DATA.weather.label[w].split(' ')[0]}`, 14, 21); }
+    x.fillStyle = '#111'; this.disc(x, cx + 8, 109, 4); this.disc(x, cx + 34, 109, 4);
+    if (night) { x.fillStyle = 'rgba(255,240,170,.3)'; x.fillRect(cx + 46, 98, 26, 12); }
+    if (wet) { x.fillStyle = 'rgba(200,220,255,.5)'; this.rn.slice(0, w === 'ty' ? 60 : 35).forEach(r => { r[1] += dt * 260; r[0] -= dt * (w === 'ty' ? 90 : 30); if (r[1] > 120) { r[1] = -6; r[0] = Math.random() * 700; } x.fillRect(r[0], r[1], 2, 6); }); }
+    const v = this.v; v.imageSmoothingEnabled = false; v.drawImage(this.lo, 0, 0, 640, 120); this.tq.forEach(([t, a, q, f, c]) => { v.font = f; v.fillStyle = c; v.fillText(t, a, q); }); this.tq.length = 0;
+    if (s) { x = v; x.font = '600 11px system-ui,sans-serif'; x.fillStyle = 'rgba(0,0,0,.45)'; x.fillRect(8, 8, 104, 18); x.fillStyle = '#fff'; x.fillText(`${DATA.days[g.time.weekday].slice(0, 3)} ${clock(h)} ${DATA.weather.label[w].split(' ')[0]}`, 14, 21); }
     if (s) { const t2 = g.world.locations()[loc]; if (t2) { const tx = `${t2[0]} ${t2[1]}`; x.fillStyle = 'rgba(0,0,0,.45)'; x.fillRect(8, 29, 14 + tx.length * 5.6, 17); x.fillStyle = '#fff'; x.fillText(tx, 14, 41); } }
     if (this.fd > 0) { x.fillStyle = `rgba(10,14,30,${this.fd})`; x.fillRect(0, 0, 640, 120); this.fd -= dt * 3; }
     if (w === 'ty') { if (Math.random() < .01) this.fl = 1; if (this.fl > 0) { x.fillStyle = `rgba(255,255,255,${this.fl * .5})`; x.fillRect(0, 0, 640, 120); this.fl -= dt * 3.5; } }
